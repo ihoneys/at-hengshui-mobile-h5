@@ -7,8 +7,11 @@
     "jsx": "preserve",
     "sourceMap": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
+    "typeRoots": ["../node_modules/@types"],
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

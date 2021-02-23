@@ -1,32 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <Test />
+  <div class="app">
+    <TabBar v-if="this.$route.meta.isTabBar" />
+  </div>
+  <router-view />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from './store'
-import Test from '@/components/Test.vue'
+import TabBar from '@/components/Tabbar/Index.vue'
 export default defineComponent({
   name: 'App',
   components: {
-    Test,
+    TabBar,
   },
-  setup() {
+  setup(props) {
     const store = useStore<GlobalDataProps>()
-    const { count, name } = store.state
-    console.log(count, name)
   },
 })
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
 </style>
