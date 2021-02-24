@@ -6,6 +6,7 @@
           <van-image
             width="100%"
             height="100%"
+            radius="4px"
             lazy-load
             :src="item.image"
             @error="imgError(item)"
