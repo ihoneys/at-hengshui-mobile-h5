@@ -40,7 +40,7 @@
           loading-type="spinner"
           @click.stop="onNextStep"
         >登 录</van-button>
-      </div>
+      </div>111
 
       <div class="passwordLogin" v-show="loginType">
         <van-cell-group>

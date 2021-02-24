@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '@/views/Home/Index.vue'
+import { LocalStorage } from 'storage-manager-js'
+import Home from '@/page/home/home.vue'
 const routerHistory = createWebHistory()
 const title = {
   user: '个人中心',
@@ -18,14 +19,14 @@ const routes: Array<RouteRecordRaw> = [
     name: 'user',
     component: () =>
       import(
-        /* webpackChunkName: "userCenter" */ '@/views/UserCenter/Index.vue'
+        /* webpackChunkName: "userCenter" */ '@/page/userCenter/userCenter.vue'
       ),
     meta: { requiredLogin: true, title: title.user, isTabBar: true },
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/Login/Index.vue'),
+    component: () => import('@/page/login/login.vue'),
     meta: { title: title.login },
   },
 ]
@@ -39,7 +40,9 @@ router.beforeEach((to, from, next) => {
   console.log(to)
   const { requiredLogin } = to.meta
   if (requiredLogin) {
-    next('login')
+    // const token = LocalStorage.get('')
+      // if(!)
+      next('login')
   }
   next()
 })
