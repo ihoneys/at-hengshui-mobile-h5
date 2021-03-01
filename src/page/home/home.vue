@@ -21,7 +21,7 @@ export default defineComponent({
       const { data: res } = await getHospitalList(params)
       console.log(res, '8888')
       hospitalData.value = res.list
-    })
+    })    
     return {
       hospitalData,
     }

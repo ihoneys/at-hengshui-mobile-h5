@@ -1,48 +1,45 @@
 <template>
-  <!-- <div class="login">
+  <div class="login">
     <div class="login-content">
-      <h3>{{ title }}</h3>
+      <h3>login</h3>
       <div v-show="!loginType">
-        <p class="p-phone">
-          <img :src="require('@/assets/images/tell.png')" alt />
-          <input
-            type="tel"
-            ref="phone"
-            placeholder="请输入您的手机号码"
+        <div class="p-phone">
+          <img src="../../assets/tell.png" alt />
+          <van-field
+            v-model="phone"
+            placeholder="请输入手机号码"
             maxlength="11"
-            class="login-telphone"
-            oninput="value=value.replace(/[^\d]/g,'')"
-          />
-        </p>
-        <div class="auth-code">
-          <img :src="require('@/assets/images/msg.png')" alt />
-          <input
             type="tel"
-            ref="code"
-            placeholder="请输入验证码"
-            maxlength="6"
-            class="login-telphone"
-            oninput="value=value.replace(/[^\d]/g,'')"
-            v-model="resCode"
-          />
-
-          <input
-            type="button"
-            class="login-count-down"
-            v-model="codeMsg"
-            :disabled="codeDisabled"
-            @click.stop="onGetCode"
+            :formatter="formatter"
+            clearable
           />
         </div>
-        <van-button
-          :loading="isloading"
-          type="primary"
-          loading-type="spinner"
-          @click.stop="onNextStep"
-        >登 录</van-button>
-      </div>111
-
-      <div class="passwordLogin" v-show="loginType">
+        <div class="auth-code">
+          <img src="../../assets/msg.png" alt />
+          <van-field v-model="resCode" maxlength="6" center clearable placeholder="请输入短信验证码">
+            <template #button>
+              <van-button
+                size="small"
+                type="primary"
+                :disabled="isGetCode || !phone"
+                @click.stop="onGetCode"
+              >{{codeText}}</van-button>
+            </template>
+          </van-field>
+        </div>
+        <div style="padding: 10px 20px">
+          <van-button
+            :loading="isloading"
+            type="primary"
+            loading-type="spinner"
+            @click.stop="onNextStep"
+            size="large"
+            round
+            :disabled="!resCode || !phone"
+          >登 录</van-button>
+        </div>
+      </div>
+      <div v-show="loginType">
         <van-cell-group>
           <van-field
             v-model="phone"
@@ -50,64 +47,200 @@
             label="账号"
             placeholder="请输入用户名"
             :label-width="40"
-            :error-message="err1"
             required
           />
         </van-cell-group>
-        <van-cell-group style="margin-bottom: 20px">
-          <van-field
-            v-model="password"
-            :type="inputType"
-            label="密码"
-            placeholder="请输入密码"
-            :label-width="40"
-            right-icon="browsing-history"
-            @click-right-icon="ccc"
-            :error-message="err2"
-            required
-          />
+        <van-cell-group>
+          <form>
+            <van-field
+              v-model="password"
+              :type="inputType ? 'text': 'password'"
+              label="密码"
+              placeholder="请输入密码"
+              :label-width="40"
+              right-icon="browsing-history"
+              @click-right-icon="checkPassword"
+              autocomplete="off"
+              required
+            />
+          </form>
         </van-cell-group>
-        <van-button
-          :loading="isloading"
-          type="primary"
-          loading-type="spinner"
-          @click.stop="onNextStep2"
-          :disabled="!password || !phone"
-        >登 录</van-button>
+        <div style="padding: 10px 20px">
+          <van-button
+            :loading="isloading"
+            type="primary"
+            size="large"
+            round
+            loading-type="spinner"
+            @click.stop="onNextStep2"
+            :disabled="!password || !phone"
+          >登 录</van-button>
+        </div>
       </div>
 
-      <p class="change-box">
-        <span @click="changeLoginType">{{ typeName }}</span>
-        <span>
-          <span @click="toRegister(false)" style="margin-right: 10px" v-show="loginType">忘记密码</span>
-          <span @click="toRegister(true)">用户注册</span>
-        </span>
-      </p>
+      <div class="change-box">
+        <div @click="changeLoginType" v-text="typeName?'验证码登录': '账号密码登录'"></div>
+        <div>
+          <router-link
+            class="signup"
+            style="margin-right: 10px"
+            to="/register/1"
+            v-show="loginType"
+          >忘记密码</router-link>
+          <router-link class="signup" to="/register/2">用户注册</router-link>
+        </div>
+      </div>
     </div>
-  </div> -->
-  <div>
-      这是登录！    
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { createMessage, encrypt } from '../../common/function'
+import { getPhoneCode, getLogin, loginByPwd, getToken } from '../../common/api'
+import { LocalStorage } from 'storage-manager-js'
+import { Dialog, Toast } from 'vant'
 export default defineComponent({
-  setup() {},
+  setup(props, ctx) {
+    const titleName = ref('验证码登录')
+    const codeText = ref('获取验证码')
+    const typeName = ref(false)
+    const isGetCode = ref(false)
+    const isloading = ref(false)
+    const loginType = ref(false)
+    const inputType = ref(false)
+    const countDown = ref(29)
+    const resCode = ref('')
+    const phone = ref('')
+    const password = ref('')
+    const $router = useRouter()
+    const countTime = () => {
+      isGetCode.value = true
+      let timer = setInterval(() => {
+        if (countDown.value !== 0) {
+          codeText.value = `重新发送${countDown.value--}`
+        } else {
+          isGetCode.value = false
+          codeText.value = '获取验证码'
+          countDown.value = 29
+          clearInterval(timer)
+        }
+      }, 1000)
+    }
+    const isValidtePhone = () => {
+      const pattern = /^1(3|4|5|6|7|8|9)\d{9}$/
+      if (!pattern.test(phone.value)) {
+        createMessage('请重新输入正确的手机号码！')
+        return false
+      } else {
+        return true
+      }
+    }
+    const onGetCode = async () => {
+      isValidtePhone()
+      const { success, infor } = await getPhoneCode(encrypt(phone.value))
+      if (success) {
+        countTime()
+        Toast.success(infor)
+      } else {
+        Toast.fail(infor)
+      }
+    }
+    const onNextStep = async () => {
+      isValidtePhone()
+      const sendData = {
+        phone: encrypt(phone.value),
+        code: resCode.value,
+        openidKey: null,
+        appType: 1,
+      }
+      const res = await getLogin(sendData)
+      if (res.success) {
+        LocalStorage.set('userInfo', res)
+        backToPageHome()
+      } else {
+        Toast.fail(res.message)
+      }
+    }
+    const backToPageHome = () => {
+      $router.push('/')
+    }
+    const toRegister = (isNewUser) => {
+      $router.push({
+        name: 'register',
+        params: {
+          isNewUser,
+        },
+      })
+    }
+    const checkPassword = () => {
+      inputType.value = !inputType.value
+    }
+    const onNextStep2 = async () => {
+      const params = {
+        phone: encrypt(phone.value),
+        password: encrypt(password.value),
+        appType: 1,
+      }
+
+      const res = await loginByPwd(params)
+      if (res.success) {
+        const userParams = {
+          tokenKey: res.data,
+        }
+        const { success, data: userInfo } = await getToken(userParams)
+
+        if (success) {
+          LocalStorage.set('userInfo', userInfo)
+        }
+        if (res.modifySecret === 1) {
+          Dialog.confirm({
+            title: '温馨提示',
+            message: '您的密码已经3个月没更新了，是否立即更新？',
+          })
+            .then(() => {
+              toRegister(1)
+            })
+            .catch(() => {
+              backToPageHome()
+            })
+        }
+      } else {
+        createMessage(res.message)
+      }
+    }
+    const changeLoginType = () => {
+      loginType.value = !loginType.value
+      typeName.value = !typeName.value
+    }
+    const formatter = (value: any) => {
+      return value.replace(/[^\d]/g, '')
+    }
+    return {
+      titleName,
+      isloading,
+      countDown,
+      resCode,
+      phone,
+      password,
+      typeName,
+      loginType,
+      inputType,
+      onGetCode,
+      onNextStep,
+      checkPassword,
+      onNextStep2,
+      changeLoginType,
+      formatter,
+      codeText,
+      isGetCode,
+    }
+  },
 })
 </script>
 
 <style lang="scss" scoped>
-@svg 1px-border {
-  height: 2px;
-
-  @rect {
-    fill: var(--color, black);
-    width: 100%;
-    height: 50%;
-  }
-}
-
 .login {
   width: 100%;
   height: 100%;
@@ -141,15 +274,12 @@ export default defineComponent({
       align-items: center;
       border-bottom: 1px solid #e7e7e7;
       border-image: svg(1px-border param(--color #e7e7e7)) 2 2 stretch;
+      // padding-bottom: 10px;
       padding-left: 20px;
-      padding-right: 20px;
-
       img {
         height: 30px;
         margin-right: 10px;
       }
-
-      padding-bottom: 10px;
     }
 
     .login-telphone {
@@ -169,11 +299,9 @@ export default defineComponent({
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
       border-bottom: 1px solid #e7e7e7;
       border-image: svg(1px-border param(--color #e7e7e7)) 2 2 stretch;
-      padding: 20px;
-
+      padding-left: 20px;
       img {
         height: 30px;
         margin-right: 10px;
@@ -188,13 +316,13 @@ export default defineComponent({
       -webkit-border-radius: 28;
       -moz-border-radius: 28;
       border-radius: 28px;
-      padding: 8px 10px;
       text-decoration: none;
       border: solid 1px #00d3c2;
+      padding: 5px 0;
     }
 
     // 登录按钮
-    button {
+    .login-btn {
       width: 86%;
       margin-bottom: 20px;
       margin-left: 7%;
@@ -222,15 +350,15 @@ export default defineComponent({
   align-items: center;
 }
 
-.passwordLogin {
-  padding: 0 15px;
-}
-
 .footer-tag {
   font-size: 12px;
   line-height: 1.5;
   text-align: center;
   color: #ccc;
   letter-spacing: 3px;
+}
+.signup {
+  font-size: 14px;
+  color: #00d3c2;
 }
 </style>

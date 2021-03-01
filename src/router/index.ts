@@ -6,6 +6,9 @@ const title = {
   user: '个人中心',
   home: '首页',
   login: '登录',
+  register: '注册',
+  department: '科室',
+  departmentDoctor: '预约',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,6 +32,24 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/page/login/login.vue'),
     meta: { title: title.login },
   },
+  {
+    path: '/register/:id',
+    name: 'register',
+    component: () => import('@/page/register/register.vue'),
+    meta: { title: title.register },
+  },
+  {
+    path: '/department/:id',
+    name: 'department',
+    component: () => import('@/page/department/department.vue'),
+    meta: { title: title.department },
+  },
+  {
+    path: '/departmentDoctor/:depId/:unitId',
+    name: 'departmentDoctor',
+    component: () => import('@/page/departmentDoctor/departmentDoctor.vue'),
+    meta: { title: title.departmentDoctor },
+  },
 ]
 
 const router = createRouter({
@@ -36,14 +57,16 @@ const router = createRouter({
   routes,
 })
 router.beforeEach((to, from, next) => {
-  // if(to === )
-  console.log(to)
   const { requiredLogin } = to.meta
-  if (requiredLogin) {
-    // const token = LocalStorage.get('')
-      // if(!)
-      next('login')
+  let token
+  if (LocalStorage.has('userInfo')) {
+    token = LocalStorage.get('userInfo')
   }
-  next()
+  if (requiredLogin && !token) {
+    console.log(token, 'token')
+    next('/login')
+  } else {
+    next()
+  }
 })
 export default router

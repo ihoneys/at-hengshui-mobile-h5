@@ -1,8 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { config } from 'process'
 import { Toast, Dialog } from 'vant'
 import { LocalStorage } from 'storage-manager-js'
-import { error } from 'console'
 let httpCode = {
   400: '请求参数错误',
   401: '权限不足, 请重新登录',
@@ -14,8 +12,6 @@ let httpCode = {
   504: '网关超时',
 }
 const baseURL: string = 'http://jk-hs.com/yygh'
-
-const getEnv = () => process.env.NODE_ENV === 'production'
 
 const instance = axios.create({
   timeout: 10000,
@@ -54,14 +50,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     Toast.clear()
-    if (response.data.status === 200) {
+    if (response.status === 200 || response.data.success) {
       return Promise.resolve(response.data)
     } else {
       Dialog({
         title: '提示',
-        message: response.data.message,
+        message: response.data.msg,
       })
-      return Promise.reject(response.data.message)
+      return Promise.reject(response.data.msg)
     }
   },
   (error) => {
@@ -71,7 +67,6 @@ instance.interceptors.response.use(
         error.response.status in httpCode
           ? httpCode[error.response.status]
           : error.response.data.message
-
       Dialog({
         title: '提示',
         message: tips,
@@ -86,7 +81,7 @@ instance.interceptors.response.use(
     }
   }
 )
-export const post = (url: string, data: Object, config = {}) => {
+export const post = (url: string, data: any = {}, config = {}) => {
   return instance({
     method: 'post',
     url,
@@ -101,9 +96,24 @@ export const post = (url: string, data: Object, config = {}) => {
     })
 }
 
-export const get = (url: string, params: Object, config = {}) => {
+export const get = (url: string, params: any, config = {}) => {
   return instance({
     method: 'get',
+    url,
+    params,
+    ...config,
+  })
+    .then((response) => {
+      return Promise.resolve(response)
+    })
+    .catch((error) => {
+      return Promise.reject(error)
+    })
+}
+
+export const postAndGet = (url: string, params: any, config = {}) => {
+  return instance({
+    method: 'post',
     url,
     params,
     ...config,

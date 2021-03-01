@@ -1,38 +1,40 @@
 <template>
   <ul class="doctor-list" v-if="hospitals != null">
-    <li v-for="(item, index) in hospitals" :key="index" @click.stop="getInfo(item)">
-      <div class="doctor-item">
-        <div class="photo">
-          <van-image
-            width="100%"
-            height="100%"
-            radius="4px"
-            lazy-load
-            :src="item.image"
-            @error="imgError(item)"
-            alt="被吃掉了"
-          />
-        </div>
-        <div class="recommend">
-          <div>
-            <span class="doctor-name">{{ item.unitName }}</span>
-            <span></span>
+    <li v-for="(item, index) in hospitals" :key="index">
+      <router-link :to="`/department/${item.hisUnitId}`">
+        <div class="doctor-item">
+          <div class="photo">
+            <van-image
+              width="100%"
+              height="100%"
+              radius="4px"
+              lazy-load
+              :src="item.image"
+              @error="imgError(item)"
+              alt="被吃掉了"
+            />
           </div>
-          <div class="describe">
-            <span class="tag-span" v-if="item.unitLevelName != null">
-              {{
-              item.unitLevelName
-              }}
-            </span>
-            <span class="tag-span" v-if="item.unitClassName != null">
-              {{
-              item.unitClassName
-              }}
-            </span>
+          <div class="recommend">
+            <div>
+              <span class="doctor-name">{{ item.unitName }}</span>
+              <span></span>
+            </div>
+            <div class="describe">
+              <span class="tag-span" v-if="item.unitLevelName != null">
+                {{
+                item.unitLevelName
+                }}
+              </span>
+              <span class="tag-span" v-if="item.unitClassName != null">
+                {{
+                item.unitClassName
+                }}
+              </span>
+            </div>
+            <span v-if="item.distance != null">距离{{ item.distance | getKm }}</span>
           </div>
-          <span v-if="item.distance != null">距离{{ item.distance | getKm }}</span>
         </div>
-      </div>
+      </router-link>
     </li>
   </ul>
 </template>
