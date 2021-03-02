@@ -9,6 +9,7 @@ const title = {
   register: '注册',
   department: '科室',
   departmentDoctor: '预约',
+  docPage: '医生主页',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -49,6 +50,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'departmentDoctor',
     component: () => import('@/page/departmentDoctor/departmentDoctor.vue'),
     meta: { title: title.departmentDoctor },
+  },
+  {
+    path: '/docPage',
+    name: 'docPage',
+    component: () => import('@/page/docPage/docPage.vue'),
+    meta: { title: title.docPage },
   },
 ]
 

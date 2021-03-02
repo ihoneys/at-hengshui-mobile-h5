@@ -15,7 +15,9 @@ import {
   Toast,
   Form,
   TreeSelect,
-  NavBar 
+  NavBar,
+  Tab,
+  Tabs,
 } from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
@@ -36,6 +38,8 @@ app
   .use(Form)
   .use(TreeSelect)
   .use(NavBar)
+  .use(Tab)
+  .use(Tabs)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

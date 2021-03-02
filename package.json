@@ -17,6 +17,7 @@
     "moment": "^2.29.1",
     "storage-manager-js": "^4.0.5",
     "vant": "^3.0.7",
+    "vite-tsconfig-paths": "^2.1.0",
     "vue": "^3.0.6",
     "vue-router": "^4.0.4",
     "vuex": "^4.0.0"

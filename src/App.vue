@@ -21,4 +21,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+div {
+  font-size: 16px;
+}
+h1,h2,h3,h4{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 </style>
