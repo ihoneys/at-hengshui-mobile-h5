@@ -5,10 +5,16 @@ import moment from 'moment'
 const SM4 = crypt.sm4
 const createSm4 = new SM4(sm4Config)
 
-export function createMessage(message: string, title: string = '提示'): void {
+export function createMessage(
+  message: string,
+  title: string = '提示',
+  callBack: () => void = () => {}
+): void {
   Dialog.alert({
     title,
     message,
+  }).then(() => {
+    callBack()
   })
 }
 export function isObjEmpty(obj: any): boolean {
@@ -29,7 +35,23 @@ export function encrypt(val: string): string {
 export function sm4Decrypt(val: string): string {
   return createSm4.decrypt(val)
 }
+export function idEncrypt(value: string): string {
+  if (!value) return value
+  const call = '' + value
+  return call.substr(0, 4) + '**********' + call.substr(14)
+}
 
+// 电话号码+****
+export function telEncrypt(value: string): string {
+  if (!value) return value
+  let call = '' + value
+  call = call.substr(0, 3) + '****' + call.substr(7)
+  return call
+}
+
+export function computedAge(birthDay: string): number {
+  return new Date().getFullYear() - new Date(birthDay).getFullYear()
+}
 // 截取code码
 export function getUrlParam(name: string) {
   var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')

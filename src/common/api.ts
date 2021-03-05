@@ -12,6 +12,10 @@ const API = {
   URL_GETDEP_DOCTOR: `${provider}/yygh-pub/pub/hdbs/schedule/findScheduleGroupByDate`,
   URL_DICTORY_DATA: `${provider}/dict/dictory/hdbs/dictory/findList`,
   URL_SCHEDULING_DATA: `${provider}/yygh-pub/pub/hdbs/schedule/findByUnitAndDeptAndDoctorAndDate`,
+  URL_SOURCE_NUMBER: `${provider}/yygh-pub/pub/numSchedulenum/resource/sch_batchQuerySrcForSch`,
+  URL_MEMBER_LIST: `${provider}/pt-platform/pub/userMember/list`,
+  URL_SUBMIT_ORDER: `${provider}/pt-platform/order/add`,
+  URL_ORDER_LIST: `${provider}/pt-platform/order/queryYuYue`,
 }
 /**
  *
@@ -62,4 +66,22 @@ export function dictionaryQuery(data = {}) {
 // 获取医生的排班
 export function getSchedulingData(data) {
   return post(API.URL_SCHEDULING_DATA, data)
+}
+export function getSelectSchedulingTime(data) {
+  return post(API.URL_SOURCE_NUMBER, data)
+}
+
+// 获取患者列表
+export function getUserMember(params) {
+  return get(API.URL_MEMBER_LIST, params)
+}
+
+// /yygh-pub/pub/order/add // 预约挂号订单下单接口
+
+export const createOrder = (data) => {
+  return post(API.URL_SUBMIT_ORDER, data)
+}
+// 获取我的预约挂号订单
+export const getOrderList = (data) => {
+  return post(API.URL_ORDER_LIST, data)
 }

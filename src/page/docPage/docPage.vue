@@ -14,41 +14,110 @@
     <div class="table-wrapper">
       <div>{{doctorInfo.unitName}}</div>
       <div class="depName">{{doctorInfo.depName}}</div>
-      <table-component :tableData="schedulingData"></table-component>
+      <table-component :tableData="schedulingData" @clickItem="clickItem"></table-component>
       <div class="doctor-experts">
         <div class="table-bottom">
           <h3 class="table-bottom-title">简介</h3>
           <div class="contorl-tips">左右滑动日历查看其他日期排班</div>
         </div>
-        <p class="doctor-expert-color">{{doctorInfo.introduction}}</p>
+        <p
+          class="doctor-expert-color"
+          :class="{'introContent': isFolding}"
+        >{{doctorInfo.introduction}}</p>
+        <div class="folding" @click.stop="isFolding = !isFolding">{{isFolding?'展开':'折叠'}}</div>
       </div>
     </div>
     <div class="evaluate">
       <h3>患者点评(0)</h3>
     </div>
+    <van-popup
+      v-model:show="show"
+      closeable
+      position="bottom"
+      class="popup-wrapper"
+      :style="{height:'auto'}"
+      teleport="#app"
+      round
+    >
+      <div class="popup-hos-info">
+        <span>{{currentTimesInfo.date}}</span>
+        <span>{{transformWeek(currentTimesInfo.date)}}</span>
+        <span>{{currentTimesInfo.dictName}}</span>
+      </div>
+      <div>{{doctorInfo.unitName}}</div>
+      <div class="popup-depName">{{doctorInfo.depName}}</div>
+      <div class="popup-container">
+        <div
+          class="popup-times click-active"
+          v-for="times in timesArray"
+          @click.stop="selectTimes(times)"
+        >
+          <div>{{times.beginTime}}-{{times.endTime}}</div>
+          <div>({{times.yuyueNum}}/{{times.yuyueMax}})</div>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { getSchedulingData, getSelectSchedulingTime } from '../../common/api'
+import {
+  getCustomDate,
+  parsingSchedulingData,
+  isObjEmpty,
+  createMessage,
+} from '../../common/function'
 import { SessionStorage } from 'storage-manager-js'
-import { getCustomDate, parsingSchedulingData } from '../../common/function'
-import { getSchedulingData } from '../../common/api'
+import { transformWeek } from '../../hooks/date'
+import { SchedulingInfo } from '../types/types'
+import { useRouter } from 'vue-router'
 import TableComponent from 'comps/schedulingTable/Index.vue'
+interface CurrentTimes {
+  date: string
+  dictName: string
+}
+interface OrderInfo {
+  guaHaoAmt: string | number
+  zcName: string
+  unitName: string
+  date: string
+  beginTime: string
+  endTime: string
+  dictCode: string
+  detlId: string
+  scheduleId: string
+}
 export default defineComponent({
   name: 'docPage',
   components: {
-    TableComponent
+    TableComponent,
   },
-  setup () {
-
-    const state = reactive({
-      schedulingData: [],
-      doctorInfo: {}
-    })
+  setup() {
     onMounted(() => {
       getSchedulingDatas()
     })
+    const router = useRouter()
+    const state = reactive({
+      schedulingData: [] as any[],
+      timesArray: [] as any[],
+      doctorInfo: {},
+      isFolding: true,
+      show: false,
+      currentTimesInfo: {} as CurrentTimes,
+    })
+    const orderInfo: OrderInfo = {
+      guaHaoAmt: '',
+      zcName: '',
+      unitName: '',
+      date: '',
+      beginTime: '',
+      endTime: '',
+      dictCode: '',
+      detlId: '',
+      scheduleId: '',
+    }
     const { depId, doctorId, unitId } = SessionStorage.get('currentDoctorInfo')
     const getSchedulingDatas = async () => {
       const sendData = {
@@ -57,26 +126,77 @@ export default defineComponent({
         unitId,
         beginDate: getCustomDate(),
         endDate: getCustomDate(6),
-        currentWeek: 0
+        currentWeek: 0,
       }
       const res = await getSchedulingData(sendData)
+      const parsingResult = parsingSchedulingData(res.data[0].schedules)
       console.log(res)
-      const parsingRsult = parsingSchedulingData(res.data[0].schedules)
+      if (isObjEmpty(parsingResult)) {
+        createMessage('暂无排班数据！', '提示', () => {
+          router.push('/')
+        })
+      }
       if (res.success) {
-        const objs = Object.create(null)
+        orderInfo.guaHaoAmt = res.data[0].guaHaoAmt
+        orderInfo.zcName = res.data[0].zcName
+        orderInfo.unitName = res.data[0].unitName
+        const objs: SchedulingInfo = {
+          data: '',
+          timeTypes: '',
+          week: '',
+          date: '',
+        }
         objs.data = res.data
         objs.timeTypes = res.timeTypes
         objs.week = res.week
-        objs.date = parsingRsult
+        objs.date = parsingResult
         state.schedulingData.push(objs)
         state.doctorInfo = res.data[0]
       }
     }
-
-    return {
-      ...toRefs(state)
+    const clickItem = (date, data, isNumber, dictCode,dictName) => {
+      console.log(date, data, isNumber, dictCode)
+      orderInfo.date = date
+      orderInfo.dictCode = dictCode
+      state.currentTimesInfo.date = date
+      state.currentTimesInfo.dictName = dictName
+      const params = {
+        beginDate: data.toDate,
+        scheduleId: data.scheduleId,
+        timeType: data.timeType,
+        unitId: data.unitId,
+        depId: data.depId,
+        doctorId: data.doctorId,
+      }
+      getSourceNo(params)
     }
-  }
+    const getSourceNo = async (params) => {
+      const res = await getSelectSchedulingTime(params)
+      console.log(res)
+      state.show = true
+      if (res.success) {
+        state.timesArray = Object.values(res.data)[0] as any[]
+      }
+    }
+    const selectTimes = (times) => {
+      const temporary = SessionStorage.get('currentDoctorInfo')
+      orderInfo.beginTime = times.beginTime
+      orderInfo.endTime = times.endTime
+      orderInfo.detlId = times.numResId
+      orderInfo.scheduleId = times.scheduleId
+      SessionStorage.set(
+        'currentDoctorInfo',
+        Object.assign(temporary, orderInfo)
+      )
+      router.push('/order')
+    }
+    return {
+      ...toRefs(state),
+      clickItem,
+      transformWeek,
+      selectTimes,
+    }
+  },
 })
 </script>
 
@@ -100,6 +220,17 @@ export default defineComponent({
 }
 .doctor-experts {
   margin-top: 20px;
+}
+.folding {
+  text-align: center;
+  font-size: 14px;
+  color: #00d2c3;
+}
+.introContent {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .doctor-expert-color {
   color: #999999;
@@ -134,8 +265,43 @@ export default defineComponent({
   }
 }
 .evaluate {
-    padding: 14px;
-    background-color: #fff;
-    margin-top: 20px;
+  padding: 14px;
+  background-color: #fff;
+  margin-top: 20px;
+}
+.popup-wrapper {
+  padding: 14px;
+  box-sizing: border-box;
+}
+.popup-times {
+  padding: 4px;
+  width: 28.1%;
+  text-align: center;
+  background-color: #eee;
+  border-radius: 4px;
+  line-height: 20px;
+  color: #333333;
+  margin-bottom: 10px;
+  font-size: 14px;
+  margin-left: 10px;
+  overflow: hidden;
+}
+.popup-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: -10px;
+}
+.popup-depName {
+  color: rgb(0, 210, 195);
+  font-weight: 600;
+}
+.popup-hos-info {
+  span {
+    margin-right: 4px;
+    font-weight: bold;
+    color: #333333;
+  }
 }
 </style>

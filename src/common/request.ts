@@ -1,6 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Toast, Dialog } from 'vant'
 import { LocalStorage } from 'storage-manager-js'
+import router from '../router'
+import { promises } from 'fs'
 let httpCode = {
   400: '请求参数错误',
   401: '权限不足, 请重新登录',
@@ -12,9 +14,11 @@ let httpCode = {
   504: '网关超时',
 }
 const baseURL: string = 'http://jk-hs.com/yygh'
+// const baseURL: string = 'http://10.1.95.136:8400'
+
 
 const instance = axios.create({
-  timeout: 10000,
+  timeout: 30000,
   baseURL,
 })
 
@@ -50,14 +54,21 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     Toast.clear()
-    if (response.status === 200 || response.data.success) {
+    const { code, message } = response.data
+    if (response.status === 200) {
+      if (code === 40101) {
+        Dialog({
+          title: '提示',
+          message: '登录过期',
+        }).then(() => {
+          router.push({
+            name: 'login',
+          })
+        })
+      }
       return Promise.resolve(response.data)
     } else {
-      Dialog({
-        title: '提示',
-        message: response.data.msg,
-      })
-      return Promise.reject(response.data.msg)
+      return Promise.reject(message)
     }
   },
   (error) => {

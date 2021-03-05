@@ -58,6 +58,7 @@ export default defineComponent({
     })
     const route = useRoute()
     const { depId, unitId } = route.params
+    console.log(depId, unitId)
     const state = reactive({
       dateDoctorList: [],
       Alldoctor: [],
@@ -88,7 +89,7 @@ export default defineComponent({
       return function (value) {
         return value == 1 ? '预约' : '已满'
       }
-    })      
+    })
 
     const getGrade = computed(() => {
       return function (value) {
@@ -129,7 +130,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .doctor-list {
   padding: 30px 15px;
   display: flex;
@@ -178,7 +179,6 @@ export default defineComponent({
   left: 20%;
 }
 .doctor-header {
-  // height: calc(100% - 2px);
   box-sizing: border-box;
 }
 
@@ -197,88 +197,6 @@ p {
     margin-right: 5px;
   }
 }
-
-// .doctor-list {
-//   height: calc(100% - 50px);
-//   box-sizing: border-box;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: flex-start;
-//   align-content: center;
-//   padding: 4% 0;
-//   background-color: #f5f5f5;
-//   .doctor-item {
-//     background-color: #fff;
-//     margin-bottom: 10px;
-//     padding: 4% 0;
-//     padding-top: 9%;
-//     border-radius: 6px;
-//     height: 100px;
-//     box-shadow: 0 2px 6px 0 #e7e7e7;
-//     //内部主体内容
-
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: space-between;
-//     align-content: center;
-//     .photo {
-//       flex: 3;
-//       .img-box {
-//         width: 60px;
-//         height: 80px;
-//         border-radius: 10%;
-//         background-color: #ccc;
-
-//         margin: 0 auto;
-//         overflow: hidden;
-//         img {
-//           width: 100%;
-//           height: 100%;
-//         }
-//       }
-//     }
-//     .recommend {
-//       background-color: #fff;
-//       flex: 8;
-//       display: flex;
-//       flex-direction: column;
-//       justify-content: flex-start;
-//       .doctor-name {
-//         font-size: 16px;
-//         font-weight: bold;
-//         color: #222;
-//       }
-//       .doctor-explain {
-//         width: 205px;
-//         line-height: 1.5;
-//         overflow: hidden;
-//         white-space: nowrap;
-//         text-overflow: ellipsis;
-//       }
-//     }
-
-//     // 预约按钮
-//     .orderBtn {
-//       width: 64px;
-//       height: 32px;
-//       line-height: 32px;
-//       border-radius: 20px;
-//       border: 1px solid rgba(131, 225, 218, 1);
-//       background: rgba(0, 210, 195, 1);
-//       color: #fff;
-//       text-align: center;
-//       margin-right: 3%;
-//       margin-top: 2%;
-//     }
-
-//     //不可预约的按钮样式
-//     .disableBtn {
-//       color: #fff;
-//       border: 1px solid #ccc;
-//       background: #ccc;
-//     }
-//   }
-// }
 //底部文字
 .foot-text {
   text-align: center;

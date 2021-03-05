@@ -9,10 +9,12 @@
         </td>
       </tr>
       <tr v-for="column in table.timeTypes">
-        <td>{{column.dictName}}</td>
+        <td class="dict-name">{{column.dictName}}</td>
         <td
           v-for="(item,index) in table.week"
+          class="click-active"
           :class="{'active':isIfNumber(table, item, column)}"
+          @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName)"
         >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
       </tr>
     </table>
@@ -27,7 +29,7 @@ export default defineComponent({
   props: {
     tableData: Array
   },
-  setup (props) {
+  setup (props, ctx) {
     console.log(props.tableData)
     const isIfNumber = computed(() => {
       return function (table, item, column) {
@@ -43,11 +45,16 @@ export default defineComponent({
         return hasDate && hasDate[hasTimeShort]
       }
     })
+    const makeApponintment = (date, data, isNumber, dictCode,dictName) => {
+      if (!isNumber) return
+      ctx.emit('clickItem', date, data, isNumber, dictCode,dictName)
+    }
     return {
       transformWeek,
       transformDate,
       isIfNumber,
-      changeTextStatus
+      changeTextStatus,
+      makeApponintment
     }
 
   }
@@ -70,12 +77,16 @@ export default defineComponent({
       color: #999999;
       text-align: center;
     }
-    .container-td-time {
-    }
     .active {
       background: #00d2c3;
       color: #fff;
     }
+    .click-active:active {
+      background: #cccccc;
+    }
   }
+}
+.dict-name {
+  color: #333 !important;
 }
 </style>

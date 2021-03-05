@@ -164,7 +164,7 @@ export default defineComponent({
       }
     }
     const backToPageHome = () => {
-      $router.push('/')
+      $router.go(-1)
     }
     const toRegister = (isNewUser) => {
       $router.push({
@@ -190,11 +190,11 @@ export default defineComponent({
           tokenKey: res.data,
         }
         const { success, data: userInfo } = await getToken(userParams)
-
         if (success) {
           LocalStorage.set('userInfo', userInfo)
+          LocalStorage.set('token', userInfo.token)
         }
-        if (res.modifySecret === 1) {
+        if (res.modifySecret === 1 && success) {
           Dialog.confirm({
             title: '温馨提示',
             message: '您的密码已经3个月没更新了，是否立即更新？',

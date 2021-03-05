@@ -10,6 +10,8 @@ const title = {
   department: '科室',
   departmentDoctor: '预约',
   docPage: '医生主页',
+  order: '提交订单',
+  orderList: '挂号列表',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -55,7 +57,19 @@ const routes: Array<RouteRecordRaw> = [
     path: '/docPage',
     name: 'docPage',
     component: () => import('@/page/docPage/docPage.vue'),
-    meta: { title: title.docPage },
+    meta: { title: title.docPage, requiredLogin: true },
+  },
+  {
+    path: '/order',
+    name: 'order',
+    component: () => import('@/page/order/order.vue'),
+    meta: { title: title.order },
+  },
+  {
+    path: '/orderList',
+    name: 'orderList',
+    component: () => import('@/page/orderList/orderList.vue'),
+    meta: { title: title.orderList },
   },
 ]
 

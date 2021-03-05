@@ -133,10 +133,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: flex-start;
   align-content: center;
-  padding-top: 0;
-  background-color: #f5f5f5;
   font-size: 16px;
-
   .doctor-item {
     background-color: #fff;
     color: #999999;

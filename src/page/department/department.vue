@@ -1,7 +1,7 @@
 <template>
   <!-- <div>科室信息</div> -->
   <div class="alldepartment-tree">
-    <van-nav-bar title="科室" left-text="返回" left-arrow @click-left="onClickLeft" />
+    <!-- <van-nav-bar title="科室" left-text="返回" left-arrow @click-left="onClickLeft" /> -->
     <div class="top-search">
       <button @click.stop="showHospitalInfo" class="yiyuan">医 院 主 页</button>
       <div class="search-box">
@@ -18,55 +18,6 @@
         @click-nav="onClickNav"
         @click-item="onClickItem"
       />
-      <!-- <div class="hospita-info" v-show="showInfo">
-        <div v-if="HospitalInfo">
-          <div class="title">
-            <div class="photo-name">
-              <p class="img-box">
-                <img v-lazy="HospitalInfo.image" alt="被吃掉来了" />
-              </p>
-              <div class="name-info">
-                <div>
-                  <p>{{ HospitalInfo.unitName }}</p>
-                  <p>
-                    <span>{{ HospitalInfo.unitLevel | oo }}</span>
-                    <span>{{ HospitalInfo.unitClass | oo }}</span>
-                  </p>
-                </div>
-                <p class="address">
-                  <van-icon name="location" />
-                  <span>{{ HospitalInfo.address }}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="tell-info common">
-            <p>
-              <span>别名 :</span>
-              <span>{{ HospitalInfo.unitTags }}</span>
-            </p>
-            <p>
-              <span>电话 :</span>
-              <span>{{ HospitalInfo.phone | getNum }}</span>
-            </p>
-            <p>
-              <span>网站 :</span>
-              <span>{{ HospitalInfo.webUrl | getNum }}</span>
-            </p>
-          </div>
-          <div class="intro common">
-            <h3>简介</h3>
-            <div :class="{ introContent: changeshow }">
-              {{ HospitalInfo.detail }}
-            </div>
-            <div class="ck-btn" @click="changeBtn" v-if="showBtn">{{ changeshow ? "展开" : "收起" }}</div>
-          </div>
-          <div class="common">
-            <h3>公共交通</h3>
-            <p>{{ HospitalInfo.busLine }}</p>
-          </div>
-        </div>
-      </div>-->
     </div>
   </div>
 </template>
@@ -76,6 +27,7 @@ import { getDepartmentList } from '../../common/api'
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as moment from 'moment'
+import { Toast } from 'vant'
 export default defineComponent({
   name: 'department',
   setup() {
@@ -96,9 +48,17 @@ export default defineComponent({
         endTime: moment(new Date()).add(30, 'd').format('YYYY-MM-DD'),
         timeType: '',
       }
-      const res = await getDepartmentList(params)
-      state.treeData = transformList(res.data)
-      console.log(res.data)
+      const { success, data } = await getDepartmentList(params)
+      if (success && Array.isArray(data) && data.length > 0) {
+        state.treeData = transformList(data)
+      } else {
+        Toast.fail({
+          message: '未查询到科室数据',
+          onClose: () => {
+            router.go(-1)
+          },
+        })
+      }
     }
     const transformList = (data) => {
       data.forEach((item) => {

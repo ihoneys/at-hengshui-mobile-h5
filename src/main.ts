@@ -18,6 +18,13 @@ import {
   NavBar,
   Tab,
   Tabs,
+  Popup,
+  RadioGroup,
+  Radio,
+  ActionSheet,
+  Icon,
+  Cell,
+  List,
 } from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
@@ -40,6 +47,13 @@ app
   .use(NavBar)
   .use(Tab)
   .use(Tabs)
+  .use(Popup)
+  .use(Radio)
+  .use(RadioGroup)
+  .use(ActionSheet)
+  .use(Icon)
+  .use(Cell)
+  .use(List)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)
