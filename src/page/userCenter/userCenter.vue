@@ -33,16 +33,16 @@
             <div class="custom-title-flex">
               <img v-if="column.sex === 0" src="../../assets/icon_people.png" />
               <img v-if="column.sex===1" src="../../assets/icon_people-2.png" />
-              <span class="mg-right mg-left member-name">{{column.patientName}}</span>
+              <span class="mg-right mg-left member-name">{{tranformDecrypt(column.patientName)}}</span>
               <span>{{column.age}}岁</span>
             </div>
             <div>
               <span class="mg-right">身份证</span>
-              <span>| {{column.patientId}}</span>
+              <span>| {{transformIdEncrypt(column.patientId)}}</span>
             </div>
             <div>
               <span class="mg-right">手机号</span>
-              <span>| {{column.phone}}</span>
+              <span>| {{transformTelEncrypt(column.phone)}}</span>
             </div>
           </li>
         </ul>
@@ -52,8 +52,11 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, reactive } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { sm4Decrypt, idEncrypt, telEncrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
+import { tranformDecrypt } from '../../hooks/transform'
+
 export default defineComponent({
   setup() {
     const columnList = [
@@ -81,9 +84,18 @@ export default defineComponent({
       },
     ]
     const { memberList } = getUserMemberHooks()
+    const transformTelEncrypt = computed(() => {
+      return (val) => telEncrypt(sm4Decrypt(val))
+    })
+    const transformIdEncrypt = computed(() => {
+      return (val) => idEncrypt(sm4Decrypt(val))
+    })
     return {
       columnList,
       memberList,
+      transformTelEncrypt,
+      transformIdEncrypt,
+      tranformDecrypt,
     }
   },
 })

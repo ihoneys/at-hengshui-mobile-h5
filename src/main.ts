@@ -25,6 +25,7 @@ import {
   Icon,
   Cell,
   List,
+  CountDown,
 } from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
@@ -54,6 +55,7 @@ app
   .use(Icon)
   .use(Cell)
   .use(List)
+  .use(CountDown)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

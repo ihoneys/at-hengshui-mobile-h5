@@ -35,3 +35,7 @@ export const tranformDecrypt = computed(() => {
     return sm4Decrypt(value)
   }
 })
+
+export const isCanelReserve = computed(() => {
+  return (status) => status != 1 && status != 4 && status != 5 && status != 6
+})

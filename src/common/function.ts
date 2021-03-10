@@ -104,9 +104,15 @@ export const parsingSchedulingData = function (arr) {
       objDate[date][timetype] = d
     }
   }
-  console.log(
-    objDate,
-    'objDateobjDateobjDateobjDateobjDateobjDateobjDateobjDate'
-  )
   return objDate
+}
+
+export function isWeixinBrower(): boolean {
+  const ua = window.navigator.userAgent.toLowerCase()
+  //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+  if (ua.match(/MicroMessenger/i) as any === 'micromessenger') {
+    return true
+  } else {
+    return false
+  }
 }

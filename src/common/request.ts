@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Toast, Dialog } from 'vant'
 import { LocalStorage } from 'storage-manager-js'
 import router from '../router'
-import { promises } from 'fs'
 let httpCode = {
   400: '请求参数错误',
   401: '权限不足, 请重新登录',
@@ -15,7 +14,6 @@ let httpCode = {
 }
 const baseURL: string = 'http://jk-hs.com/yygh'
 // const baseURL: string = 'http://10.1.95.136:8400'
-
 
 const instance = axios.create({
   timeout: 30000,
@@ -107,7 +105,7 @@ export const post = (url: string, data: any = {}, config = {}) => {
     })
 }
 
-export const get = (url: string, params: any, config = {}) => {
+export const get = (url: string, params: any = {}, config = {}) => {
   return instance({
     method: 'get',
     url,

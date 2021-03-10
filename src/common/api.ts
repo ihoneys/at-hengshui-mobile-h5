@@ -16,6 +16,12 @@ const API = {
   URL_MEMBER_LIST: `${provider}/pt-platform/pub/userMember/list`,
   URL_SUBMIT_ORDER: `${provider}/pt-platform/order/add`,
   URL_ORDER_LIST: `${provider}/pt-platform/order/queryYuYue`,
+  URL_GET_TIMESTAMP: `${provider}/yygh-pub/pub/hdbs/getSystemTimeStamp`,
+  URL_CANCEL_ORDER: `${provider}/weChat/cancelOrder`,
+  URL_QUERY_ORDER: `${provider}/pt-platform/order/findOrderByOrderId?orderId=`,
+  URL_CHECK_ORDER: `${provider}/weChat/judgePay?orderId=`,
+  URL_PREPAID: `${provider}/weChat/pay`,
+  URL_PAY_SUCCESS_BACK: `${provider}/weChat/chkPayStatus`,
 }
 /**
  *
@@ -78,10 +84,36 @@ export function getUserMember(params) {
 
 // /yygh-pub/pub/order/add // 预约挂号订单下单接口
 
-export const createOrder = (data) => {
+export function createOrder(data) {
   return post(API.URL_SUBMIT_ORDER, data)
 }
 // 获取我的预约挂号订单
-export const getOrderList = (data) => {
+export function getOrderList(data) {
   return post(API.URL_ORDER_LIST, data)
+}
+
+export function getSystemTime() {
+  return get(API.URL_GET_TIMESTAMP)
+}
+
+export function cancelOrderRefund(params) {
+  return postAndGet(API.URL_CANCEL_ORDER, params)
+}
+
+export function queryOrderDetails({ orderId }) {
+  return post(`${API.URL_QUERY_ORDER}${orderId}`)
+}
+
+export function checkOrderStatus({ orderId }) {
+  return post(`${API.URL_CHECK_ORDER}${orderId}`)
+}
+
+export function invokingPrepaid(data) {
+  return post(API.URL_PREPAID, data)
+}
+
+// 完成微信支付后的回调接口
+
+export function weChatCallback(params) {
+  return postAndGet(API.URL_PAY_SUCCESS_BACK, params)
 }

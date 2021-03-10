@@ -2,7 +2,7 @@
   <div class="order-wrapper">
     <ul class="order-info">
       <li>就诊医院： {{orderInfo.unitName}}</li>
-      <li>就诊科室： {{orderInfo.depName}}</li>
+      <li>就诊科室： {{orderInfo.depName || orderInfo.deptName}}</li>
       <li>就诊医生： {{orderInfo.doctorName}}</li>
       <li>挂号级别： {{orderInfo.zcName}}</li>
       <li>就诊费用： ￥{{orderInfo.guaHaoAmt}}元</li>
@@ -37,11 +37,11 @@
             <div class="patient-card-name">
               <img v-if="column.sex === 0" src="../../assets/icon_people.png" />
               <img v-if="column.sex===1" src="../../assets/icon_people-2.png" />
-              <span>{{column.patientName}}</span>
+              <span>{{decrypt(column.patientName)}}</span>
             </div>
             <div class="patient-card-number">
               <span>证件号</span>
-              <span class="patient-card-number-no">{{column.patientId}}</span>
+              <span class="patient-card-number-no">{{idEncrypt(decrypt(column.patientId))}}</span>
             </div>
           </div>
           <van-radio :name="index"></van-radio>
@@ -70,7 +70,7 @@ import { computed, defineComponent, reactive, ref, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { SessionStorage } from 'storage-manager-js'
 import { createOrder } from '../../common/api'
-import { sm4Decrypt, idEncrypt, computedAge } from '../../common/function'
+import { sm4Decrypt, computedAge, idEncrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
 interface SaveData {
   phone: string
@@ -99,6 +99,7 @@ export default defineComponent({
     const orderInfo = ref<any>({})
     orderInfo.value = SessionStorage.get('currentDoctorInfo')!
     const seleclted = (column, index) => {
+      console.log(column, column.patientId)
       Object.assign(store, column)
       state.current.sex = column.sex
       state.current.patientName = column.patientName
@@ -134,7 +135,6 @@ export default defineComponent({
       if (success) {
         router.push('orderList')
       }
-      // console.log(submitParams, createResult, '6666')
     }
     const decrypt = computed(() => {
       return function (val) {
@@ -146,9 +146,9 @@ export default defineComponent({
       seleclted,
       orderInfo,
       decrypt,
-      idEncrypt,
       submitOrder,
       memberList,
+      idEncrypt,
     }
   },
 })

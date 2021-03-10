@@ -130,7 +130,7 @@ export default defineComponent({
       }
       const res = await getSchedulingData(sendData)
       const parsingResult = parsingSchedulingData(res.data[0].schedules)
-      console.log(res)
+      // console.log(res)
       if (isObjEmpty(parsingResult)) {
         createMessage('暂无排班数据！', '提示', () => {
           router.push('/')
@@ -155,7 +155,7 @@ export default defineComponent({
       }
     }
     const clickItem = (date, data, isNumber, dictCode,dictName) => {
-      console.log(date, data, isNumber, dictCode)
+      // console.log(date, data, isNumber, dictCode)
       orderInfo.date = date
       orderInfo.dictCode = dictCode
       state.currentTimesInfo.date = date
@@ -172,7 +172,6 @@ export default defineComponent({
     }
     const getSourceNo = async (params) => {
       const res = await getSelectSchedulingTime(params)
-      console.log(res)
       state.show = true
       if (res.success) {
         state.timesArray = Object.values(res.data)[0] as any[]

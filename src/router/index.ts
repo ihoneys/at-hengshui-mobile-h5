@@ -12,6 +12,9 @@ const title = {
   docPage: '医生主页',
   order: '提交订单',
   orderList: '挂号列表',
+  orderDetail: '订单详情',
+  orderCancel: '订单取消',
+  orderPay: '订单支付',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -70,6 +73,24 @@ const routes: Array<RouteRecordRaw> = [
     name: 'orderList',
     component: () => import('@/page/orderList/orderList.vue'),
     meta: { title: title.orderList },
+  },
+  {
+    path: '/orderDetail',
+    name: 'orderDetail',
+    component: () => import('@/page/orderDetail/orderDetail.vue'),
+    meta: { title: title.orderDetail },
+  },
+  {
+    path: '/orderCancel',
+    name: 'orderCancel',
+    component: () => import('@/page/orderCancel/orderCancel.vue'),
+    meta: { title: title.orderCancel },
+  },
+  {
+    path: '/orderPay',
+    name: 'orderPay',
+    component: () => import('@/page/orderPay/orderPay.vue'),
+    meta: { title: title.orderPay },
   },
 ]
 
