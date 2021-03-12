@@ -15,6 +15,9 @@ const title = {
   orderDetail: '订单详情',
   orderCancel: '订单取消',
   orderPay: '订单支付',
+  record: '个人记录',
+  recordData: '指标采集',
+  accountInfo: '账户信息'
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -92,6 +95,25 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/page/orderPay/orderPay.vue'),
     meta: { title: title.orderPay },
   },
+  {
+    path: '/record',
+    name: 'record',
+    component: () => import('@/page/record/record.vue'),
+    meta: { title: title.record },
+  },
+  {
+    path: '/recordData',
+    name: 'recordData',
+    component: () => import('@/page/recordData/recordData.vue'),
+    meta: { title: title.recordData },
+  },
+  {
+    path: '/accountInfo',
+    name: 'accountInfo',
+    component: () => import('@/page/accountInfo/accountInfo.vue'),
+    meta: { title: title.accountInfo },
+  },
+  
 ]
 
 const router = createRouter({

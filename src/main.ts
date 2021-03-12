@@ -26,11 +26,18 @@ import {
   Cell,
   List,
   CountDown,
+  DatetimePicker 
 } from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
 import 'babel-polyfill'
 import '@/common/public.css'
+
+// import VConsole from 'vconsole'
+// let vconsole = new VConsole()
+// export default vconsole
+
+console.log(import.meta.env.MODE, '环境变量')
 const app = createApp(App)
 app
   .use(store)
@@ -56,6 +63,7 @@ app
   .use(Cell)
   .use(List)
   .use(CountDown)
+  .use(DatetimePicker)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

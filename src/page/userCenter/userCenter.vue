@@ -1,26 +1,14 @@
 <template>
   <div class="center-wrapper">
     <div class="column-item">
-      <div class="column-header">
+      <router-link class="column-header" to="/accountInfo">
         <div class="custom-title-flex">
           <van-image width="60" height="60" round src="https://img01.yzcdn.cn/vant/cat.jpeg" />
           <div class="mg-left">未填写名字</div>
         </div>
         <van-icon name="arrow" />
-      </div>
-      <van-cell-group>
-        <van-cell v-for="(column,index) in columnList" :key="index" :to="column.path">
-          <template #title>
-            <div class="custom-title-flex">
-              <van-icon class="gh-tb" v-if="column.isLeftIcon" :name="column.iconName" />
-              <span class="custom-totle">{{column.label}}</span>
-            </div>
-          </template>
-          <template #right-icon>
-            <van-icon class="arrow-size" name="arrow" />
-          </template>
-        </van-cell>
-      </van-cell-group>
+      </router-link>
+      <ColumnList :columnList="columnList" />
     </div>
     <div class="member-list">
       <div class="add-home-member">
@@ -56,8 +44,11 @@ import { computed, defineComponent } from 'vue'
 import { sm4Decrypt, idEncrypt, telEncrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
 import { tranformDecrypt } from '../../hooks/transform'
-
+import ColumnList from '@/components/ColumnList/Index.vue'
 export default defineComponent({
+  components: {
+    ColumnList,
+  },
   setup() {
     const columnList = [
       {
@@ -67,7 +58,7 @@ export default defineComponent({
         iconName: 'balance-list',
       },
       {
-        path: 'orderList',
+        path: 'record',
         label: '个人记录',
         isLeftIcon: true,
         iconName: 'manager',
@@ -102,21 +93,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.gh-tb {
-  font-size: 20px;
-  color: #3ec1fd;
-  margin-right: 3px;
-}
-.custom-totle {
-  vertical-align: middle;
-}
 .custom-title-flex {
   display: flex;
   align-items: center;
-}
-.arrow-size {
-  font-size: 16px;
-  line-height: inherit;
 }
 .member-list {
   background-color: #f5f5f5;
@@ -166,5 +145,6 @@ export default defineComponent({
   align-items: center;
   justify-content: space-between;
   padding: 16px 16px 16px 32px;
+  color: #333;
 }
 </style>

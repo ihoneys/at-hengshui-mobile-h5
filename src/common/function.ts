@@ -108,11 +108,32 @@ export const parsingSchedulingData = function (arr) {
 }
 
 export function isWeixinBrower(): boolean {
-  const ua = window.navigator.userAgent.toLowerCase()
-  //通过正则表达式匹配ua中是否含有MicroMessenger字符串
-  if (ua.match(/MicroMessenger/i) as any === 'micromessenger') {
+  var ua: any = navigator.userAgent.toLowerCase() //获取判断用的对象
+  if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+    //在微信中打开
     return true
   } else {
     return false
   }
+}
+
+export function formateDate(datetime: string, isComplete = true): string {
+  function addDateZero(num) {
+    return num < 10 ? '0' + num : num
+  }
+  let d = new Date(datetime)
+  let yearsMonthDay =
+    d.getFullYear() +
+    '-' +
+    addDateZero(d.getMonth() + 1) +
+    '-' +
+    addDateZero(d.getDate())
+  if (isComplete) {
+    yearsMonthDay +
+      ' ' +
+      addDateZero(d.getHours()) +
+      ':' +
+      addDateZero(d.getMinutes())
+  }
+  return yearsMonthDay
 }

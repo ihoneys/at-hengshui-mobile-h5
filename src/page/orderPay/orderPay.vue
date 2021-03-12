@@ -37,7 +37,7 @@ export default defineComponent({
   setup () {
     const currentOrder = SessionStorage.get('currentOrderDetail')
     const initTimeValue = () => {
-      let SET_TIME = 100 * 60 * 1000
+      let SET_TIME = 1300 * 60 * 1000
       const transformStamp = Date.parse(currentOrder.orderTime.replace(/-/g, '/'))
       const currentTime = new Date().getTime()
       const surplusTime = currentTime - transformStamp
@@ -55,13 +55,16 @@ export default defineComponent({
         orderNo: currentOrder.orderId,
         tradeType: "JSAPI"
       }
-      if (!isWeChatBrowser) {
-        const { signParam, success, message } = invokingPrepaid(orderParams)
+      if (isWeChatBrowser) {
+        const { signParam, success, message } = await invokingPrepaid(orderParams)
         if (!success) return Toast.fail(message)
+        delete signParam.packages
+        signParam.orderNo = currentOrder.orderId
         pullWechatPay(signParam)
       }
     }
     const onBridgeReadyPayFor = (signParam) => {
+      console.log(signParam, 'currentOrder.orderId')
       WeixinJSBridge.invoke('getBrandWCPayRequest', signParam, res => {
         if (res.err_msg == "get_brand_wcpay_request:ok") {
           const backParams = {
@@ -71,7 +74,7 @@ export default defineComponent({
           Toast({
             type: 'success',
             message: '支付成功',
-            onOpened: () => {
+            onClose: () => {
               router.push('orderList')
             }
           })
@@ -89,6 +92,7 @@ export default defineComponent({
           document.attachEvent('onWeixinJSBridgeReady', onBridgeReadyPayFor);
         }
       } else {
+        console.log(666)
         onBridgeReadyPayFor(signParam);
       }
     }

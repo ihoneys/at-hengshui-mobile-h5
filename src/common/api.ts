@@ -22,6 +22,9 @@ const API = {
   URL_CHECK_ORDER: `${provider}/weChat/judgePay?orderId=`,
   URL_PREPAID: `${provider}/weChat/pay`,
   URL_PAY_SUCCESS_BACK: `${provider}/weChat/chkPayStatus`,
+  URL_COLLECT_DATA: `${provider}/pt-platform/pub/userIndexCollection/findByPage`,
+  URL_SAVE_COLLECT: `${provider}/pt-platform/pub/userIndexCollection/saveCollection`,
+  URL_DELETE_COLLECT: `${provider}/pt-platform/pub/userIndexCollection/delete/`,
 }
 /**
  *
@@ -116,4 +119,24 @@ export function invokingPrepaid(data) {
 
 export function weChatCallback(params) {
   return postAndGet(API.URL_PAY_SUCCESS_BACK, params)
+}
+// 指标采集
+export function getCollectionList(params) {
+  return postAndGet(API.URL_COLLECT_DATA, params)
+}
+
+/**
+ * 保存采集指标数据
+ * @param data
+ */
+export function saveCollectionData(data) {
+  return post(API.URL_SAVE_COLLECT, data)
+}
+
+/**
+ * 删除采集指标数据
+ * @param id
+ */
+export function deleteIndexCollection(id) {
+  return post(API.URL_DELETE_COLLECT + id)
 }
