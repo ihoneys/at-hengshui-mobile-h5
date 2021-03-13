@@ -25,6 +25,8 @@ const API = {
   URL_COLLECT_DATA: `${provider}/pt-platform/pub/userIndexCollection/findByPage`,
   URL_SAVE_COLLECT: `${provider}/pt-platform/pub/userIndexCollection/saveCollection`,
   URL_DELETE_COLLECT: `${provider}/pt-platform/pub/userIndexCollection/delete/`,
+  URL_SAVE_USER_INFO: `${provider}/pt-platform/saveUserMember`,
+  URL_QUERY_USER_INFO: `${provider}/pt-platform/queryCurrMember`,
 }
 /**
  *
@@ -139,4 +141,17 @@ export function saveCollectionData(data) {
  */
 export function deleteIndexCollection(id) {
   return post(API.URL_DELETE_COLLECT + id)
+}
+
+/**
+ * 保存或更新用户资料
+ * @param data
+ */
+export function saveUserMember(data) {
+  return post(API.URL_SAVE_USER_INFO, data)
+}
+
+//查询个人资料
+export function queryMemberInfo() {
+  return get(API.URL_QUERY_USER_INFO)
 }
