@@ -80,7 +80,7 @@
       </van-form>
       <div class="pd-14">
         <van-button class="mt-20" round block color="#18c0b5" text="修改密码" />
-        <van-button class="mt-20" round block color="#18c0b5" text="退 出" />
+        <van-button class="mt-20" round block color="#18c0b5" text="退 出" @click="handleExit" />
       </div>
     </div>
     <van-popup v-model:show="isPickerDate" position="bottom" :disabled="hasValue">
@@ -221,11 +221,17 @@ export default defineComponent({
       state.patternRegEXP = patternObj[current.value].rules
       console.log(state.patternRegEXP)
     }
+    const handleExit = () => {
+      LocalStorage.deleteAll()
+      SessionStorage.deleteAll()
+      router.push('login')
+    }
     return {
       ...toRefs(state),
       saveAccountInfo,
       confirmDate,
       onConfirm,
+      handleExit
     }
   },
 })
