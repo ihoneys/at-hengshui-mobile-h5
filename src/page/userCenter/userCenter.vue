@@ -11,26 +11,26 @@
       <ColumnList :columnList="columnList" />
     </div>
     <div class="member-list">
-      <div class="add-home-member">
+      <router-link class="add-home-member" to="/addMember/add">
         <div>家庭成员</div>
         <div>+添加家庭成员</div>
-      </div>
+      </router-link>
       <div class="member-contanier">
         <ul class="member-list-group">
-          <li v-for="(column,index) in memberList" :key="index">
+          <li v-for="(column,index) in memberList" :key="index" @click="clickViewDetail(column)">
             <div class="custom-title-flex">
               <img v-if="column.sex === 0" src="../../assets/icon_people.png" />
               <img v-if="column.sex===1" src="../../assets/icon_people-2.png" />
-              <span class="mg-right mg-left member-name">{{tranformDecrypt(column.patientName)}}</span>
+              <span class="mg-right mg-left member-name">{{column.patientName}}</span>
               <span>{{column.age}}岁</span>
             </div>
             <div>
               <span class="mg-right">身份证</span>
-              <span>| {{transformIdEncrypt(column.patientId)}}</span>
+              <span>| {{idEncrypt(column.patientId)}}</span>
             </div>
             <div>
               <span class="mg-right">手机号</span>
-              <span>| {{transformTelEncrypt(column.phone)}}</span>
+              <span>| {{telEncrypt(column.phone)}}</span>
             </div>
           </li>
         </ul>
@@ -40,11 +40,13 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent } from 'vue'
-import { sm4Decrypt, idEncrypt, telEncrypt } from '../../common/function'
+import { defineComponent } from 'vue'
+import { idEncrypt, telEncrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
 import { tranformDecrypt } from '../../hooks/transform'
 import ColumnList from '@/components/ColumnList/Index.vue'
+import { useRouter } from 'vue-router'
+import { SessionStorage } from 'storage-manager-js'
 export default defineComponent({
   components: {
     ColumnList,
@@ -64,29 +66,34 @@ export default defineComponent({
         iconName: 'manager',
       },
       {
-        path: 'orderList',
+        path: '/userNotice/agreement',
         label: '服务协议',
         isLeftIcon: false,
       },
       {
-        path: 'orderList',
+        path: '/userNotice/policy',
         label: '隐私政策',
         isLeftIcon: false,
       },
     ]
+    const router = useRouter()
     const { memberList } = getUserMemberHooks()
-    const transformTelEncrypt = computed(() => {
-      return (val) => telEncrypt(sm4Decrypt(val))
-    })
-    const transformIdEncrypt = computed(() => {
-      return (val) => idEncrypt(sm4Decrypt(val))
-    })
+    const clickViewDetail = (column) => {
+      SessionStorage.set('currentMember', column)
+      router.push({
+        name: 'addMember',
+        params: {
+          id: 'update',
+        },
+      })
+    }
     return {
       columnList,
-      memberList,
-      transformTelEncrypt,
-      transformIdEncrypt,
+      memberList, 
       tranformDecrypt,
+      clickViewDetail,
+      telEncrypt,
+      idEncrypt
     }
   },
 })
@@ -108,6 +115,7 @@ export default defineComponent({
   align-items: center;
   justify-content: space-between;
   padding: 16px 16px 6px;
+  color: #333;
 }
 .member-list-group {
   li {

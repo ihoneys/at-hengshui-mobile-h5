@@ -24,7 +24,7 @@
       </van-list>
     </div>
     <div class="form-data" v-show="isIncreased">
-      <van-form @submit="onSubmit" ref="indicatorForm">
+      <van-form @submit="onSubmit">
         <van-field
           v-model="formData.systolicPressure"
           type="number"
@@ -135,7 +135,7 @@
 
 <script>
 import { getCollectionList, saveCollectionData, deleteIndexCollection } from '../../common/api'
-import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { LocalStorage } from 'storage-manager-js'
 import { Toast } from 'vant'
 import { transformWeek, transformFormateDate } from '../../hooks/date'

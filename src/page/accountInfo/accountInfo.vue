@@ -113,34 +113,15 @@ import {
   encrypt,
   sm4Decrypt,
   isObjEmpty,
+  tranformPickerType,
 } from '../../common/function'
+import { patternObj as pattern } from '../../common/regularData'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
 import { saveUserMember, queryMemberInfo } from '../../common/api'
 import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
 const date = new Date()
-const patternObj = {
-  '01': {
-    rules: /(^\d{8}(0\d|10|11|12)([0-2]\d|30|31)\d{3}$)|(^\d{6}(18|19|20)\d{2}(0\d|10|11|12)([0-2]\d|30|31)\d{3}(\d|X|x)$)/,
-    name: '居民身份证',
-  },
-  '04': {
-    rules: /^[0-9]{8}$/,
-    name: '军官证',
-  },
-  '03': {
-    rules: /^[a-zA-Z0-9]{5,17}$/,
-    name: '护照',
-  },
-  '06': {
-    rules: /^[a-zA-Z0-9]{6,10}$/,
-    name: '港澳通行证',
-  },
-  '07': {
-    rules: /^([0-9]{8}|[0-9]{10})$/,
-    name: '台湾通行证',
-  },
-}
+const patternObj = pattern
 export default defineComponent({
   setup(props, ctx) {
     const router = useRouter()
@@ -167,15 +148,7 @@ export default defineComponent({
     })
     const { userId } = LocalStorage.get('userInfo')
     let patientType = SessionStorage.get('id_type')
-    patientType = JSON.parse(
-      JSON.stringify(patientType).replace(/dictName/g, 'text')
-    )
-    patientType = JSON.parse(
-      JSON.stringify(patientType).replace(/dictCode/g, 'value')
-    )
-    state.patientTypeList = patientType.map((item) => {
-      return { value: item.value, text: item.text }
-    })
+    state.patientTypeList = tranformPickerType(patientType)
     const isCheckUserInfo = async () => {
       const { success, data } = await queryMemberInfo()
       if (success && !isObjEmpty(data)) {
@@ -219,11 +192,9 @@ export default defineComponent({
       state.account.idName = current.text
       state.account.idType = current.value
       state.patternRegEXP = patternObj[current.value].rules
-      console.log(state.patternRegEXP)
     }
     const handleExit = () => {
       LocalStorage.deleteAll()
-      SessionStorage.deleteAll()
       router.push('login')
     }
     return {
@@ -231,7 +202,7 @@ export default defineComponent({
       saveAccountInfo,
       confirmDate,
       onConfirm,
-      handleExit
+      handleExit,
     }
   },
 })

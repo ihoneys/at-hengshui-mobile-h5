@@ -52,6 +52,7 @@
         </div>
         <div class="click-btn">
           <van-button
+            v-if="item.isPayButton"
             round
             plain
             color="#00d2c3"
@@ -107,10 +108,10 @@ export default defineComponent({
       const { data: times } = await getSystemTime()
       if (success && !isObjEmpty(data.list)) {
         state.loading = false
-        // state.orderList = calculatePayTime(
-        //   [...state.orderList, ...data.list],
-        //   times.systemTimeStamp
-        // )
+        state.orderList = calculatePayTime(
+          [...state.orderList, ...data.list],
+          times.systemTimeStamp
+        )
         state.orderList = [...state.orderList, ...data.list]
         if (state.orderList.length >= data.total) {
           state.finished = true
@@ -118,15 +119,16 @@ export default defineComponent({
       }
     }
     const calculatePayTime = (arr, systemTimeStamp) => {
-      const SET_TIME = 5 * 60 * 1000
-      arr.forEach((obj) => {
-        const transformStamp = Date.parse(obj.orderTime.replace(/-/g, '/'))
-        console.log(systemTimeStamp - transformStamp <= SET_TIME)
+      // const SET_TIME = 5 * 60 * 1000
+      const currentTime = new Date().getTime()
+      arr.forEach((obj, index) => {
+        const seeDoctorTime = Date.parse((`${obj.toDate} ${obj.beginTime}`).replace(/-/g, '/'))
+        // const transformStamp = Date.parse(obj.orderTime.replace(/-/g, '/'))
         if (obj.orderAmt === 0 || obj.orderAmt * 1 === 0) {
           obj.isPayButton = false
         }
         if (
-          systemTimeStamp - transformStamp <= SET_TIME &&
+          systemTimeStamp - seeDoctorTime <= 0 &&
           obj.orderStatus === 3 &&
           obj.payStatus === 1
         ) {

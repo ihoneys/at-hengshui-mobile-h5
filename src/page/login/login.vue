@@ -193,6 +193,7 @@ export default defineComponent({
         if (success) {
           LocalStorage.set('userInfo', userInfo)
           LocalStorage.set('token', userInfo.token)
+          LocalStorage.set('tokenKey', res.data)
         }
         if (res.modifySecret === 1 && success) {
           Dialog.confirm({

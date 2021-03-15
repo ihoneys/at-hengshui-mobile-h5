@@ -17,6 +17,9 @@ export default () => {
   const tranformData = (data) => {
     data.forEach((obj) => {
       obj.age = computedAge(obj.birthDay)
+      obj.patientId = sm4Decrypt(obj.patientId)
+      obj.patientName = sm4Decrypt(obj.patientName)
+      obj.phone = sm4Decrypt(obj.phone)
       if (!!obj.diagnosticCardNo) {
         obj.diagnosticCardNo = idEncrypt(sm4Decrypt(obj.diagnosticCardNo))
       }

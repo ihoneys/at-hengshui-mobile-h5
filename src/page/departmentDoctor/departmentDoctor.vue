@@ -54,7 +54,6 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       getDepDoctors()
-      getDictionarys()
     })
     const route = useRoute()
     const { depId, unitId } = route.params
@@ -85,34 +84,6 @@ export default defineComponent({
         state.noData = true
       }
     }
-    const changeButtonName = computed(() => {
-      return function (value) {
-        return value == 1 ? '预约' : '已满'
-      }
-    })
-
-    const getGrade = computed(() => {
-      return function (value) {
-        const dictionarys = SessionStorage.get('dictionarys')
-        const arr = dictionarys.filter((el) => {
-          return el.dictCode == value && el.dictType === 'order_level'
-        })
-        return arr.length > 0 ? arr[0].dictName : null
-      }
-    })
-
-    const getDictionarys = async () => {
-      const { success, data } = await dictionaryQuery()
-      if (success && !SessionStorage.has('dictionarys')) {
-        SessionStorage.set('dictionarys', data)
-        const idTypeArr = data.filter((el) => el.dictType == 'id_type')
-        SessionStorage.set('id_type', idTypeArr)
-        const payTypeArr = data.filter((el) => el.dictType == 'pay_type')
-        SessionStorage.set('payTypeArr', payTypeArr)
-        const orderTypeArr = data.filter((el) => el.dictType == 'order_status')
-        SessionStorage.set('orderTypeArr', orderTypeArr)
-      }
-    }
     const saveItem = (item) => {
       SessionStorage.set('currentDoctorInfo', item)
     }
@@ -120,10 +91,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       clickTab,
-      changeButtonName,
       transformDate,
       transformWeek,
-      getGrade,
       saveItem,
     }
   },

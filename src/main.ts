@@ -28,6 +28,7 @@ import {
   CountDown,
   DatetimePicker,
   Picker,
+  Search 
 } from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
@@ -66,6 +67,7 @@ app
   .use(CountDown)
   .use(DatetimePicker)
   .use(Picker)
+  .use(Search)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

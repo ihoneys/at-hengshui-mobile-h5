@@ -17,7 +17,8 @@ const title = {
   orderPay: '订单支付',
   record: '个人记录',
   recordData: '指标采集',
-  accountInfo: '账户信息'
+  accountInfo: '账户信息',
+  addMember: '添加成员',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -113,7 +114,18 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/page/accountInfo/accountInfo.vue'),
     meta: { title: title.accountInfo },
   },
-  
+  {
+    path: '/addMember/:id',
+    name: 'addMember',
+    component: () => import('@/page/addMember/addMember.vue'),
+    meta: { title: title.addMember },
+  },
+  {
+    path: '/userNotice/:id',
+    name: 'userNotice',
+    component: () => import('@/page/userNotice/userNotice.vue'),
+    meta: { title: title.addMember },
+  },
 ]
 
 const router = createRouter({

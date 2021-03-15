@@ -18,11 +18,11 @@
       <div class="patient-card-name">
         <img v-if="current.sex === 0" src="../../assets/icon_people.png" />
         <img v-if="current.sex===1" src="../../assets/icon_people-2.png" />
-        <span>{{decrypt(current.patientName)}}</span>
+        <span>{{current.patientName}}</span>
       </div>
       <div class="patient-card-number" v-if="current.patientId">
         <span>证件号</span>
-        <span class="patient-card-number-no">{{idEncrypt(decrypt(current.patientId))}}</span>
+        <span class="patient-card-number-no">{{idEncrypt(current.patientId)}}</span>
       </div>
     </div>
     <van-action-sheet :round="true" v-model:show="show" title="添加 / 选择就诊人">
@@ -37,11 +37,11 @@
             <div class="patient-card-name">
               <img v-if="column.sex === 0" src="../../assets/icon_people.png" />
               <img v-if="column.sex===1" src="../../assets/icon_people-2.png" />
-              <span>{{decrypt(column.patientName)}}</span>
+              <span>{{column.patientName}}</span>
             </div>
             <div class="patient-card-number">
               <span>证件号</span>
-              <span class="patient-card-number-no">{{idEncrypt(decrypt(column.patientId))}}</span>
+              <span class="patient-card-number-no">{{idEncrypt(column.patientId)}}</span>
             </div>
           </div>
           <van-radio :name="index"></van-radio>
@@ -50,7 +50,9 @@
           <img src="../../assets/nothing_2.png" />
           <p>暂无就诊人，请添加就诊人</p>
         </div>
-        <van-button type="primary" round block color="#00D2C3">添加就诊人</van-button>
+        <router-link to="/addMember/orderAdd">
+          <van-button type="primary" round block color="#00D2C3">添加就诊人</van-button>
+        </router-link>
       </div>
     </van-action-sheet>
     <div class="submit-btn">
@@ -131,7 +133,7 @@ export default defineComponent({
         yuyueUserType: '1',
         yuyueFrom: '7',
       }
-      const { success, data } = await createOrder(submitParams)
+      const { success } = await createOrder(submitParams)
       if (success) {
         router.push('orderList')
       }

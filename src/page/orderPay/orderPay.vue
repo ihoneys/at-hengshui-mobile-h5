@@ -37,11 +37,11 @@ export default defineComponent({
   setup () {
     const currentOrder = SessionStorage.get('currentOrderDetail')
     const initTimeValue = () => {
-      let SET_TIME = 1300 * 60 * 1000
-      const transformStamp = Date.parse(currentOrder.orderTime.replace(/-/g, '/'))
+      // let SET_TIME = 1300 * 60 * 1000
+      const transformStamp = Date.parse((`${currentOrder.toDate} ${currentOrder.beginTime}`).replace(/-/g, '/'))
       const currentTime = new Date().getTime()
-      const surplusTime = currentTime - transformStamp
-      return SET_TIME = surplusTime <= SET_TIME ? SET_TIME - surplusTime : 0
+      const surplusTime = transformStamp - currentTime
+      return surplusTime > 0 ? surplusTime : 0
     }
     const initTimeVal = initTimeValue()
     const state = reactive({
@@ -64,7 +64,6 @@ export default defineComponent({
       }
     }
     const onBridgeReadyPayFor = (signParam) => {
-      console.log(signParam, 'currentOrder.orderId')
       WeixinJSBridge.invoke('getBrandWCPayRequest', signParam, res => {
         if (res.err_msg == "get_brand_wcpay_request:ok") {
           const backParams = {

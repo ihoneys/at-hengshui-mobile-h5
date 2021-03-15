@@ -52,7 +52,10 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     Toast.clear()
-    const { code, message } = response.data
+    const { code, message, success } = response.data
+    if (success !== undefined && !success && code !== 40101) {
+      Toast.fail(message)
+    }
     if (response.status === 200) {
       if (code === 40101) {
         Dialog({

@@ -1,5 +1,6 @@
 import { Dialog } from 'vant'
 import { sm4Config } from '../config/index'
+import { patternObj } from './regularData'
 import crypt from 'gm-crypt'
 import moment from 'moment'
 const SM4 = crypt.sm4
@@ -136,4 +137,43 @@ export function formateDate(datetime: string, isComplete = true): string {
       addDateZero(d.getMinutes())
   }
   return yearsMonthDay
+}
+
+export function tranformPickerType(typeList): any {
+  typeList = JSON.parse(JSON.stringify(typeList).replace(/dictName/g, 'text'))
+  typeList = JSON.parse(JSON.stringify(typeList).replace(/dictCode/g, 'value'))
+  return (
+    Array.isArray(typeList) &&
+    typeList.map((item) => {
+      return { value: item.value, text: item.text }
+    })
+  )
+}
+
+export function byPatientIdGetBrithdayAndSex(value) {
+  const rexg = patternObj['01'].rules
+  if (!rexg.test(value))
+    return {
+      birthDay: '',
+      radio: '',
+    }
+  function substring(pre, next) {
+    return value.substring(pre, next)
+  }
+  let radio = ''
+  const birthDay = `${substring(6, 10)}-${substring(10, 12)}-${substring(
+    12,
+    14
+  )}`
+  if (parseInt(value.substr(16, 1)) % 2 == 1) {
+    radio = '0'
+  } else if (parseInt(value.substr(16, 1)) % 2 == 0) {
+    radio = '1'
+  } else {
+    radio = '2'
+  }
+  return {
+    birthDay,
+    radio,
+  }
 }
