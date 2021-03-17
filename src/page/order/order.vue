@@ -1,5 +1,6 @@
 <template>
   <div class="order-wrapper">
+    <custom-van-nav-bar />
     <ul class="order-info">
       <li>就诊医院： {{orderInfo.unitName}}</li>
       <li>就诊科室： {{orderInfo.depName || orderInfo.deptName}}</li>
@@ -111,11 +112,11 @@ export default defineComponent({
     }
     const submitOrder = async () => {
       const submitParams = {
-        patientName: sm4Decrypt(state.current.patientName),
-        patientId: sm4Decrypt(state.current.patientId),
+        patientName: state.current.patientName,
+        patientId: state.current.patientId,
         sex: state.current.sex,
         memberId: store.memberId,
-        phone: sm4Decrypt(store.phone),
+        phone: store.phone,
         age: computedAge(store.birthDay),
         toDate: orderInfo.value.date,
         orderAmt: orderInfo.value.guaHaoAmt,

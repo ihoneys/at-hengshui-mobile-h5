@@ -28,7 +28,7 @@ export default defineComponent({
 
 <style>
 .gh-tb {
-  font-size: 20px;
+  font-size: 20px !important;
   color: #3ec1fd;
   margin-right: 3px;
 }
@@ -40,7 +40,6 @@ export default defineComponent({
   align-items: center;
 }
 .arrow-size {
-  font-size: 16px;
   line-height: inherit;
 }
 </style>

@@ -2,12 +2,12 @@
   <div class="doctor-component">
     <router-link
       class="doctor-list"
+      to="/docPage"
       v-for="column in doctorList"
       :key="column.unitId"
-      to="/docPage"
       @click.native="saveItem(column)"
     >
-      <van-image width="60" height="80" radius="6" :src="column.image" />
+      <van-image width="60" height="80" radius="6" fit="cover" :src="column.image ? column.image: defaultImg" />
       <div class="base-info">
         <div class="base-name">
           <span class="base-doc-name">{{column.doctorName}}</span>
@@ -24,6 +24,7 @@
         type="primary"
         size="small"
         round
+        v-if="showBtnStatus"
       >{{changeButtonName(column.isYuyue)}}</van-button>
     </router-link>
   </div>
@@ -32,14 +33,19 @@
 <script>
 import { defineComponent, computed } from "vue";
 import { SessionStorage } from 'storage-manager-js'
+import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   props: {
     doctorList: {
       type: Array,
       required: true
+    },
+    showBtnStatus: {
+      type: Boolean,
+      default: true
     }
   },
-  setup () {
+  setup (props, ctx) {
     const changeButtonName = computed(() => {
       return function (value) {
         return value == 1 ? '预约' : '已满'
@@ -54,9 +60,14 @@ export default defineComponent({
         return arr.length > 0 ? arr[0].dictName : null
       }
     })
+    const saveItem = (item) => {
+      SessionStorage.set('currentDoctorInfo', item)
+    }
     return {
       changeButtonName,
-      getGrade
+      getGrade,
+      saveItem,
+      defaultImg
     }
   }
 })

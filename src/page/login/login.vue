@@ -29,10 +29,9 @@
         </div>
         <div style="padding: 10px 20px">
           <van-button
-            :loading="isloading"
             type="primary"
             loading-type="spinner"
-            @click.stop="onNextStep"
+            @click.stop="verificationCodeLogin"
             size="large"
             round
             :disabled="!resCode || !phone"
@@ -59,7 +58,7 @@
               placeholder="请输入密码"
               :label-width="40"
               right-icon="browsing-history"
-              @click-right-icon="checkPassword"
+              @click-right-icon="inputType = !inputType"
               autocomplete="off"
               required
             />
@@ -67,12 +66,11 @@
         </van-cell-group>
         <div style="padding: 10px 20px">
           <van-button
-            :loading="isloading"
             type="primary"
             size="large"
             round
             loading-type="spinner"
-            @click.stop="onNextStep2"
+            @click.stop="passwordLogin"
             :disabled="!password || !phone"
           >登 录</van-button>
         </div>
@@ -98,57 +96,28 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createMessage, encrypt } from '../../common/function'
-import { getPhoneCode, getLogin, loginByPwd, getToken } from '../../common/api'
+import { getLogin, loginByPwd, getToken } from '../../common/api'
 import { LocalStorage } from 'storage-manager-js'
 import { Dialog, Toast } from 'vant'
+import { getVerificationCode } from '../../hooks/signup'
 export default defineComponent({
-  setup(props, ctx) {
+  setup() {
     const titleName = ref('验证码登录')
-    const codeText = ref('获取验证码')
     const typeName = ref(false)
-    const isGetCode = ref(false)
-    const isloading = ref(false)
     const loginType = ref(false)
     const inputType = ref(false)
-    const countDown = ref(29)
     const resCode = ref('')
-    const phone = ref('')
     const password = ref('')
-    const $router = useRouter()
-    const countTime = () => {
-      isGetCode.value = true
-      let timer = setInterval(() => {
-        if (countDown.value !== 0) {
-          codeText.value = `重新发送${countDown.value--}`
-        } else {
-          isGetCode.value = false
-          codeText.value = '获取验证码'
-          countDown.value = 29
-          clearInterval(timer)
-        }
-      }, 1000)
-    }
-    const isValidtePhone = () => {
-      const pattern = /^1(3|4|5|6|7|8|9)\d{9}$/
-      if (!pattern.test(phone.value)) {
-        createMessage('请重新输入正确的手机号码！')
-        return false
-      } else {
-        return true
-      }
-    }
-    const onGetCode = async () => {
-      isValidtePhone()
-      const { success, infor } = await getPhoneCode(encrypt(phone.value))
-      if (success) {
-        countTime()
-        Toast.success(infor)
-      } else {
-        Toast.fail(infor)
-      }
-    }
-    const onNextStep = async () => {
-      isValidtePhone()
+    const router = useRouter()
+    const {
+      phone,
+      onGetCode,
+      codeText,
+      countDown,
+      isGetCode,
+    } = getVerificationCode()
+
+    const verificationCodeLogin = async () => {
       const sendData = {
         phone: encrypt(phone.value),
         code: resCode.value,
@@ -158,32 +127,17 @@ export default defineComponent({
       const res = await getLogin(sendData)
       if (res.success) {
         LocalStorage.set('userInfo', res)
-        backToPageHome()
+        router.go(-1)
       } else {
         Toast.fail(res.message)
       }
     }
-    const backToPageHome = () => {
-      $router.go(-1)
-    }
-    const toRegister = (isNewUser) => {
-      $router.push({
-        name: 'register',
-        params: {
-          isNewUser,
-        },
-      })
-    }
-    const checkPassword = () => {
-      inputType.value = !inputType.value
-    }
-    const onNextStep2 = async () => {
+    const passwordLogin = async () => {
       const params = {
         phone: encrypt(phone.value),
         password: encrypt(password.value),
         appType: 1,
       }
-
       const res = await loginByPwd(params)
       if (res.success) {
         const userParams = {
@@ -204,12 +158,20 @@ export default defineComponent({
               toRegister(1)
             })
             .catch(() => {
-              backToPageHome()
+              router.go(-1)
             })
         }
       } else {
         createMessage(res.message)
       }
+    }
+    const toRegister = (isNewUser) => {
+      router.push({
+        name: 'register',
+        params: {
+          isNewUser,
+        },
+      })
     }
     const changeLoginType = () => {
       loginType.value = !loginType.value
@@ -220,7 +182,6 @@ export default defineComponent({
     }
     return {
       titleName,
-      isloading,
       countDown,
       resCode,
       phone,
@@ -229,9 +190,8 @@ export default defineComponent({
       loginType,
       inputType,
       onGetCode,
-      onNextStep,
-      checkPassword,
-      onNextStep2,
+      verificationCodeLogin,
+      passwordLogin,
       changeLoginType,
       formatter,
       codeText,

@@ -1,11 +1,18 @@
 <template>
   <div class="order-detail">
+    <custom-van-nav-bar />
     <div class="item-flex">
       <div class="order-status">订单状态：</div>
-      <div class="order-status-text">{{tranformStatus(item.orderStatus)}}</div>
+      <div class="order-status-text"  style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
     </div>
     <div class="order-doctor-info">
-      <van-image width="70" height="70" radius="6" :src="item.img" fit="cover"></van-image>
+      <van-image
+        width="70"
+        height="70"
+        radius="6"
+        :src="item.img ? item.img : defaultImg"
+        fit="cover"
+      ></van-image>
       <div class="order-doctor-colum">
         <div>{{item.doctorName}}</div>
         <div>{{item.hosName}}</div>
@@ -35,15 +42,24 @@
       </li>
       <li class="order-list-info-li">
         <div class="item-color">取号密码</div>
-        <div>{{item.platformPassword || '无'}}</div>
+        <h4 style="color:red">{{item.platformPassword || '无'}}</h4>
       </li>
     </ul>
     <div class="bottom-btn">
       <div class="bottom-btn-special">
-        <van-button round text="写点评" color="#00d2c3" size="small" />
-        <van-button round text="再次预约" color="#00d2c3" size="small" @click.stop="handleAgin(item)" />
+        <router-link class="ml-10" to="/reviews">
+          <van-button round text="写点评" color="#00d2c3" size="small" v-if="!item.isEvaluate" />
+        </router-link>
+        <van-button
+          class="ml-10"
+          round
+          text="再次预约"
+          color="#00d2c3"
+          size="small"
+          @click.stop="handleAgin(item)"
+        />
       </div>
-      <router-link to="/orderCancel">
+      <router-link class="ml-10" to="/orderCancel">
         <van-button
           v-if="isCanelReserve(item.orderStatus)"
           round
@@ -64,6 +80,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { queryOrderDetails } from '../../common/api'
 import { tranformDecrypt, tranformStatus, tranformPayStatus, isCanelReserve } from '../../hooks/transform'
+import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   setup () {
     const item = ref({})
@@ -94,18 +111,20 @@ export default defineComponent({
       tranformPayStatus,
       isCanelReserve,
       handleAgin,
-      item
+      item,
+      defaultImg
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .item-flex,
 .order-doctor-info,
 .order-list-info,
 .bottom-btn {
   background-color: #fff;
+  font-size: 14px !important;
 }
 .order-detail {
   position: absolute;

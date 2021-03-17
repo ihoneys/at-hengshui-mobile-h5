@@ -1,4 +1,5 @@
 <template>
+  <custom-van-nav-bar :fixed="true" />
   <van-list
     v-model:loading="loading"
     :finished="finished"
@@ -16,11 +17,17 @@
       >
         <div class="item-flex">
           <div class="order-status">订单状态：</div>
-          <div class="order-status-text">{{tranformStatus(item.orderStatus)}}</div>
+          <div class="order-status-text" style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
         </div>
         <div class="pd-16">
-          <div class="order-doctor-info">
-            <van-image width="70" height="70" radius="6" :src="item.img" fit="cover"></van-image>
+          <div class="order-doctor-infos">
+            <van-image
+              width="70"
+              height="70"
+              radius="6"
+              :src="item.img ? item.img : defaultImg"
+              fit="cover"
+            ></van-image>
             <div class="order-doctor-colum">
               <div>{{item.doctorName}}</div>
               <div>{{item.hosName}}</div>
@@ -52,12 +59,12 @@
         </div>
         <div class="click-btn">
           <van-button
-            v-if="item.isPayButton"
             round
             plain
             color="#00d2c3"
             size="small"
             class="status-btn"
+            v-if="item.isPayButton"
             @click.stop="payOrder(item)"
           >立即支付</van-button>
           <van-button
@@ -86,6 +93,7 @@ import {
 } from '../../hooks/transform'
 import { isObjEmpty, createMessage } from '../../common/function'
 import { useRouter } from 'vue-router'
+import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   setup() {
     const state = reactive({
@@ -119,11 +127,11 @@ export default defineComponent({
       }
     }
     const calculatePayTime = (arr, systemTimeStamp) => {
-      // const SET_TIME = 5 * 60 * 1000
       const currentTime = new Date().getTime()
       arr.forEach((obj, index) => {
-        const seeDoctorTime = Date.parse((`${obj.toDate} ${obj.beginTime}`).replace(/-/g, '/'))
-        // const transformStamp = Date.parse(obj.orderTime.replace(/-/g, '/'))
+        const seeDoctorTime = Date.parse(
+          `${obj.toDate} ${obj.beginTime}`.replace(/-/g, '/')
+        )
         if (obj.orderAmt === 0 || obj.orderAmt * 1 === 0) {
           obj.isPayButton = false
         }
@@ -175,6 +183,7 @@ export default defineComponent({
       handleAgin,
       handleOrder,
       payOrder,
+      defaultImg,
     }
   },
 })
@@ -195,12 +204,15 @@ export default defineComponent({
   margin-bottom: 10px;
   background-color: #fff;
 }
+.order-list {
+  margin-top: 46px;
+}
 .order-list-wrapper {
   font-size: 14px;
   background-color: #f5f5f5;
-  height: auto;
+  // height: auto;
 }
-.order-doctor-info {
+.order-doctor-infos {
   display: flex;
 }
 .order-list-info {
@@ -209,6 +221,7 @@ export default defineComponent({
   border-radius: 4px;
   margin-top: 10px;
   line-height: 30px;
+  font-size: 14px;
 }
 .item-color {
   color: #666;
@@ -224,6 +237,7 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
   margin-left: 20px;
+  font-size: 14px;
 }
 .click-btn {
   display: flex;
@@ -233,5 +247,7 @@ export default defineComponent({
   margin-bottom: 14px;
   margin-right: 14px;
   text-align: right;
+  font-size: 14px;
+  color: #00d2c3;
 }
 </style>

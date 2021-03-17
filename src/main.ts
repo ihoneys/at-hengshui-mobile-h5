@@ -28,12 +28,19 @@ import {
   CountDown,
   DatetimePicker,
   Picker,
-  Search 
+  Search,
+  DropdownMenu,
+  DropdownItem,
+  Swipe,
+  SwipeItem,
+  Rate,
+  Checkbox,
 } from 'vant'
+import VanNavBar from '@/components/NavBar/Index.vue'
 import 'vant/lib/index.css'
 import 'amfe-flexible/index.js'
 import 'babel-polyfill'
-import '@/common/public.css'
+import './common/public.css'
 
 // import VConsole from 'vconsole'
 // let vconsole = new VConsole()
@@ -41,6 +48,7 @@ import '@/common/public.css'
 
 console.log(import.meta.env.MODE, '环境变量')
 const app = createApp(App)
+app.component('CustomVanNavBar', VanNavBar)
 app
   .use(store)
   .use(router)
@@ -68,6 +76,12 @@ app
   .use(DatetimePicker)
   .use(Picker)
   .use(Search)
+  .use(DropdownItem)
+  .use(DropdownMenu)
+  .use(Swipe)
+  .use(SwipeItem)
+  .use(Rate)
+  .use(Checkbox)
   .mount('#app')
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

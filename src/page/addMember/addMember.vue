@@ -1,6 +1,6 @@
 <template>
   <div class="add-member">
-    <p>为防止黄牛贩卖号源，预约挂号采取实名制。请先补齐就诊人资料！</p>
+    <p class="member-tips">为防止黄牛贩卖号源，预约挂号采取实名制。请先补齐就诊人资料！</p>
     <van-form @submit="onSubmit">
       <van-field
         name="memberType"
@@ -50,14 +50,14 @@
         :required="true"
         :rules="[{ required: true, message: '请输入正确的证件号码',pattern: patternRegExp}]"
       />
-      <van-field
+      <!-- <van-field
         name="diagnosticCardNo"
         v-model="member.diagnosticCardNo"
         maxlength="50"
         label="就诊卡号"
         placeholder="请输入就诊卡号（选填）"
         input-align="right"
-      />
+      />-->
       <van-field
         name="sex"
         label="性别"
@@ -115,8 +115,20 @@
           >{{codeText}}</van-button>
         </template>
       </van-field>
-      <van-button color="#ccc" style="width: 45%" round text="取 消" @click.stop="router.go(-1)" />
-      <van-button color="#18c0b5" style="width: 45%" round native-type="submit" :text="buttonName" />
+      <div class="member-btn">
+        <van-button color="#ccc" style="width: 45%" round text="取 消" @click.stop="router.go(-1)" />
+        <van-button
+          round
+          color="#18c0b5"
+          style="width: 45%"
+          native-type="submit"
+          :text="buttonName"
+        />
+      </div>
+      <div class="question">
+        <span>如有疑问？</span>
+        <a href="tel:+0755-26639961">0755-26639961</a>
+      </div>
     </van-form>
     <van-popup v-model:show="isPickerDate" position="bottom">
       <van-datetime-picker
@@ -170,7 +182,7 @@ export default defineComponent({
         code: '',
         memberType: '',
         idType: '',
-        diagnosticCardNo: '',
+        // diagnosticCardNo: '',
       },
       minDate: new Date(1900, 0, 1),
       maxDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
@@ -294,5 +306,22 @@ export default defineComponent({
 <style scoped>
 .add-member >>> .van-field__error-message {
   text-align: right;
+}
+.add-member {
+  padding: 14px;
+}
+.member-tips {
+  color: #999999;
+  font-size: 14px;
+}
+.member-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.question {
+  text-align: center;
+  margin-top: 20px;
 }
 </style>

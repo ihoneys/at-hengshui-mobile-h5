@@ -41,6 +41,13 @@ export function idEncrypt(value: string): string {
   const call = '' + value
   return call.substr(0, 4) + '**********' + call.substr(14)
 }
+export function protectName(name: string): string {
+  if (!name) return name
+  let nameSplit = name.split('')
+  nameSplit[1] = '*'
+  name = nameSplit.join('')
+  return name
+}
 
 // 电话号码+****
 export function telEncrypt(value: string): string {
@@ -51,6 +58,9 @@ export function telEncrypt(value: string): string {
 }
 
 export function computedAge(birthDay: string): number {
+  if (!birthDay) {
+    return 0
+  }
   return new Date().getFullYear() - new Date(birthDay).getFullYear()
 }
 // 截取code码

@@ -31,6 +31,8 @@ const API = {
   URL_ADD_MEMBER: `${provider}/pt-platform/pub/userMember/add`,
   URL_UPDATE_MEMBER: `${provider}/pt-platform/pub/userMember/update`,
   URL_SEARCH_API: `${provider}/yygh-pub/pub/all/list`,
+  URL_REVIEWS_API: `${provider}/pt-platform/pub/registartionOrder/saveEvaluate`,
+  URL_REGISTER_LOGIN: `${auth}/jwt/registerByPhone`,
 }
 /**
  *
@@ -172,6 +174,15 @@ export function updateUserMember(data) {
   return post(API.URL_UPDATE_MEMBER, data)
 }
 
-export const finSearchContent = (params) => {
+export function finSearchContent(params) {
   return get(API.URL_SEARCH_API, params)
+}
+
+// 评价提交
+export function saveEvaluate(data) {
+  return post(API.URL_REVIEWS_API, data)
+}
+
+export function registerUser(data) {
+  return postAndGet(API.URL_REGISTER_LOGIN, data)
 }

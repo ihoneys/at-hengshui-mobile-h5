@@ -39,17 +39,16 @@
       />
     </div>
     <div class="handle-right">
-      <router-link to="/orderDetail">
-        <van-button
-          plain
-          type="primary"
-          size="small"
-          color="#00d2c3"
-          round
-          text="返 回"
-          style="width: 35%; margin-right: 10px"
-        />
-      </router-link>
+      <van-button
+        plain
+        round
+        type="primary"
+        size="small"
+        color="#00d2c3"
+        text="返 回"
+        style="width: 35%; margin-right: 10px"
+        @click="back"
+      />
       <van-button
         type="primary"
         size="small"
@@ -93,13 +92,15 @@ export default defineComponent({
         Toast.fail(message || '取消失败')
       }
       setTimeout(() => {
-        router.go(-1)
+        router.push(-1)
       }, 1000)
     }
+    const back = () => router.go(-1)
     return {
       ...toRefs(state),
       tranformPayStatus,
       handleCancel,
+      back
     }
   }
 })
@@ -110,6 +111,7 @@ export default defineComponent({
   padding: 14px;
   height: 100vh;
   background-color: #f5f5f5;
+  font-size: 14px;
 }
 .order-cancel-info {
   background-color: #fff;

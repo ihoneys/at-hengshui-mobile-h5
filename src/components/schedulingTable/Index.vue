@@ -1,23 +1,27 @@
 <template>
   <div class="table">
-    <table class="container" v-for="table in tableData">
-      <tr>
-        <td></td>
-        <td v-for="row in table.week" class="container-td-time">
-          <p>{{transformWeek(row.date)}}</p>
-          <p>{{transformDate(row.date)}}</p>
-        </td>
-      </tr>
-      <tr v-for="column in table.timeTypes">
-        <td class="dict-name">{{column.dictName}}</td>
-        <td
-          v-for="(item,index) in table.week"
-          class="click-active"
-          :class="{'active':isIfNumber(table, item, column)}"
-          @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName)"
-        >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
-      </tr>
-    </table>
+    <van-swipe class="my-swipe" indicator-color="#00d2c3">
+      <van-swipe-item v-for="table in tableData">
+        <table class="container">
+          <tr>
+            <td></td>
+            <td v-for="row in table.week" class="container-td-time">
+              <p>{{transformWeek(row.date)}}</p>
+              <p>{{transformDate(row.date)}}</p>
+            </td>
+          </tr>
+          <tr v-for="column in table.timeTypes">
+            <td class="dict-name">{{column.dictName}}</td>
+            <td
+              v-for="(item,index) in table.week"
+              class="click-active"
+              :class="{'active':isIfNumber(table, item, column)}"
+              @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName)"
+            >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
+          </tr>
+        </table>
+      </van-swipe-item>
+    </van-swipe>
   </div>
 </template>
 
@@ -30,7 +34,7 @@ export default defineComponent({
     tableData: Array
   },
   setup (props, ctx) {
-    console.log(props.tableData)
+    console.log(props.tableData, 8888)
     const isIfNumber = computed(() => {
       return function (table, item, column) {
         const hasDate = table.date[item.date]
@@ -45,9 +49,9 @@ export default defineComponent({
         return hasDate && hasDate[hasTimeShort]
       }
     })
-    const makeApponintment = (date, data, isNumber, dictCode,dictName) => {
+    const makeApponintment = (date, data, isNumber, dictCode, dictName) => {
       if (!isNumber) return
-      ctx.emit('clickItem', date, data, isNumber, dictCode,dictName)
+      ctx.emit('clickItem', date, data, isNumber, dictCode, dictName)
     }
     return {
       transformWeek,
@@ -88,5 +92,8 @@ export default defineComponent({
 }
 .dict-name {
   color: #333 !important;
+}
+.my-swipe{
+  height: 200px;
 }
 </style>

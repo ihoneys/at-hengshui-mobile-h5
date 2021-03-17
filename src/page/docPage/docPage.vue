@@ -1,5 +1,6 @@
 <template>
-  <div class="doctor-page">
+  <div class="doctor-page" v-if="schedulingData.length > 0">
+    <custom-van-nav-bar />
     <div class="doctor-info">
       <van-image width="64" height="64" :src="doctorInfo.image" round></van-image>
       <div class="doctor-name">
@@ -7,24 +8,29 @@
         <div class="doctor-level">{{doctorInfo.zcName}}</div>
       </div>
     </div>
-    <div class="doctor-expert">
+    <div class="doctor-expert" v-if="doctorInfo.expert">
       <h3>擅长:</h3>
       <p class="doctor-expert-color">{{doctorInfo.expert}}</p>
     </div>
     <div class="table-wrapper">
       <div>{{doctorInfo.unitName}}</div>
       <div class="depName">{{doctorInfo.depName}}</div>
-      <table-component :tableData="schedulingData" @clickItem="clickItem"></table-component>
+      <table-component v-if="requestCount >= 1" :tableData="schedulingData" @clickItem="clickItem"></table-component>
       <div class="doctor-experts">
         <div class="table-bottom">
-          <h3 class="table-bottom-title">简介</h3>
+          <h3 v-if="doctorInfo.introduction" class="table-bottom-title">简介</h3>
           <div class="contorl-tips">左右滑动日历查看其他日期排班</div>
         </div>
         <p
           class="doctor-expert-color"
           :class="{'introContent': isFolding}"
+          :ref="refIntroduction"
         >{{doctorInfo.introduction}}</p>
-        <div class="folding" @click.stop="isFolding = !isFolding">{{isFolding?'展开':'折叠'}}</div>
+        <div
+          v-if="isShowCollapse"
+          class="folding"
+          @click.stop="isFolding = !isFolding"
+        >{{isFolding?'展开':'折叠'}}</div>
       </div>
     </div>
     <div class="evaluate">
@@ -61,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs, nextTick } from 'vue'
 import { getSchedulingData, getSelectSchedulingTime } from '../../common/api'
 import {
   getCustomDate,
@@ -95,9 +101,6 @@ export default defineComponent({
     TableComponent,
   },
   setup() {
-    onMounted(() => {
-      getSchedulingDatas()
-    })
     const router = useRouter()
     const state = reactive({
       schedulingData: [] as any[],
@@ -106,6 +109,8 @@ export default defineComponent({
       isFolding: true,
       show: false,
       currentTimesInfo: {} as CurrentTimes,
+      requestCount: 0,
+      isShowCollapse: true,
     })
     const orderInfo: OrderInfo = {
       guaHaoAmt: '',
@@ -119,19 +124,21 @@ export default defineComponent({
       scheduleId: '',
     }
     const { depId, doctorId, unitId } = SessionStorage.get('currentDoctorInfo')
-    const getSchedulingDatas = async () => {
-      const sendData = {
-        doctorId,
-        depId,
-        unitId,
-        beginDate: getCustomDate(),
-        endDate: getCustomDate(6),
-        currentWeek: 0,
-      }
+    const sendData = {
+      doctorId,
+      depId,
+      unitId,
+      beginDate: getCustomDate(),
+      endDate: getCustomDate(6),
+      currentWeek: 0,
+    }
+    onMounted(() => {
+      getSchedulingDatas(sendData)
+    })
+    const getSchedulingDatas = async (sendData) => {
       const res = await getSchedulingData(sendData)
       const parsingResult = parsingSchedulingData(res.data[0].schedules)
-      // console.log(res)
-      if (isObjEmpty(parsingResult)) {
+      if (!res.success && isObjEmpty(parsingResult)) {
         createMessage('暂无排班数据！', '提示', () => {
           router.push('/')
         })
@@ -146,16 +153,36 @@ export default defineComponent({
           week: '',
           date: '',
         }
+        let schedulingList = [] as SchedulingInfo[]
         objs.data = res.data
         objs.timeTypes = res.timeTypes
         objs.week = res.week
         objs.date = parsingResult
-        state.schedulingData.push(objs)
+        schedulingList.push(objs)
+        state.schedulingData = [...state.schedulingData, ...schedulingList]
         state.doctorInfo = res.data[0]
+        if (state.requestCount <= 0) {
+          state.requestCount++
+          sendData.beginDate = getCustomDate(7)
+          sendData.endDate = getCustomDate(13)
+          sendData.currentWeek = 1
+          getSchedulingDatas(sendData)
+        }
       }
     }
-    const clickItem = (date, data, isNumber, dictCode,dictName) => {
-      // console.log(date, data, isNumber, dictCode)
+    const refIntroduction = (el: HTMLElement) => {
+      if (el) {
+        nextTick(() => {
+          const rowsHeight = 57
+          let textHeight = window.getComputedStyle(el).height
+          textHeight = textHeight.replace('px', '')
+          if (Number(textHeight) < rowsHeight) {
+            state.isShowCollapse = false
+          }
+        })
+      }
+    }
+    const clickItem = (date, data, isNumber, dictCode, dictName) => {
       orderInfo.date = date
       orderInfo.dictCode = dictCode
       state.currentTimesInfo.date = date
@@ -194,6 +221,7 @@ export default defineComponent({
       clickItem,
       transformWeek,
       selectTimes,
+      refIntroduction,
     }
   },
 })

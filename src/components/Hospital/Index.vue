@@ -1,38 +1,19 @@
 <template>
   <ul class="doctor-list" v-if="hospitals != null">
     <li v-for="(item, index) in hospitals" :key="index">
-      <router-link :to="`/department/${item.hisUnitId}`">
-        <div class="doctor-item">
-          <div class="photo">
-            <van-image
-              width="100%"
-              height="100%"
-              radius="4px"
-              lazy-load
-              :src="item.image"
-              @error="imgError(item)"
-              alt="被吃掉了"
-            />
+      <router-link
+        class="doctor-item"
+        :to="`/department/${item.hisUnitId}`"
+        @click.native="goHospital(item)"
+      >
+        <van-image lazy-load width="20vw" height="65px" radius="4px" :src="item.image" />
+        <div class="recommend">
+          <div class="doctor-name">{{item.unitName}}</div>
+          <div class="describe">
+            <div class="tag-span" v-if="item.unitLevelName != null">{{item.unitLevelName}}</div>
+            <div class="tag-span" v-if="item.unitClassName != null">{{item.unitClassName}}</div>
           </div>
-          <div class="recommend">
-            <div>
-              <span class="doctor-name">{{ item.unitName }}</span>
-              <span></span>
-            </div>
-            <div class="describe">
-              <span class="tag-span" v-if="item.unitLevelName != null">
-                {{
-                item.unitLevelName
-                }}
-              </span>
-              <span class="tag-span" v-if="item.unitClassName != null">
-                {{
-                item.unitClassName
-                }}
-              </span>
-            </div>
-            <span v-if="item.distance != null">距离{{ item.distance | getKm }}</span>
-          </div>
+          <!-- <span v-if="item.distance != null">距离{{ item.distance }}</span> -->
         </div>
       </router-link>
     </li>
@@ -41,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { SessionStorage } from 'storage-manager-js'
 export default defineComponent({
   name: 'Hospital',
   props: {
@@ -50,89 +32,20 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const goHospital = (obj) => {
+      SessionStorage.set('currentHospital', obj)
+    }
     console.log(props.hospitals)
+    return {
+      goHospital,
+    }
   },
 })
-// export default {
-//   components: {},
-//   props: ["hospitals"],
-//   data() {
-//     return { bb: 9 };
-//   },
-//   methods: {
-//     getInfo(item) {
-//       sessionStorage.setItem("currentHospitalInfo", JSON.stringify(item));
-//       this.$emit("getHospitalInfo", item)
-//     },
-//     imgError(item) {
-//       if (item.imgError) {
-//         return;
-//       } else {
-//         item.image = item.image.replace("http", "https");
-//         item.imgError = true;
-//       }
-//     },
-//   },
-//   created() { },
-//   mounted() { },
-//   filters: {
-//     //级别转换
-//     yylevel: function (value) {
-//       let dictionarys = JSON.parse(sessionStorage.getItem("dictionarys"));
-//       if (!dictionarys) {
-//         return null;
-//       }
-//       let arr = dictionarys.filter((el) => {
-//         return el.dictCode == value && el.dictType === "yylevel";
-//       });
-//       if (arr.length > 0) {
-//         let temp = arr[0].dictName;
-//         return temp;
-//       } else {
-//         return "未知";
-//       }
-//     },
-//     yyType(value) {
-//       let dictionarys = JSON.parse(sessionStorage.getItem("dictionarys"));
-//       if (!dictionarys) {
-//         return null;
-//       }
-//       let arr = dictionarys.filter((el) => {
-//         return el.dictCode == value && el.dictType === "yyType";
-//       });
-//       if (arr.length > 0) {
-//         let temp = arr[0].dictName;
-//         return temp;
-//       } else {
-//         return "未知";
-//       }
-//     },
-
-//     //距离转换
-//     getKm(value) {
-//       if (!value) {
-//         return "";
-//       }
-//       let distance = value;
-//       let distance_str = "";
-//       if (parseInt(distance) >= 1) {
-//         return (distance_str = distance.toFixed(1) - 120 + "km");//临时减去120，后续需查明距离错误的原因
-//       } else {
-//         return (distance_str = distance * 1000 + "m");
-//       }
-//     },
-//   },
-//   watch: {},
-//   computed: {},
-// };
 </script>
-<style lang="scss"  scoped>
-// 医生列表
+<style lang="scss" scoped>
 .doctor-list {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-content: center;
   font-size: 16px;
   .doctor-item {
     background-color: #fff;
@@ -141,17 +54,6 @@ export default defineComponent({
     border-bottom: 1px solid #eee;
     padding: 4%;
     display: flex;
-    p {
-      margin-bottom: 6px;
-    }
-    .photo {
-      width: 20vw;
-      height: 65px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
     .recommend {
       display: flex;
       flex-direction: column;
@@ -168,8 +70,6 @@ export default defineComponent({
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-
-      //医院描述
       .describe {
         display: flex;
         align-items: center;

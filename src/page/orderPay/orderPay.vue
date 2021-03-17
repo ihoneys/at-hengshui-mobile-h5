@@ -1,4 +1,5 @@
 <template>
+  <custom-van-nav-bar />
   <div class="order-pay">
     <div class="pay-tpis">
       <div>订单提交成功，请您尽快支付！</div>
@@ -113,6 +114,7 @@ export default defineComponent({
   background-color: #f5f5f5;
   height: 100vh;
   padding: 14px;
+  font-size: 14px;
 }
 .pay-tpis {
   padding: 50px 30px;

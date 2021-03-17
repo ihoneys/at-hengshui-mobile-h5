@@ -1,11 +1,15 @@
 <template>
-  <!-- <div>科室信息</div> -->
   <div class="alldepartment-tree">
-    <!-- <van-nav-bar title="科室" left-text="返回" left-arrow @click-left="onClickLeft" /> -->
+    <van-nav-bar
+      :title="isView ? '医院主页' : '科室'"
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+    />
     <div class="top-search">
-      <button @click.stop="showHospitalInfo" class="yiyuan">医 院 主 页</button>
+      <button class="yiyuan" @click.stop="isView = true">医 院 主 页</button>
       <div class="search-box">
-        <div class="search-nav-icon" @click.prevent="isShowSearchPanel(true)">
+        <div class="search-nav-icon" @click.prevent="isSearch = true">
           <img src="../../assets/search.png" />
           <span>查询医院、科室、医生</span>
         </div>
@@ -19,6 +23,8 @@
         @click-item="onClickItem"
       />
     </div>
+    <Search :is-search="isSearch" @cancel="isSearch = false" />
+    <ViewHospital :is-view="isView" />
   </div>
 </template>
 
@@ -26,14 +32,23 @@
 import { getDepartmentList } from '../../common/api'
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import * as moment from 'moment'
 import { Toast } from 'vant'
+import Search from '../search/search.vue'
+import ViewHospital from './viewCurHospital.vue'
+import * as moment from 'moment'
+import { SessionStorage } from 'storage-manager-js'
 export default defineComponent({
   name: 'department',
+  components: {
+    Search,
+    ViewHospital,
+  },
   setup() {
     const state = reactive({
       treeData: [],
       mainActiveIndex: 0,
+      isSearch: false,
+      isView: false,
     })
     onMounted(() => {
       getDepartmentData()
@@ -76,6 +91,7 @@ export default defineComponent({
       state.mainActiveIndex = index
     }
     const onClickItem = (data) => {
+      SessionStorage.set('currentDep', data.depName)
       router.push({
         name: 'departmentDoctor',
         params: {
@@ -84,12 +100,18 @@ export default defineComponent({
         },
       })
     }
-    const showHospitalInfo = () => {}
+    const onClickLeft = () => {
+      if (state.isView) {
+        state.isView = false
+      } else {
+        router.go(-1)
+      }
+    }
     return {
       ...toRefs(state),
       onClickItem,
       onClickNav,
-      showHospitalInfo,
+      onClickLeft,
     }
   },
 })
@@ -219,7 +241,7 @@ export default defineComponent({
   //顶部搜索栏
   .top-search {
     height: 50px;
-    padding: 4vw;
+    padding: 8px;
     margin-bottom: 10px;
     box-sizing: border-box;
     display: flex;
@@ -261,7 +283,7 @@ export default defineComponent({
   }
   //主体内容
   .box-main {
-    height: calc(100vh - 106px);
+    height: calc(100vh - 64px);
     box-sizing: border-box;
     overflow-y: scroll;
   }

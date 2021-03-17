@@ -54,7 +54,12 @@ instance.interceptors.response.use(
     Toast.clear()
     const { code, message, success } = response.data
     if (success !== undefined && !success && code !== 40101) {
-      Toast.fail(message)
+      Dialog({
+        title: '提示',
+        message,
+      }).then(() => {
+        router.push({ name: 'home' })
+      })
     }
     if (response.status === 200) {
       if (code === 40101) {
@@ -62,9 +67,7 @@ instance.interceptors.response.use(
           title: '提示',
           message: '登录过期',
         }).then(() => {
-          router.push({
-            name: 'login',
-          })
+          router.push('login')
         })
       }
       return Promise.resolve(response.data)

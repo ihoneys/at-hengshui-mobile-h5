@@ -1,4 +1,5 @@
 <template>
+  <custom-van-nav-bar :title="index ? '隐私政策' : ' 服务协议'" :fixed="true" />
   <div class="text">
     <p v-html="list[index]"></p>
   </div>
@@ -27,5 +28,6 @@ export default defineComponent({
   padding: 15px;
   font-size: 16px;
   line-height: 20px;
+  margin-top: 46px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div id="app">
     <TabBar v-if="this.$route.meta.isTabBar" />
   </div>
   <router-view />
@@ -21,8 +21,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-div {
-  font-size: 16px;
+#app {
+  font-size: 15px;
 }
 h1,
 h2,
@@ -34,4 +34,5 @@ h4 {
 .click-active:active {
   background: #cccccc;
 }
+
 </style>

@@ -1,4 +1,5 @@
 <template>
+  <custom-van-nav-bar />
   <ColumnList :columnList="recordList" />
 </template>
 

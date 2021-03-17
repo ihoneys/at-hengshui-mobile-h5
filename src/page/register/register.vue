@@ -6,82 +6,75 @@
         <van-form @submit="onSubmit">
           <van-cell-group>
             <van-field
+              required
+              name="phone"
               label-width="5em"
-              v-model="phone"
               type="text"
               label="账号"
               placeholder="请输入手机号码"
-              :label-width="80"
-              :required="true"
-              :rules="[{ pattern: pattern1, message: '请填写正确的手机号码' }]"
-              clearable
+              v-model="phone"
+              :rules="[{ pattern: phoneRexg, message: '请填写正确的手机号码' }]"
             />
           </van-cell-group>
           <van-cell-group>
             <van-field
+              required
+              name="password"
               label-width="5em"
-              v-model="password"
-              :type="inputType"
               label="密码"
               placeholder="请输入密码"
-              :label-width="50"
               right-icon="browsing-history"
-              @click-right-icon="look"
-              required
-              clearable
-              :rules="[{ required: true, message: '密码不能为空' }]"
-            />
-          </van-cell-group>
-          <van-cell-group>
-            <van-field
-              label-width="5em"
               v-model="password1"
               :type="inputType"
-              label="确认密码"
-              placeholder="请再次输入密码"
-              :label-width="80"
-              right-icon="browsing-history"
               @click-right-icon="look"
-              required
-              :rules="[{ required: true, message: '密码不能为空' }]"
-              clearable
             />
           </van-cell-group>
           <van-cell-group>
             <van-field
+              required
+              name="password2"
               label-width="5em"
-              v-model="code"
+              label="确认密码"
+              placeholder="请再次输入密码"
+              right-icon="browsing-history"
+              v-model="password2"
+              :type="inputType"
+              @click-right-icon="look"
+            />
+          </van-cell-group>
+          <van-cell-group>
+            <van-field
+              required
               center
-              clearable
+              name="code"
+              label-width="5em"
               label="短信验证码"
               placeholder="请输入短信验证码"
               maxlength="6"
-              required
-              :rules="[{ required: true, message: '验证码不能为空' }]"
+              v-model="code"
             >
               <template #button>
                 <van-button
                   size="small"
                   type="primary"
                   color="#00d3c2"
-                  :disabled="codeDisabled"
+                  :disabled="!phoneRexg.test(phone) || isGetCode"
                   @click.stop="onGetCode"
-                >{{codeMsg}}</van-button>
+                >{{codeText}}</van-button>
               </template>
             </van-field>
           </van-cell-group>
           <van-button
             style="margin-top: 10px"
             class="button"
-            :loading="isloading"
             type="primary"
-            loading-type="spinner"
-            :disabled="!password || !password1 || !phone"
+            native-type="submit"
+            :disabled="!password1 || !password2 || !phone || !code"
           >{{ title }}</van-button>
         </van-form>
       </div>
       <div class="algin-left">
-        <router-link to="/login" class="change-box">返回</router-link>
+        <div class="change-box" @click="router.go(-1)">返回</div>
       </div>
     </div>
   </div>
@@ -89,28 +82,54 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { getVerificationCode } from '../../hooks/signup'
+import { phoneRexg } from '../../common/regularData'
+import { registerUser } from '../../common/api'
+import { encrypt } from '../../common/function'
 export default defineComponent({
-  setup(props, ctx) {
-    const data = reactive({
-      codeMsg: '获取验证码',
-      codeDisabled: false,
-      title: '',
-      code: '',
-      password: '',
-      password1: '',
-      pattern1: '',
-      phone: '',
-      isloading: false,
-      inputType: '',
-      look: () => {},
-      onGetCode: () => {},
-      onSubmit: () => {},
-    })
+  setup() {
     const route = useRoute()
-    console.log(route.params)
-    const resData = toRefs(data)
-    return { ...resData }
+    const {
+      codeText,
+      isGetCode,
+      onGetCode,
+      countDown,
+      phone,
+    } = getVerificationCode()
+
+    const state = reactive({
+      title: route.params.id === '1' ? '修改密码' : '注册',
+      code: '',
+      password1: '',
+      password2: '',
+      inputType: 'text',
+      look: () => {},
+    })
+    const logiType = route.params.id === '1' ? 'changePwd' : 'register'
+    const onSubmit = async (obj) => {
+      const postData = {
+        phone: encrypt(obj.phone),
+        password: obj.password,
+        code: obj.code,
+        operateType: logiType,
+      }
+      const { success } = await registerUser(postData)
+      if (success) {
+      }
+    }
+    const router = useRouter()
+    return {
+      ...toRefs(state),
+      codeText,
+      isGetCode,
+      onGetCode,
+      countDown,
+      phone,
+      router,
+      phoneRexg,
+      onSubmit,
+    }
   },
 })
 </script>

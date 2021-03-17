@@ -1,6 +1,7 @@
 <template>
-  <div class="doctor-container">
-    <van-tabs line-width="0" line-height="0" title-active-color="#1989fa">
+  <div class="doctor-container" v-if="Object.values(dateDoctorList).length > 0">
+    <custom-van-nav-bar :title="depName" />
+    <van-tabs color="#00D2C3" title-active-color="#00D2C3" :ellipsis="false" :line-width="30">
       <van-tab v-for="(value,name,index) in dateDoctorList" :key="name">
         <template v-if="index===0" #title>
           全部
@@ -11,58 +12,41 @@
           <br />
           {{transformDate(name)}}
         </template>
-        <router-link
-          class="doctor-list"
-          v-for="column in value"
-          :key="column.unitId"
-          to="/docPage"
-          @click.native="saveItem(column)"
-        >
-          <van-image width="60" height="80" radius="6" :src="column.image" />
-          <div class="base-info">
-            <div class="base-name">
-              <span class="base-doc-name">{{column.doctorName}}</span>
-              <span class="base-doc-color pd-left">{{getGrade(column.zcid)}}</span>
-            </div>
-            <div class="base-doc-color doctor-explain">{{column.introduction}}</div>
-            <div>
-              <span class="base-doc-color">接诊量</span>
-              <span class="no-number pd-left">{{column.qty || '暂无'}}</span>
-            </div>
-          </div>
-          <van-button
-            class="column-button"
-            type="primary"
-            size="small"
-            round
-          >{{changeButtonName(column.isYuyue)}}</van-button>
-        </router-link>
+        <DoctorList :doctorList="value" />
+        <div class="no-data" v-if="!value.length">
+          <img width="120" height="120" src="../../assets/nothing_2.png" alt />
+          <div>该科室暂无值班医生！</div>
+        </div>
       </van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import { getDepAllDoctor, dictionaryQuery } from '../../common/api'
+import { getDepAllDoctor } from '../../common/api'
 import { getCustomDate, isObjEmpty } from '../../common/function'
 import { transformWeek, transformDate } from '../../hooks/date'
 import { SessionStorage } from 'storage-manager-js'
+import DoctorList from '@/components/DoctorList/Index.vue'
 export default defineComponent({
   name: 'departmentDoctor',
+  components: {
+    DoctorList,
+  },
   setup() {
     onMounted(() => {
       getDepDoctors()
     })
     const route = useRoute()
     const { depId, unitId } = route.params
-    console.log(depId, unitId)
     const state = reactive({
       dateDoctorList: [],
       Alldoctor: [],
       noData: false,
     })
+    const depName = SessionStorage.get('currentDep')
     const getDepDoctors = async () => {
       const requestParams = {
         depId,
@@ -73,27 +57,20 @@ export default defineComponent({
         doctorId: '',
       }
       const result = await getDepAllDoctor(requestParams)
-      console.log(result, '科室排班')
       if (!isObjEmpty(result)) {
         state.Alldoctor = result.all
         let allScheling = JSON.parse(JSON.stringify(result))
         delete allScheling.all
         state.dateDoctorList = allScheling
-        console.log(allScheling, result)
       } else {
         state.noData = true
       }
     }
-    const saveItem = (item) => {
-      SessionStorage.set('currentDoctorInfo', item)
-    }
-    const clickTab = () => {}
     return {
       ...toRefs(state),
-      clickTab,
       transformDate,
       transformWeek,
-      saveItem,
+      depName,
     }
   },
 })
@@ -137,7 +114,7 @@ export default defineComponent({
 .doctor-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   font-size: 14px;
   color: #999999;
   background-color: #f5f5f5;
@@ -150,35 +127,11 @@ export default defineComponent({
 .doctor-header {
   box-sizing: border-box;
 }
-
-.transparent {
-  background-color: red !important;
-}
-//评分颜色
-.grade-color {
-  color: #ff9f4f;
-}
-p {
-  margin: 0;
-  margin-bottom: 5px;
-  padding: 0;
-  span {
-    margin-right: 5px;
-  }
-}
-//底部文字
-.foot-text {
-  text-align: center;
-  color: #999999;
-  background-color: transparent;
-  margin-top: 15px;
-}
-//选择所有日期的按钮的颜色
-.btnColor {
-  color: #00d3c2;
-}
-// }
-.subscribe {
-  color: #00d3c2;
+.no-data {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 </style>

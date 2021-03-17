@@ -15,10 +15,12 @@ const title = {
   orderDetail: '订单详情',
   orderCancel: '订单取消',
   orderPay: '订单支付',
-  record: '个人记录',
+  record: '我的记录',
   recordData: '指标采集',
   accountInfo: '账户信息',
   addMember: '添加成员',
+  userNotice: '隐私政策',
+  reviews: '就诊点评',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -124,7 +126,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/userNotice/:id',
     name: 'userNotice',
     component: () => import('@/page/userNotice/userNotice.vue'),
-    meta: { title: title.addMember },
+    meta: { title: title.userNotice },
+  },
+  {
+    path: '/reviews',
+    name: 'reviews',
+    component: () => import('@/page/reviews/reviews.vue'),
+    meta: { title: title.reviews },
   },
 ]
 

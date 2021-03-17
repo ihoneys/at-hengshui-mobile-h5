@@ -1,5 +1,18 @@
 <template>
   <div class="record-data">
+    <van-nav-bar
+      title="指标采集"
+      left-text="返回"
+      left-arrow
+      fixed
+      :placeholder="true"
+      @click-left="onClickLeft"
+      @click-right="add"
+    >
+      <template #right>
+        <span style="color:#07c160;" v-show="!isIncreased">新增</span>
+      </template>
+    </van-nav-bar>
     <div v-show="!isIncreased">
       <van-list
         v-model="loading"
@@ -128,14 +141,13 @@
         </div>
       </van-form>
     </div>
-    <van-button @click="back">返回</van-button>
-    <van-button @click="add">新增</van-button>
   </div>
 </template>
 
 <script>
 import { getCollectionList, saveCollectionData, deleteIndexCollection } from '../../common/api'
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 import { LocalStorage } from 'storage-manager-js'
 import { Toast } from 'vant'
 import { transformWeek, transformFormateDate } from '../../hooks/date'
@@ -162,6 +174,7 @@ export default defineComponent({
       isDisabled: false,
       submit: '提交'
     })
+    const router = useRouter()
     onMounted(() => {
       getDataList()
     })
@@ -216,9 +229,6 @@ export default defineComponent({
     const handleList = (obj) => {
       setValueStatus(true, true, '删除', obj)
     }
-    const back = () => {
-      state.isIncreased = false
-    }
     const add = () => {
       setValueStatus(true, false)
     }
@@ -228,6 +238,13 @@ export default defineComponent({
       state.submit = submit
       state.formData = obj
     }
+    const onClickLeft = () => {
+      if (state.isIncreased) {
+        state.isIncreased = false
+      } else {
+        router.go(-1)
+      }
+    }
     return {
       ...toRefs(state),
       loadMore,
@@ -235,8 +252,8 @@ export default defineComponent({
       transformFormateDate,
       onSubmit,
       handleList,
-      back,
-      add
+      add,
+      onClickLeft
     }
   }
 })

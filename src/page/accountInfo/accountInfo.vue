@@ -79,8 +79,10 @@
         </div>
       </van-form>
       <div class="pd-14">
-        <van-button class="mt-20" round block color="#18c0b5" text="修改密码" />
-        <van-button class="mt-20" round block color="#18c0b5" text="退 出" @click="handleExit" />
+        <router-link to="/register/1">
+          <van-button class="mt-20" round block color="#ff976a" text="修改密码" />
+        </router-link>
+        <van-button class="mt-20" round block color="#AAAAAA" text="退 出" @click="handleExit" />
       </div>
     </div>
     <van-popup v-model:show="isPickerDate" position="bottom" :disabled="hasValue">
@@ -114,6 +116,8 @@ import {
   sm4Decrypt,
   isObjEmpty,
   tranformPickerType,
+  protectName,
+  idEncrypt,
 } from '../../common/function'
 import { patternObj as pattern } from '../../common/regularData'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
@@ -153,10 +157,10 @@ export default defineComponent({
       const { success, data } = await queryMemberInfo()
       if (success && !isObjEmpty(data)) {
         state.hasValue = true
-        state.account.patientName = sm4Decrypt(data.patientName)
+        state.account.patientName = protectName(sm4Decrypt(data.patientName))
         state.account.sex = data.sex + ''
         state.account.birthday = data.birthDay
-        state.account.patientId = sm4Decrypt(data.patientId)
+        state.account.patientId = idEncrypt(sm4Decrypt(data.patientId))
         state.account.idName = patternObj[data.idType]?.name || '居民身份证'
       }
     }
@@ -203,6 +207,7 @@ export default defineComponent({
       confirmDate,
       onConfirm,
       handleExit,
+      protectName,
     }
   },
 })
