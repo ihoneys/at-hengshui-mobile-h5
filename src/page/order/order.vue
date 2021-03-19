@@ -5,8 +5,8 @@
       <li>就诊医院： {{orderInfo.unitName}}</li>
       <li>就诊科室： {{orderInfo.depName || orderInfo.deptName}}</li>
       <li>就诊医生： {{orderInfo.doctorName}}</li>
-      <li>挂号级别： {{orderInfo.zcName}}</li>
-      <li>就诊费用： ￥{{orderInfo.guaHaoAmt}}元</li>
+      <li>挂号级别： {{orderInfo.zcName || '暂无'}}</li>
+      <li>就诊费用： ￥{{orderInfo.guaHaoAmt || 0}}元</li>
       <li>就诊日期： {{orderInfo.date}}</li>
       <li>就诊时段： {{orderInfo.endTime}}-{{orderInfo.beginTime}}</li>
       <li>支付说明： 网上支付功能已开通</li>
@@ -58,11 +58,11 @@
     </van-action-sheet>
     <div class="submit-btn">
       <van-button
+        round
+        block
         type="primary"
         @click="submitOrder"
         :disabled="!(!!current.patientId)"
-        round
-        block
       >提交</van-button>
     </div>
   </div>
@@ -180,6 +180,7 @@ export default defineComponent({
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
+  color: #00d2c3;
 }
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;

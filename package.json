@@ -1,9 +1,10 @@
 {
-  "name": " vue3-vite-ts",
+  "name": "vite",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vuedx-typecheck . && vite build",
+    "build:vuedx": "vuedx-typecheck . && vite build",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
@@ -20,8 +21,7 @@
     "vconsole": "^3.4.0",
     "vite-tsconfig-paths": "^2.1.0",
     "vue": "^3.0.6",
-    "vue-router": "^4.0.4",
-    "vuex": "^4.0.0"
+    "vue-router": "^4.0.4"
   },
   "devDependencies": {
     "@types/node": "^14.14.31",

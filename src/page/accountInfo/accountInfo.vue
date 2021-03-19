@@ -1,6 +1,8 @@
 <template>
   <div class="account">
-    <div class="user-photo">
+    <custom-van-nav-bar />
+
+    <div class="user-photo mt-10">
       <div>头像</div>
       <van-image round width="60" height="60" src />
     </div>
@@ -33,12 +35,12 @@
         </van-field>
         <van-field
           readonly
-          :clickable="false"
           name="datetimePicker"
           label="出生日期"
           placeholder="点击选择时间"
           input-align="right"
-          v-model="account.birthday"
+          v-model="account.birthDay"
+          :clickable="false"
           :required="true"
           :rules="[{ required: true, message: '请选择出生日期' }]"
           :disabled="hasValue"
@@ -49,9 +51,9 @@
           placeholder="点击选择证件类型"
           input-align="right"
           readonly
-          :clickable="false"
           v-model="account.idName"
           :required="true"
+          :clickable="false"
           :rules="[{ required: true, message: '请选择证件类型' }]"
           :disabled="hasValue"
           @click-input="showPicker = true"
@@ -65,6 +67,7 @@
           :required="true"
           :rules="[{ required: true, message: '请输入正确的证件号码',pattern: patternRegEXP}]"
           :disabled="hasValue"
+          @blur="onBlur"
         />
         <div class="pd-14">
           <van-button
@@ -87,37 +90,36 @@
     </div>
     <van-popup v-model:show="isPickerDate" position="bottom" :disabled="hasValue">
       <van-datetime-picker
-        v-model="pickerDate"
         type="date"
         title="选择年月日"
-        @cancel="isPickerDate = false"
-        @confirm="confirmDate"
         :min-date="minDate"
         :max-date="maxDate"
+        @cancel="isPickerDate = false"
+        @confirm="confirmDate"
       />
     </van-popup>
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         show-toolbar
         :columns="patientTypeList"
+        :disabled="hasValue"
         @confirm="onConfirm"
         @cancel="showPicker = false"
-        :disabled="hasValue"
       />
     </van-popup>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue'
 import {
   formateDate,
   encrypt,
   sm4Decrypt,
-  isObjEmpty,
   tranformPickerType,
   protectName,
   idEncrypt,
+  byPatientIdGetBrithdayAndSex,
 } from '../../common/function'
 import { patternObj as pattern } from '../../common/regularData'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
@@ -133,7 +135,7 @@ export default defineComponent({
       account: {
         patientName: '',
         sex: '',
-        birthday: '',
+        birthDay: '',
         idName: '',
         idType: '',
         patientId: '',
@@ -141,7 +143,6 @@ export default defineComponent({
       minDate: new Date(1900, 0, 1),
       maxDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
       hasValue: false,
-      pickerDate: '',
       isPickerDate: false,
       showPicker: false,
       patientTypeList: [],
@@ -155,11 +156,11 @@ export default defineComponent({
     state.patientTypeList = tranformPickerType(patientType)
     const isCheckUserInfo = async () => {
       const { success, data } = await queryMemberInfo()
-      if (success && !isObjEmpty(data)) {
+      if (success && data.patientId) {
         state.hasValue = true
         state.account.patientName = protectName(sm4Decrypt(data.patientName))
         state.account.sex = data.sex + ''
-        state.account.birthday = data.birthDay
+        state.account.birthDay = data.birthDay
         state.account.patientId = idEncrypt(sm4Decrypt(data.patientId))
         state.account.idName = patternObj[data.idType]?.name || '居民身份证'
       }
@@ -170,7 +171,7 @@ export default defineComponent({
         patientId: encrypt(state.account.patientId),
         patientName: encrypt(state.account.patientName),
         sex: state.account.sex,
-        birthDay: state.account.birthday,
+        birthDay: state.account.birthDay,
         userId: userId,
       }
       const { success, message } = await saveUserMember(sendData)
@@ -189,7 +190,7 @@ export default defineComponent({
     const confirmDate = (value) => {
       const date = formateDate(value, false)
       state.isPickerDate = false
-      state.account.birthday = date
+      state.account.birthDay = date
     }
     const onConfirm = (current) => {
       state.showPicker = false
@@ -201,6 +202,17 @@ export default defineComponent({
       LocalStorage.deleteAll()
       router.push('login')
     }
+
+    const onBlur = computed(() => {
+      if (state.account.idType !== '01') return
+      const { birthDay, radio } = byPatientIdGetBrithdayAndSex(
+        state.account.patientId
+      )
+      if (birthDay || radio) {
+        state.account.birthDay = birthDay
+        state.account.sex = radio
+      }
+    })
     return {
       ...toRefs(state),
       saveAccountInfo,
@@ -208,13 +220,14 @@ export default defineComponent({
       onConfirm,
       handleExit,
       protectName,
+      onBlur,
     }
   },
 })
 </script>
 
 <style scoped>
-.user-info >>> .van-field__error-message {
+.user-info :deep() .van-field__error-message {
   text-align: right;
 }
 .account {

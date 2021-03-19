@@ -3,7 +3,7 @@
     <custom-van-nav-bar />
     <div class="item-flex">
       <div class="order-status">订单状态：</div>
-      <div class="order-status-text"  style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
+      <div class="order-status-text" style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
     </div>
     <div class="order-doctor-info">
       <van-image
@@ -61,13 +61,13 @@
       </div>
       <router-link class="ml-10" to="/orderCancel">
         <van-button
-          v-if="isCanelReserve(item.orderStatus)"
           round
           plain
           text="取消预约"
           color="#ddd"
           size="small"
           class="status-btn"
+          v-if="isCanelReserve(item.orderStatus)"
         />
       </router-link>
     </div>

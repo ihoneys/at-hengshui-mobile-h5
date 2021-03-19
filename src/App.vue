@@ -1,21 +1,16 @@
 <template>
   <div id="app">
+    <router-view />
     <TabBar v-if="this.$route.meta.isTabBar" />
   </div>
-  <router-view />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
-import { GlobalDataProps } from './store'
 import TabBar from '@/components/Tabbar/Index.vue'
 export default defineComponent({
   name: 'App',
   components: {
     TabBar,
-  },
-  setup(props) {
-    const store = useStore<GlobalDataProps>()
   },
 })
 </script>
@@ -34,5 +29,4 @@ h4 {
 .click-active:active {
   background: #cccccc;
 }
-
 </style>

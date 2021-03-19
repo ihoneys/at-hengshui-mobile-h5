@@ -27,10 +27,10 @@
         :rules="[{ required: true, message: '请填写用户名' }]"
       />
       <van-field
+        readonly
         label="证件类型"
         placeholder="点击选择证件类型"
         input-align="right"
-        readonly
         :clickable="false"
         v-model="member.idName"
         name="idName"
@@ -50,14 +50,6 @@
         :required="true"
         :rules="[{ required: true, message: '请输入正确的证件号码',pattern: patternRegExp}]"
       />
-      <!-- <van-field
-        name="diagnosticCardNo"
-        v-model="member.diagnosticCardNo"
-        maxlength="50"
-        label="就诊卡号"
-        placeholder="请输入就诊卡号（选填）"
-        input-align="right"
-      />-->
       <van-field
         name="sex"
         label="性别"
@@ -74,25 +66,25 @@
       </van-field>
       <van-field
         readonly
-        :clickable="false"
         name="birthDay"
         label="出生日期"
         placeholder="点击选择时间"
         input-align="right"
-        v-model="member.birthDay"
+        :clickable="false"
         :required="true"
+        v-model="member.birthDay"
         :rules="[{ required: true, message: '请选择出生日期' }]"
         @click-input="isPickerDate = true"
       />
       <van-field
         name="phone"
-        v-model="member.phone"
         maxlength="50"
         label="手机号"
         type="tel"
         placeholder="请输入手机号"
         input-align="right"
         :required="true"
+        v-model="member.phone"
         :rules="[{ required: true, message: '请填写正确的手机号',pattern: phoneRexg }]"
       />
       <van-field
@@ -303,8 +295,8 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.add-member >>> .van-field__error-message {
+<style lang="scss" scoped>
+.add-member :deep() .van-field__error-message {
   text-align: right;
 }
 .add-member {
@@ -323,5 +315,8 @@ export default defineComponent({
 .question {
   text-align: center;
   margin-top: 20px;
+  a {
+    text-decoration: underline;
+  }
 }
 </style>

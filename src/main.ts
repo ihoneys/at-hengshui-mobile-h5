@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 // TypeScript error? Run VSCode command
 // TypeScript: Select TypeScript version - > Use Workspace Version
 import App from './App.vue'
-import store from './store'
+// import store from './store'
 import router from './router'
 import {
   Tabbar,
@@ -35,6 +35,7 @@ import {
   SwipeItem,
   Rate,
   Checkbox,
+  Dialog,
 } from 'vant'
 import VanNavBar from '@/components/NavBar/Index.vue'
 import 'vant/lib/index.css'
@@ -42,15 +43,15 @@ import 'amfe-flexible/index.js'
 import 'babel-polyfill'
 import './common/public.css'
 
-// import VConsole from 'vconsole'
-// let vconsole = new VConsole()
-// export default vconsole
+import VConsole from 'vconsole'
+let vconsole = new VConsole()
+export default vconsole
 
 console.log(import.meta.env.MODE, '环境变量')
 const app = createApp(App)
 app.component('CustomVanNavBar', VanNavBar)
 app
-  .use(store)
+  // .use(store)
   .use(router)
   .use(Tabbar)
   .use(TabbarItem)
@@ -60,6 +61,7 @@ app
   .use(Field)
   .use(CellGroup)
   .use(Toast)
+  .use(Dialog)
   .use(Form)
   .use(TreeSelect)
   .use(NavBar)

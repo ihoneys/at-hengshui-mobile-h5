@@ -52,13 +52,13 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     Toast.clear()
-    const { code, message, success } = response.data
+    const { code, message, success, infor } = response.data
     if (success !== undefined && !success && code !== 40101) {
       Dialog({
         title: '提示',
-        message,
+        message: message || infor,
       }).then(() => {
-        router.push({ name: 'home' })
+        // router.push({ name: 'home' })
       })
     }
     if (response.status === 200) {

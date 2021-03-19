@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { LocalStorage } from 'storage-manager-js'
+import { LocalStorage, SessionStorage } from 'storage-manager-js'
 import Home from '@/page/home/home.vue'
 const routerHistory = createWebHistory()
 const title = {
@@ -140,15 +140,26 @@ const router = createRouter({
   history: routerHistory,
   routes,
 })
-router.beforeEach((to, from, next) => {
-  const { requiredLogin } = to.meta
+router.beforeEach(({ meta, fullPath }, form, next) => {
+  console.log(fullPath, 'route')
+  if (
+    fullPath !== '/login' &&
+    fullPath !== '/register/registered' &&
+    fullPath !== '/register/changePassword'
+  ) {
+    SessionStorage.set('preRoute', fullPath)
+  }
+
+  const { requiredLogin } = meta
   let token
   if (LocalStorage.has('userInfo')) {
     token = LocalStorage.get('userInfo')
   }
   if (requiredLogin && !token) {
-    console.log(token, 'token')
-    next('/login')
+    next({
+      name: 'login',
+      replace: true,
+    })
   } else {
     next()
   }

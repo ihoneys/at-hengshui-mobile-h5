@@ -3,8 +3,8 @@
   <div class="order-pay">
     <div class="pay-tpis">
       <div>订单提交成功，请您尽快支付！</div>
-      <div class="count-time">
-        <van-count-down :time="time" @finish="onFinish" />
+      <div class="count-time mt-10">
+        <van-count-down format="DD 天 HH 时 mm 分 ss 秒" :time="time" @finish="onFinish" />
         <span>内未完成支付订单将自动关闭</span>
       </div>
     </div>
@@ -31,7 +31,7 @@ import { defineComponent, reactive, toRefs } from 'vue'
 import { SessionStorage } from 'storage-manager-js'
 import { tranformDecrypt } from '../../hooks/transform'
 import { isWeixinBrower } from '../../common/function'
-import { invokingPrepaid, weChatCallback } from '../../common/api'
+import { invokingPrepaid, weChatCallback, paymentAppH5 } from '../../common/api'
 import { Toast } from 'vant'
 import { useRouter } from 'vue-router'
 export default defineComponent({
@@ -62,6 +62,14 @@ export default defineComponent({
         delete signParam.packages
         signParam.orderNo = currentOrder.orderId
         pullWechatPay(signParam)
+      } else {
+        const postAppData = {
+          appName: '健康衡水',
+          appPackageName: 'com.hengshui.jkhs',
+          appType: 'Android',
+          orderNo: currentOrder.orderId
+        }
+        pullWechatPay_H5(postAppData)
       }
     }
     const onBridgeReadyPayFor = (signParam) => {
@@ -96,6 +104,16 @@ export default defineComponent({
         onBridgeReadyPayFor(signParam);
       }
     }
+
+    // h5支付
+    const pullWechatPay_H5 = async (postAppData) => {
+      const { success, message, mweb_url } = await paymentAppH5(postAppData)
+      if (success) {
+        window.location.href = mweb_url
+      } else {
+        Toast.fail(message)
+      }
+    }
     const onFinish = () => {
       state.time = 0
     }
@@ -118,9 +136,9 @@ export default defineComponent({
 }
 .pay-tpis {
   padding: 50px 30px;
-  line-height: 30px;
   background-color: #f0e2d2;
   .van-count-down {
+    display: inline-block;
     color: red;
   }
 }
@@ -152,8 +170,8 @@ export default defineComponent({
   margin: 20px 0;
 }
 .count-time {
-  display: flex;
-  align-items: center;
+  // display: flex;
+  // align-items: center;
   span {
     margin-left: 10px;
   }

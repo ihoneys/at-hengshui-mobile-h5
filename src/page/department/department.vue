@@ -1,7 +1,7 @@
 <template>
   <div class="alldepartment-tree">
     <van-nav-bar
-      :title="isView ? '医院主页' : '科室'"
+      :title="isView ? '医院主页' : `${unitName}——预约挂号`"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
@@ -10,7 +10,7 @@
       <button class="yiyuan" @click.stop="isView = true">医 院 主 页</button>
       <div class="search-box">
         <div class="search-nav-icon" @click.prevent="isSearch = true">
-          <img src="../../assets/search.png" />
+          <img width="20" src="../../assets/search.png" />
           <span>查询医院、科室、医生</span>
         </div>
       </div>
@@ -35,7 +35,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Toast } from 'vant'
 import Search from '../search/search.vue'
 import ViewHospital from './viewCurHospital.vue'
-import * as moment from 'moment'
+import moment from 'moment'
 import { SessionStorage } from 'storage-manager-js'
 export default defineComponent({
   name: 'department',
@@ -55,6 +55,7 @@ export default defineComponent({
     })
     const route = useRoute()
     const router = useRouter()
+    const { unitName } = SessionStorage.get('currentHospital')
     const getDepartmentData = async () => {
       const { id: unitId } = route.params
       const params = {
@@ -112,6 +113,7 @@ export default defineComponent({
       onClickItem,
       onClickNav,
       onClickLeft,
+      unitName,
     }
   },
 })
@@ -120,142 +122,24 @@ export default defineComponent({
 <style lang="scss">
 .alldepartment-tree {
   width: 100%;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-  background: #e6e6e6;
-  box-sizing: border-box;
-  // 医院信息弹窗
-  .hospita-info {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    background-color: #f5f5f5;
-    font-size: 16px;
-
-    // 公共样式
-    .common {
-      background-color: #fff;
-      padding: 4vw;
-      margin-bottom: 3vw;
-      font-size: 16px;
-      line-height: 1.3;
-      color: #666;
-      h3 {
-        font-weight: 600;
-        margin-bottom: 2vw;
-      }
-    }
-    .title {
-      padding: 4vw;
-      background-color: #00d2c3;
-
-      p {
-        font-size: 5vw;
-        font-weight: 600;
-        color: #fff;
-        margin-bottom: 5px;
-        span {
-          font-size: 4vw;
-          font-weight: normal;
-          color: #fff;
-          margin-right: 1vw;
-        }
-      }
-      .photo-name {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        .img-box {
-          width: 26vw;
-          height: 22vw;
-          border-radius: 6px;
-          overflow: hidden;
-          margin-right: 10px;
-          img {
-            height: 100%;
-            width: 100%;
-          }
-        }
-        .name-info {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          > div {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
-        }
-
-        .address {
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          align-items: flex-start;
-        }
-      }
-    }
-    .tell-info {
-      padding: 0;
-      p {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 4vw;
-        line-height: 3;
-        border-bottom: 1px solid #f5f5f5;
-        span:last-child {
-          padding-left: 3vw;
-        }
-      }
-      p:last-child {
-        border: none;
-      }
-    }
-    .intro {
-      // 收起、隐藏按钮
-      .ck-btn {
-        text-align: center;
-        color: rgba(126, 223, 216, 1);
-      }
-
-      //信息展示和隐藏
-      .introContent {
-        // height: 5vh;
-        overflow: hidden;
-        text-overflow: -o-ellipsis-lastline;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3; //几行
-        -webkit-box-orient: vertical;
-      }
-    }
-  }
+  background: #f5f5f5;
   .van-tree-select {
     height: 100% !important;
   }
-  //顶部搜索栏
   .top-search {
     height: 50px;
-    padding: 8px;
+    padding: 14px;
     margin-bottom: 10px;
     box-sizing: border-box;
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
     align-items: center;
     background-color: #fff;
-    > button {
+    button {
       border-radius: 5px;
       color: #ffffff;
       font-size: 3vw;
       background: #00d2c3;
-      padding: 3vw;
-      text-decoration: none;
+      padding: 2vw;
       border: none;
       margin-right: 4vw;
     }
@@ -263,17 +147,13 @@ export default defineComponent({
       width: 70%;
       background-color: #f5f5f5;
       border-radius: 5px;
+      padding: 2vw;
+      color: #666666;
       .search-nav-icon {
-        display: flex;
-        padding: 2vw;
-        padding-left: 5vw;
-
-        align-items: center;
-        img {
-          width: 20px;
+        * {
+          vertical-align: middle;
         }
         span {
-          color: #666666;
           margin-left: 6px;
           font-size: 14px;
           font-weight: lighter;
@@ -281,21 +161,10 @@ export default defineComponent({
       }
     }
   }
-  //主体内容
-  .box-main {
-    height: calc(100vh - 64px);
-    box-sizing: border-box;
-    overflow-y: scroll;
-  }
 }
-.bottom-div {
-  position: absolute;
-  bottom: 0;
-  left: 20%;
-}
-tell-info common .conter {
-  display: flex;
-  justify-content: space-between;
+.box-main {
+  height: calc(100vh - 106px);
+  overflow-y: scroll;
 }
 .van-tree-select__item {
   color: #00d2c3 !important;
@@ -303,7 +172,6 @@ tell-info common .conter {
 .van-tree-select__nav-item--active {
   color: #00d2c3 !important;
 }
-
 .van-sidebar-item--select::before {
   background-color: #00d2c3;
 }

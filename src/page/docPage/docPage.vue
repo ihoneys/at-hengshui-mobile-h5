@@ -37,13 +37,14 @@
       <h3>患者点评(0)</h3>
     </div>
     <van-popup
-      v-model:show="show"
+      round
       closeable
+      teleport="#app"
       position="bottom"
       class="popup-wrapper"
+      duration="0.2"
+      v-model:show="show"
       :style="{height:'auto'}"
-      teleport="#app"
-      round
     >
       <div class="popup-hos-info">
         <span>{{currentTimesInfo.date}}</span>

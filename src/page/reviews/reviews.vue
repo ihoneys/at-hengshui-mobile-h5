@@ -2,7 +2,7 @@
   <div class="reviews">
     <custom-van-nav-bar title="就诊点评" />
     <div class="reviews-base">
-      <van-image width="60px" height="60px" :src="rateInfo.img" />
+      <van-image width="60px" height="60px" radius="8" fit="cover" :src="rateInfo.img" />
       <div class="reviews-doctor">
         <h4>{{rateInfo.doctorName}}</h4>
         <div class="dep-name">

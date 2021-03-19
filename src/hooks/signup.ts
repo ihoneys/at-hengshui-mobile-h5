@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import { Toast } from 'vant'
 import { getPhoneCode } from '../common/api'
-import { encrypt } from '../common/function'
-
+import { encrypt, redirectLoginUrl, isWeixinBrower } from '../common/function'
+import { SessionStorage, LocalStorage } from 'storage-manager-js'
 const isGetCode = ref(false),
   codeText = ref('获取验证码'),
   countDown = ref(30),
@@ -28,8 +28,6 @@ export function getVerificationCode() {
     if (success) {
       countTime()
       Toast.success(infor)
-    } else {
-      Toast.fail(infor)
     }
   }
   return {
@@ -38,5 +36,33 @@ export function getVerificationCode() {
     codeText,
     countDown,
     phone,
+  }
+}
+
+export function loginSuccess() {
+  const prevRoute = SessionStorage.get('preRoute')
+  const { userId, data } = LocalStorage.get('userInfo') || ''
+  const isWechat = isWeixinBrower()
+  // 登录成功跳转逻辑
+  const toPreviousRoute = (router, isNeedSlientLogin = false) => {
+    if (isNeedSlientLogin && isWechat) {
+      //是否在微信中需要静默登录
+      redirectLoginUrl(userId, prevRoute, data)
+    } else {
+      if (prevRoute === '/user') {
+        router.push(prevRoute)
+      } else {
+        router.go(-1)
+      }
+    }
+  }
+  // 登录成功存token
+  const storeLoginInfomation = (userInfo) => {
+    LocalStorage.set('userInfo', userInfo)
+    LocalStorage.set('token', userInfo.token)
+  }
+  return {
+    toPreviousRoute,
+    storeLoginInfomation,
   }
 }

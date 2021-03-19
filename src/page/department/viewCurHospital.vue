@@ -1,16 +1,16 @@
 <template>
   <div class="hospital-info" v-show="isView">
     <div class="hospital-base">
-      <van-image width="90px" height="80px" :src="content.image" />
+      <van-image width="90" height="80" :src="content.image" />
       <div class="hospital-base-text">
         <h3>{{content.unitName}}</h3>
-        <div class="hospital-flex">
+        <div class="hospital-flex-level">
           <p>{{content.unitLevelName}}</p>
           <p>{{content.unitClassName}}</p>
         </div>
         <div class="hospital-flex">
           <van-icon name="location" />
-          <p>{{content.address}}</p>
+          <span>{{content.address}}</span>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <p>电话</p>
         <p>{{content.phone}}</p>
       </li>
-      <li>
+      <li v-if="content.webUrl">
         <p>网站</p>
         <p>{{content.webUrl}}</p>
       </li>
@@ -83,9 +83,14 @@ export default defineComponent({
   flex-direction: column;
   justify-content: space-between;
 }
-.hospital-flex {
+.hospital-flex-level {
   display: flex;
   align-items: center;
+}
+.hospital-flex {
+  * {
+    vertical-align: middle;
+  }
 }
 .hospital-cloumn {
   background-color: #fff;

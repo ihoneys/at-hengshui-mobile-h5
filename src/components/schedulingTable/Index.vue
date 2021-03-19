@@ -16,8 +16,11 @@
               v-for="(item,index) in table.week"
               class="click-active"
               :class="{'active':isIfNumber(table, item, column)}"
-              @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName)"
-            >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
+              @click.prevent="changeTextStatus(table, item, column) ? makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName): ''"
+            >
+              {{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}
+
+            </td>
           </tr>
         </table>
       </van-swipe-item>
@@ -50,6 +53,7 @@ export default defineComponent({
       }
     })
     const makeApponintment = (date, data, isNumber, dictCode, dictName) => {
+      console.log(date, data, isNumber, dictCode, dictName)
       if (!isNumber) return
       ctx.emit('clickItem', date, data, isNumber, dictCode, dictName)
     }
@@ -93,7 +97,7 @@ export default defineComponent({
 .dict-name {
   color: #333 !important;
 }
-.my-swipe{
+.my-swipe {
   height: 200px;
 }
 </style>

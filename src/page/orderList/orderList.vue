@@ -41,7 +41,7 @@
             </li>
             <li class="order-list-info-li">
               <div class="item-color">门诊费用</div>
-              <div>{{item.orderAmt}}</div>
+              <div>{{item.orderAmt}}元</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">创建时间</div>
@@ -64,18 +64,20 @@
             color="#00d2c3"
             size="small"
             class="status-btn"
+            text="立即支付"
             v-if="item.isPayButton"
             @click.stop="payOrder(item)"
-          >立即支付</van-button>
+          />
           <van-button
-            v-if="item.orderStatus == 1 || item.orderStatus == 6 "
             round
             plain
             color="#00d2c3"
             size="small"
             class="status-btn"
+            text="再次预约"
+            v-if="item.orderStatus === 1 || item.orderStatus === 6 "
             @click.stop="handleAgin(item)"
-          >再次预约</van-button>
+          />
         </div>
       </li>
     </ul>
@@ -84,7 +86,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
-import { getOrderList, getSystemTime, checkOrderStatus } from '../../common/api'
+import { getOrderList, checkOrderStatus } from '../../common/api'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
 import {
   tranformStatus,
@@ -97,10 +99,10 @@ import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   setup() {
     const state = reactive({
-      orderList: [] as any[],
+      orderList: [],
       finished: false,
       loading: false,
-      list: [] as any[],
+      list: [],
     })
     const router = useRouter()
     const { userId } = LocalStorage.get('userInfo')
@@ -113,39 +115,35 @@ export default defineComponent({
     const onLoad = async () => {
       requestParams.page++
       const { success, data } = await getOrderList(requestParams)
-      const { data: times } = await getSystemTime()
-      if (success && !isObjEmpty(data.list)) {
+      // const { data: times } = await getSystemTime()
+      if (success && !isObjEmpty(data)) {
         state.loading = false
-        state.orderList = calculatePayTime(
-          [...state.orderList, ...data.list],
-          times.systemTimeStamp
-        )
-        state.orderList = [...state.orderList, ...data.list]
+        const list = calculatePayTime(data.list, currentStamp)
+        state.orderList = [...state.orderList, ...list]
         if (state.orderList.length >= data.total) {
           state.finished = true
         }
+      } else {
+        state.finished = true
       }
     }
-    const calculatePayTime = (arr, systemTimeStamp) => {
-      const currentTime = new Date().getTime()
-      arr.forEach((obj, index) => {
-        const seeDoctorTime = Date.parse(
-          `${obj.toDate} ${obj.beginTime}`.replace(/-/g, '/')
-        )
-        if (obj.orderAmt === 0 || obj.orderAmt * 1 === 0) {
-          obj.isPayButton = false
-        }
-        if (
+    const calculatePayTime = (list, systemTimeStamp) => {
+      const isCanPay = (obj, seeDoctorTime) => {
+        return (
           systemTimeStamp - seeDoctorTime <= 0 &&
           obj.orderStatus === 3 &&
           obj.payStatus === 1
-        ) {
-          obj.isPayButton = true
-        } else {
-          obj.isPayButton = false
+        )
+      }
+      list.forEach((obj) => {
+        const treatmentTime = `${obj.toDate} ${obj.beginTime}`
+        const seeDoctorTime = Date.parse(treatmentTime.replace(/-/g, '/'))
+        if (obj.orderAmt === 0 || obj.orderAmt * 1 === 0) {
+          return (obj.isPayButton = false)
         }
+        obj.isPayButton = isCanPay(obj, seeDoctorTime) ? true : false
       })
-      return arr
+      return list
     }
     const handleAgin = (objs) => {
       const obj = Object.create(null)
@@ -210,7 +208,7 @@ export default defineComponent({
 .order-list-wrapper {
   font-size: 14px;
   background-color: #f5f5f5;
-  // height: auto;
+  min-height: calc(100vh - 46px);
 }
 .order-doctor-infos {
   display: flex;
@@ -248,6 +246,5 @@ export default defineComponent({
   margin-right: 14px;
   text-align: right;
   font-size: 14px;
-  color: #00d2c3;
 }
 </style>

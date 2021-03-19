@@ -71,20 +71,17 @@ export function getUrlParam(name: string) {
   return null
 }
 
-export function getCode(
+export function redirectLoginUrl(
   userId: string,
-  router: string,
+  routerUrl: string,
   tokenKey: string
 ): void {
-  const code = getUrlParam('code')
   const local =
     'http://www.jk-hs.com/yygh/lqt-yygh-provider/yygh-pub/pub/getHospitalOpenid' // 正式
   const APPID = 'wxe78b60aa91fcd552' // 正式
-  if (code == null || code === '') {
-    window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(
-      local
-    )}&response_type=code&scope=snsapi_base&state=${userId}_${router}_${tokenKey}#wechat_redirect`
-  }
+  window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(
+    local
+  )}&response_type=code&scope=snsapi_base&state=${userId}_${routerUrl}_${tokenKey}#wechat_redirect`
 }
 
 export function getEnv(): boolean {

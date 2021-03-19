@@ -32,7 +32,9 @@ const API = {
   URL_UPDATE_MEMBER: `${provider}/pt-platform/pub/userMember/update`,
   URL_SEARCH_API: `${provider}/yygh-pub/pub/all/list`,
   URL_REVIEWS_API: `${provider}/pt-platform/pub/registartionOrder/saveEvaluate`,
-  URL_REGISTER_LOGIN: `${auth}/jwt/registerByPhone`,
+  URL_REGISTER_LOGIN_APP: `${auth}/jwt/registerByPhone`,
+  URL_REGISTER_LOGIN: `${auth}/jwt/registerByPhoneAndOpenId`,
+  URL_H5_PAYMENT: `${provider}/weChat/wechatH5Pay`,
 }
 /**
  *
@@ -55,6 +57,14 @@ export function getPhoneCode(phone: number | string) {
 
 export function getLogin(data) {
   return post(API.URL_LOGIN, data)
+}
+
+export function registerUser(data) {
+  return postAndGet(API.URL_REGISTER_LOGIN_APP, data)
+}
+
+export function registerLogin(data) {
+  return post(API.URL_REGISTER_LOGIN, data)
 }
 
 export function getToken(params) {
@@ -183,6 +193,7 @@ export function saveEvaluate(data) {
   return post(API.URL_REVIEWS_API, data)
 }
 
-export function registerUser(data) {
-  return postAndGet(API.URL_REGISTER_LOGIN, data)
+// APP H5支付
+export function paymentAppH5(data) {
+  return post(API.URL_H5_PAYMENT, data)
 }
