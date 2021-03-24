@@ -92,7 +92,7 @@ export default defineComponent({
         Toast.fail(message || '取消失败')
       }
       setTimeout(() => {
-        router.push(-1)
+        router.go(-1)
       }, 1000)
     }
     const back = () => router.go(-1)

@@ -12,7 +12,7 @@ let httpCode = {
   502: '网关错误',
   504: '网关超时',
 }
-const baseURL: string = 'http://jk-hs.com/yygh'
+const baseURL: string = 'https://jk-hs.com/yygh'
 // const baseURL: string = 'http://10.1.95.136:8400'
 
 const instance = axios.create({
@@ -25,6 +25,7 @@ instance.interceptors.request.use(
     config.headers['LQT-TOKEN'] = LocalStorage.get('token') || ''
     Toast.loading({
       message: '加载中...',
+      duration: 30000,
       forbidClick: true,
     })
     if (config.method === 'get') {

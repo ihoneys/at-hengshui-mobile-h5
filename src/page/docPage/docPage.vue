@@ -141,7 +141,7 @@ export default defineComponent({
       const parsingResult = parsingSchedulingData(res.data[0].schedules)
       if (!res.success && isObjEmpty(parsingResult)) {
         createMessage('暂无排班数据！', '提示', () => {
-          router.push('/')
+          router.push('/home')
         })
       }
       if (res.success) {

@@ -1,7 +1,15 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  RouteRecordRaw,
+  createWebHashHistory,
+} from 'vue-router'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
+import { getUrlParams } from '../common/function'
+import methodInAppEnv from '../hooks/fromApp'
 import Home from '@/page/home/home.vue'
 const routerHistory = createWebHistory()
+const routerHash = createWebHashHistory()
 const title = {
   user: '个人中心',
   home: '首页',
@@ -25,6 +33,10 @@ const title = {
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
     name: 'home',
     component: Home,
     meta: { isTabBar: true },
@@ -137,17 +149,27 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: routerHistory,
+  history: routerHash,
   routes,
 })
 router.beforeEach(({ meta, fullPath }, form, next) => {
   console.log(fullPath, 'route')
+  console.log(form)
+  const urlParams = getUrlParams()
   if (
     fullPath !== '/login' &&
     fullPath !== '/register/registered' &&
     fullPath !== '/register/changePassword'
   ) {
-    SessionStorage.set('preRoute', fullPath)
+    let routePath = fullPath
+    if (Object.values(urlParams).length) {
+      const splitPath = fullPath.split('?')[0]
+      routePath = splitPath
+      const { getAuthortionLogin } = methodInAppEnv()
+      getAuthortionLogin()
+      console.log(566)
+    }
+    SessionStorage.set('preRoute', routePath)
   }
 
   const { requiredLogin } = meta
@@ -155,7 +177,8 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
   if (LocalStorage.has('userInfo')) {
     token = LocalStorage.get('userInfo')
   }
-  if (requiredLogin && !token) {
+  const { tokenKey } = urlParams
+  if (requiredLogin && !token && !tokenKey) {
     next({
       name: 'login',
       replace: true,

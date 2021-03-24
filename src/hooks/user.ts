@@ -6,9 +6,11 @@ export default () => {
   const state = reactive({
     memberList: [],
   })
-  const { userId } = LocalStorage.get('userInfo')
-  const params = { userId }
+  console.log(LocalStorage.get('userInfo'), 'userInfo,UsreInfo')
+
   const getUserMemberList = async () => {
+    const { userId } = LocalStorage.get('userInfo')
+    const params = { userId }
     const { success, data } = await getUserMember(params)
     if (success) {
       state.memberList = tranformData(data)
@@ -26,9 +28,8 @@ export default () => {
     })
     return data
   }
-  onMounted(() => {
-    getUserMemberList()
-  })
+  getUserMemberList()
+
   return {
     ...toRefs(state),
   }

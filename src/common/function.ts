@@ -2,7 +2,7 @@ import { Dialog } from 'vant'
 import { sm4Config } from '../config/index'
 import { patternObj } from './regularData'
 import crypt from 'gm-crypt'
-import moment from 'moment'
+import moment, { unix } from 'moment'
 const SM4 = crypt.sm4
 const createSm4 = new SM4(sm4Config)
 
@@ -64,11 +64,22 @@ export function computedAge(birthDay: string): number {
   return new Date().getFullYear() - new Date(birthDay).getFullYear()
 }
 // 截取code码
-export function getUrlParam(name: string) {
-  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
-  var r = window.location.search.substr(1).match(reg)
-  if (r != null) return unescape(r[2])
-  return null
+// 获取url中的参数--
+export function getUrlParams(): any {
+  var hre = window.location.href
+  var query = hre.split('?')[1]
+  let obj = {}
+  if (query) {
+    var queryParams = query.split('&')
+    if (!queryParams) return false
+    for (let i in queryParams) {
+      var typeArr = queryParams[i].split('=')
+      let key = typeArr[0]
+      let value = typeArr[1]
+      obj[key] = value
+    }
+  }
+  return obj
 }
 
 export function redirectLoginUrl(
@@ -184,3 +195,5 @@ export function byPatientIdGetBrithdayAndSex(value) {
     radio,
   }
 }
+
+

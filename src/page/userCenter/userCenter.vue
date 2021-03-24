@@ -40,7 +40,7 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import { idEncrypt, telEncrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
 import { tranformDecrypt } from '../../hooks/transform'
@@ -89,11 +89,11 @@ export default defineComponent({
     }
     return {
       columnList,
-      memberList, 
+      memberList,
       tranformDecrypt,
       clickViewDetail,
       telEncrypt,
-      idEncrypt
+      idEncrypt,
     }
   },
 })

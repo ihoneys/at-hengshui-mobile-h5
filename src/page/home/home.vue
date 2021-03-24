@@ -16,8 +16,8 @@
 
 <script lang='ts'>
 import { defineComponent, onMounted, ref } from 'vue'
-import { getHospitalList, dictionaryQuery } from '../../common/api'
-import { SessionStorage } from 'storage-manager-js'
+import { getHospitalList } from '../../common/api'
+
 import Hospital from '@/components/Hospital/Index.vue'
 import Search from '../search/search.vue'
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
     Search,
   },
   setup() {
-    let hospitalData = ref([])
+    const hospitalData = ref([])
     const isSearch = ref(false)
     const defaultVal = ref(0)
     const sortVal = ref('a')
@@ -42,25 +42,7 @@ export default defineComponent({
       const params = { page: 1, size: 10000 }
       const { data: res } = await getHospitalList(params)
       hospitalData.value = res.list
-      if (!SessionStorage.has('dictionarys')) {
-        getDictionarys()
-      }
     })
-    const getDictionarys = async () => {
-      const { success, data } = await dictionaryQuery()
-      if (success && !SessionStorage.has('dictionarys')) {
-        SessionStorage.set('dictionarys', data)
-        const needArray = [
-          { setName: 'id_type', getName: 'id_type' },
-          { setName: 'payTypeArr', getName: 'pay_type' },
-          { setName: 'orderTypeArr', getName: 'order_status' },
-        ]
-        needArray.forEach((v) => {
-          const baseData = data.filter((el) => el.dictType == v.getName)
-          SessionStorage.set(v.setName, baseData)
-        })
-      }
-    }
     return {
       hospitalData,
       isSearch,

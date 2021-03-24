@@ -1,7 +1,12 @@
 import { ref } from 'vue'
 import { Toast } from 'vant'
 import { getPhoneCode } from '../common/api'
-import { encrypt, redirectLoginUrl, isWeixinBrower } from '../common/function'
+import {
+  encrypt,
+  redirectLoginUrl,
+  isWeixinBrower,
+} from '../common/function'
+import { sendToAppMessage } from '../common/uniPostMessage'
 import { SessionStorage, LocalStorage } from 'storage-manager-js'
 const isGetCode = ref(false),
   codeText = ref('获取验证码'),
@@ -58,8 +63,13 @@ export function loginSuccess() {
   }
   // 登录成功存token
   const storeLoginInfomation = (userInfo) => {
+    LocalStorage.deleteAll()
     LocalStorage.set('userInfo', userInfo)
     LocalStorage.set('token', userInfo.token)
+    if (SessionStorage.has('isApp')) {
+      console.log('isApp')
+      sendToAppMessage(userInfo.data, userInfo.token)
+    }
   }
   return {
     toPreviousRoute,

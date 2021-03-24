@@ -1,6 +1,6 @@
 <template>
-  <van-tabbar route fixed active-color="#00d2c3" inactive-color="#333333">
-    <van-tabbar-item replace to="/">
+  <van-tabbar route fixed v-model="active" active-color="#00d2c3" inactive-color="#333333">
+    <van-tabbar-item replace to="/home">
       <span>首页</span>
       <template #icon="props">
         <img :src="props.active ? home.active : home.inactive" />
@@ -25,7 +25,7 @@ export default defineComponent({
   name: 'TabBar',
   setup() {
     const state = reactive({
-      active: 'home',
+      active: '/home',
       me: {
         active: activeMe,
         inactive: inactiveMe,

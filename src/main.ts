@@ -4,6 +4,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 // import store from './store'
 import router from './router'
+import { LocalStorage, SessionStorage } from 'storage-manager-js'
+import { LOCALSTORAGE_SYMBOL, SESSIONSTORAGE_SYMBOL } from './symbol/index'
 import {
   Tabbar,
   TabbarItem,
@@ -85,5 +87,12 @@ app
   .use(Rate)
   .use(Checkbox)
   .mount('#app')
+
+
+// app.provide('LOCALSTORAGE_SYMBOL', LocalStorage)
+// app.provide('SESSIONSTORAGE_SYMBOL', SessionStorage)
+
+app.config.globalProperties.$LocalStorage = LocalStorage
+app.config.globalProperties.$SessionStorage = SessionStorage
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body)

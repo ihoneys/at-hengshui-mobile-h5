@@ -80,7 +80,7 @@ import { defineComponent, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getVerificationCode, loginSuccess } from '../../hooks/signup'
 import { phoneRexg } from '../../common/regularData'
-import { registerLogin, getToken } from '../../common/api'
+import { registerLogin } from '../../common/api'
 import { encrypt } from '../../common/function'
 import { Toast } from 'vant'
 export default defineComponent({

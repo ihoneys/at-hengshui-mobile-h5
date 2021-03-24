@@ -147,7 +147,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { addUserMember, getPhoneCode, queryMemberInfo } from '../../common/api'
+import { addUserMember, queryMemberInfo } from '../../common/api'
+import { getVerificationCode } from '../../hooks/signup'
 import { patternObj, phoneRexg } from '../../common/regularData'
 import {
   tranformPickerType,
@@ -163,7 +164,6 @@ export default defineComponent({
     const router = useRouter()
     const { id } = useRoute().params
     const state = reactive({
-      codeText: '获取验证码',
       member: {
         birthDay: '',
         patientId: '',
@@ -174,12 +174,10 @@ export default defineComponent({
         code: '',
         memberType: '',
         idType: '',
-        // diagnosticCardNo: '',
       },
       minDate: new Date(1900, 0, 1),
       maxDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
       patientTypeList: [],
-      isGetCode: false,
       showPicker: false,
       isPickerDate: false,
     })
@@ -235,28 +233,8 @@ export default defineComponent({
         })
       }
     }
-    const countTime = () => {
-      state.isGetCode = true
-      let countDown = 29
-      let timer = setInterval(() => {
-        if (countDown !== 0) {
-          state.codeText = `重新发送${countDown--}`
-        } else {
-          state.isGetCode = false
-          state.codeText = '获取验证码'
-          countDown = 29
-          clearInterval(timer)
-        }
-      }, 1000)
-    }
-    const onGetCode = async () => {
-      countTime()
-      const { success, infor } = await getPhoneCode(encrypt(state.member.phone))
-      if (success) {
-        countTime()
-        Toast.success(infor)
-      }
-    }
+    const { onGetCode, isGetCode, codeText, countDown } = getVerificationCode()
+
     const onBlur = () => {
       if (state.member.idType !== '01') return
       const { birthDay, radio } = byPatientIdGetBrithdayAndSex(
@@ -272,7 +250,9 @@ export default defineComponent({
       state.member.idName = value.text
       state.member.idType = value.value
       state.showPicker = false
-      patternRegExp = patternObj[value.value]?.rules
+      if (patternObj[value.value]) {
+        patternRegExp = patternObj[value.value].rules
+      }
     }
     const confirmDate = (value) => {
       const date = formateDate(value, false)
@@ -290,6 +270,9 @@ export default defineComponent({
       patternRegExp,
       buttonName,
       router,
+      isGetCode,
+      codeText,
+      countDown,
     }
   },
 })

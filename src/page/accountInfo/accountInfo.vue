@@ -82,7 +82,7 @@
         </div>
       </van-form>
       <div class="pd-14">
-        <router-link to="/register/1">
+        <router-link to="/register/changePassword">
           <van-button class="mt-20" round block color="#ff976a" text="修改密码" />
         </router-link>
         <van-button class="mt-20" round block color="#AAAAAA" text="退 出" @click="handleExit" />

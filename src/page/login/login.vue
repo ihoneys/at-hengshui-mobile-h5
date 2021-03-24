@@ -149,6 +149,7 @@ export default defineComponent({
         }
         const { success, data: userInfo } = await getToken(userParams)
         if (success) {
+          console.log(6666,'储存')
           storeLoginInfomation(Object.assign(userInfo, res))
         }
         if (res.modifySecret === 1 && success) {
@@ -160,6 +161,7 @@ export default defineComponent({
               toRegister(1)
             })
             .catch(() => {
+              console.log(6666)
               toPreviousRoute(router)
             })
         } else {
