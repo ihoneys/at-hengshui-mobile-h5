@@ -154,7 +154,7 @@ export default defineComponent({
         SessionStorage.delete('currentDoctorInfo')
       }
       SessionStorage.set('currentDoctorInfo', objs)
-      router.push('docPage')
+      router.push('DoctorPage')
     }
     const handleOrder = (orderDetail) => {
       setOrderStore(orderDetail)

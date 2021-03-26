@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <router-view />
-    <TabBar v-if="this.$route.meta.isTabBar && !isAppEnv" />
+    <TabBar v-if="this.$route.meta.isTabBar && !runEnvApp" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
-import methodInAppEnv from './hooks/fromApp'
+import { defineComponent, ref } from 'vue'
+import { getUrlParams } from './common/function'
+import { SessionStorage } from 'storage-manager-js'
 import initTypeList from './init'
 import TabBar from '@/components/Tabbar/Index.vue'
 export default defineComponent({
@@ -15,10 +16,15 @@ export default defineComponent({
     TabBar,
   },
   setup() {
-    const { isAppEnv, getAuthortionLogin } = methodInAppEnv()
+    const runEnvApp = ref(false)
+    const { from, tokenKey } = getUrlParams()
+    if (from || tokenKey) {
+      SessionStorage.set('isApp', true)
+      runEnvApp.value = true
+    }
     initTypeList() // 默认获取医生等级、身份证基础数据
     return {
-      isAppEnv,
+      runEnvApp,
     }
   },
 })

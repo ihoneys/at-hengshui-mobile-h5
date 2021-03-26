@@ -141,6 +141,10 @@
         </div>
       </van-form>
     </div>
+    <div class="no-data" v-if="!dataList.length && !isIncreased">
+      <img width="100" height="100" lazy-load src="@/assets/nothing_2.png" />
+      <p>暂无数据</p>
+    </div>
   </div>
 </template>
 

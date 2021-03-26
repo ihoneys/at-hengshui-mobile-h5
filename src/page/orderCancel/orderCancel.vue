@@ -109,7 +109,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .order-cancel {
   padding: 14px;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #f5f5f5;
   font-size: 14px;
 }

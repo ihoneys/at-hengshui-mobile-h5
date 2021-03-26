@@ -103,7 +103,7 @@ export default defineComponent({
         SessionStorage.delete('currentDoctorInfo')
       }
       SessionStorage.set('currentDoctorInfo', objs)
-      router.push('docPage')
+      router.push('DoctorPage')
     }
     return {
       tranformStatus,

@@ -12,15 +12,21 @@
           </tr>
           <tr v-for="column in table.timeTypes">
             <td class="dict-name">{{column.dictName}}</td>
-            <td
-              v-for="(item,index) in table.week"
-              class="click-active"
-              :class="{'active':isIfNumber(table, item, column)}"
-              @click.prevent="changeTextStatus(table, item, column) ? makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName): ''"
-            >
-              {{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}
-
-            </td>
+            <template v-if="!isProcessData">
+              <td
+                v-for="(item,index) in table.week"
+                class="click-active"
+                :class="{'active':isIfNumber(table, item, column)}"
+                @click.prevent="changeTextStatus(table, item, column) ? makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName): ''"
+              >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
+            </template>
+            <template v-else>
+              <td
+                :class="{'active':filtersText(table.date[item.date],column.dictCode)==='预约'}"
+                v-for="(item,index) in table.week"
+                class="click-active"
+              >{{filtersText(table.date[item.date],column.dictCode)}}</td>
+            </template>
           </tr>
         </table>
       </van-swipe-item>
@@ -34,10 +40,11 @@ import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
-    tableData: Array
+    tableData: Array,
+    isProcessData: Boolean
   },
   setup (props, ctx) {
-    console.log(props.tableData, 8888)
+    console.log(props.tableData, props.isProcessData, 8888)
     const isIfNumber = computed(() => {
       return function (table, item, column) {
         const hasDate = table.date[item.date]
@@ -52,6 +59,12 @@ export default defineComponent({
         return hasDate && hasDate[hasTimeShort]
       }
     })
+    const filtersText = computed(() => {
+      return function (date, dictCode) {
+        if (!date || !date[dictCode] || !date[dictCode].isYuyue) return ''
+        return date[dictCode].isYuyue ? '预约' : '已满'
+      }
+    })
     const makeApponintment = (date, data, isNumber, dictCode, dictName) => {
       console.log(date, data, isNumber, dictCode, dictName)
       if (!isNumber) return
@@ -62,7 +75,8 @@ export default defineComponent({
       transformDate,
       isIfNumber,
       changeTextStatus,
-      makeApponintment
+      makeApponintment,
+      filtersText
     }
 
   }

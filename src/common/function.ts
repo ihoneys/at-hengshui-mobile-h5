@@ -2,7 +2,7 @@ import { Dialog } from 'vant'
 import { sm4Config } from '../config/index'
 import { patternObj } from './regularData'
 import crypt from 'gm-crypt'
-import moment, { unix } from 'moment'
+import moment from 'moment'
 const SM4 = crypt.sm4
 const createSm4 = new SM4(sm4Config)
 
@@ -14,6 +14,7 @@ export function createMessage(
   Dialog.alert({
     title,
     message,
+    allowHtml: true,
   }).then(() => {
     callBack()
   })
@@ -107,23 +108,99 @@ export function getCustomDate(n: number = 0): string {
 }
 
 export const parsingSchedulingData = function (arr) {
-  if (typeof arr === 'string') {
-    arr = JSON.parse(arr)
+  console.log(arr)
+  if (Array.isArray(arr) && !arr.length) {
+    return { newData: [], isProcess: false }
   }
-  let objDate = {} //医生排班日期的数组对象
-  for (let v in arr) {
-    let objTimeType = {} //医生某一天的排班
-    let d = arr[v] //获取对象的值
-    let date = d.toDate // 获取日期
-    let timetype = d.timeType // 获取时间段类型(上午、下午、晚上)
-    objTimeType[timetype] = d
-    if (objDate[date] == null) {
-      objDate[date] = objTimeType
-    } else {
-      objDate[date][timetype] = d
+  const isNeedProessData = isProcessData(arr)
+  let obj = {}
+  let timeTypeObj = {}
+  let list = []
+  if (isNeedProessData) {
+    arr.forEach((cur, index) => {
+      list.push(cur)
+      if (arr[index + 1] && cur.toDate === arr[index + 1].toDate) {
+        // 如果日期前后相等
+        timeTypeObj[cur.timeType] = {
+          list,
+        }
+        obj[cur.toDate] = timeTypeObj
+        if (cur.timeType !== arr[index + 1].timeType) {
+          // 如果上午下午不相等
+          list = []
+        }
+      } else {
+        timeTypeObj[cur.timeType] = {
+          list,
+        }
+        obj[cur.toDate] = timeTypeObj
+        list = [] // 清空push ，下一个继续
+        timeTypeObj = {} // 清空储存的
+      }
+    })
+
+    for (const key in obj) {
+      const cur = obj[key]
+
+      if (!cur['am']) {
+        cur['am'] = {}
+      }
+      if (!cur['pm']) {
+        cur['pm'] = {}
+      }
+      const periodListAm = cur['am'].list
+      const periodListPm = cur['pm'].list
+
+      const filterAm =
+        Array.isArray(periodListAm) && periodListAm.some((v) => v.isYuyue)
+      const filterPm =
+        Array.isArray(periodListPm) && periodListPm.some((v) => v.isYuyue)
+      cur['am'].isYuyue = filterAm ? true : false
+      cur['pm'].isYuyue = filterPm ? true : false
+    }
+    console.log(obj, '處理玩了')
+
+    return {
+      newData: obj,
+      isProcess: true,
+    }
+  } else {
+    let objDate = {} //医生排班日期的数组对象
+    for (let v in arr) {
+      let objTimeType = {} //医生某一天的排班
+      let d = arr[v] //获取对象的值
+      let date = d.toDate // 获取日期
+      let timetype = d.timeType // 获取时间段类型(上午、下午、晚上)
+      objTimeType[timetype] = d
+      if (objDate[date] == null) {
+        objDate[date] = objTimeType
+      } else {
+        objDate[date][timetype] = d
+      }
+    }
+    return {
+      newData: objDate,
+      isProcess: false,
     }
   }
-  return objDate
+
+  function isProcessData(arr) {
+    if (!arr) return false
+    let result = false
+    for (let i = 0, len = arr.length; i < len; i++) {
+      let curDate = arr[i].toDate
+      let curTimeType = arr[i].timeType
+      for (let k = i + 1; k < len; k++) {
+        let prevDate = arr[k].toDate
+        let prevTimeType = arr[k].timeType
+        if (curDate === prevDate && curTimeType === prevTimeType) {
+          result = true
+          break
+        }
+      }
+    }
+    return result
+  }
 }
 
 export function isWeixinBrower(): boolean {
@@ -195,5 +272,3 @@ export function byPatientIdGetBrithdayAndSex(value) {
     radio,
   }
 }
-
-

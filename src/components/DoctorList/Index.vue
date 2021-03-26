@@ -2,12 +2,18 @@
   <div class="doctor-component">
     <router-link
       class="doctor-list"
-      to="/docPage"
+      to="/DoctorPage"
       v-for="column in doctorList"
       :key="column.unitId"
       @click.native="saveItem(column)"
     >
-      <van-image width="60" height="80" radius="6" fit="cover" :src="column.image ? column.image: defaultImg" />
+      <van-image
+        width="60"
+        height="80"
+        radius="6"
+        fit="cover"
+        :src="column.image ? column.image: defaultImg"
+      />
       <div class="base-info">
         <div class="base-name">
           <span class="base-doc-name">{{column.doctorName}}</span>
@@ -20,10 +26,11 @@
         </div>
       </div>
       <van-button
+        round
+        :color="column.isYuyue?'':'#ccc'"
         class="column-button"
         type="primary"
         size="small"
-        round
         v-if="showBtnStatus"
       >{{changeButtonName(column.isYuyue)}}</van-button>
     </router-link>

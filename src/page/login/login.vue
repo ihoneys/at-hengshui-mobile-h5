@@ -161,7 +161,6 @@ export default defineComponent({
               toRegister(1)
             })
             .catch(() => {
-              console.log(6666)
               toPreviousRoute(router)
             })
         } else {

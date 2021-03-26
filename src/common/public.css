@@ -9,6 +9,11 @@ button {
   outline: none;
 }
 
+/*设置全局的字体*/
+div {
+  font-family: '黑体', Arial, Helvetica, sans-serif;
+}
+
 .mt-10 {
   margin-top: 10px;
 }
@@ -20,4 +25,15 @@ button {
 }
 .mr-10 {
   margin-right: 10px;
+}
+
+.no-data {
+  text-align: center;
+  padding-top: 15px;
+  color: #999;
+  font-size: 14px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { getDepartmentList } from '../../common/api'
+import { getDepartmentList, getHospitalNotice } from '../../common/api'
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Toast } from 'vant'
@@ -37,6 +37,7 @@ import Search from '../search/search.vue'
 import ViewHospital from './viewCurHospital.vue'
 import moment from 'moment'
 import { SessionStorage } from 'storage-manager-js'
+import { createMessage, isObjEmpty } from '../../common/function'
 export default defineComponent({
   name: 'department',
   components: {
@@ -50,20 +51,17 @@ export default defineComponent({
       isSearch: false,
       isView: false,
     })
-    onMounted(() => {
-      getDepartmentData()
-    })
     const route = useRoute()
     const router = useRouter()
     const { unitName } = SessionStorage.get('currentHospital')
+    const { id: unitId } = route.params
+    const params = {
+      unitId,
+      beginTime: moment(new Date()).format('YYYY-MM-DD'),
+      endTime: moment(new Date()).add(30, 'd').format('YYYY-MM-DD'),
+      timeType: '',
+    }
     const getDepartmentData = async () => {
-      const { id: unitId } = route.params
-      const params = {
-        unitId,
-        beginTime: moment(new Date()).format('YYYY-MM-DD'),
-        endTime: moment(new Date()).add(30, 'd').format('YYYY-MM-DD'),
-        timeType: '',
-      }
       const { success, data } = await getDepartmentList(params)
       if (success && Array.isArray(data) && data.length > 0) {
         state.treeData = transformList(data)
@@ -76,6 +74,14 @@ export default defineComponent({
         })
       }
     }
+    const getNotice = async () => {
+      const { success, unitNotice } = await getHospitalNotice(params)
+      if (isObjEmpty(unitNotice)) return
+      const { content, noticeTitle } = unitNotice
+      createMessage(content, noticeTitle)
+    }
+    getDepartmentData()
+    getNotice()
     const transformList = (data) => {
       data.forEach((item) => {
         const children = [] as any[]
@@ -91,14 +97,11 @@ export default defineComponent({
     const onClickNav = (index) => {
       state.mainActiveIndex = index
     }
-    const onClickItem = (data) => {
-      SessionStorage.set('currentDep', data.depName)
+    const onClickItem = ({ depName, depId, unitId }) => {
+      SessionStorage.set('currentDep', depName)
+      SessionStorage.set('sendParams', { hosId: unitId, deptId: depId })
       router.push({
-        name: 'departmentDoctor',
-        params: {
-          depId: data.depId,
-          unitId: data.unitId,
-        },
+        name: 'DepartmentDoctor',
       })
     }
     const onClickLeft = () => {
@@ -139,7 +142,8 @@ export default defineComponent({
       color: #ffffff;
       font-size: 3vw;
       background: #00d2c3;
-      padding: 2vw;
+      width: 90px;
+      height: 35px;
       border: none;
       margin-right: 4vw;
     }

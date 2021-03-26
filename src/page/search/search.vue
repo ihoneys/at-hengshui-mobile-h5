@@ -121,7 +121,7 @@ export default defineComponent({
         if (depts.length) {
           depts.forEach((v) => {
             state.depts.push({
-              path: `departmentDoctor/${v.depId}/${v.unitId}`,
+              path: `DepartmentDoctor/${v.depId}/${v.unitId}`,
               label: v.depName,
               isLeftIcon: false,
             })

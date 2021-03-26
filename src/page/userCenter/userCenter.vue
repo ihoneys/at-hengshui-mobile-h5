@@ -3,8 +3,13 @@
     <div class="column-item">
       <router-link class="column-header" to="/accountInfo">
         <div class="custom-title-flex">
-          <van-image width="60" height="60" round src="https://img01.yzcdn.cn/vant/cat.jpeg" />
-          <div class="mg-left">未填写名字</div>
+          <!-- <van-image width="60" height="60" round src="https://img01.yzcdn.cn/vant/cat.jpeg" /> -->
+          <van-image width="60" height="60" round src />
+          <div
+            class="mg-left"
+            v-if="isApp && accountInfo.patientName"
+          >{{encrypt(accountInfo.patientName)}}</div>
+          <div class="mg-left" v-else>未填写名字</div>
         </div>
         <van-icon name="arrow" />
       </router-link>
@@ -40,9 +45,10 @@
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, onMounted } from 'vue'
-import { idEncrypt, telEncrypt } from '../../common/function'
+import { defineComponent } from 'vue'
+import { idEncrypt, telEncrypt, encrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
+import { queryMemberInfo } from '../../common/api'
 import { tranformDecrypt } from '../../hooks/transform'
 import ColumnList from '@/components/ColumnList/Index.vue'
 import { useRouter } from 'vue-router'
@@ -76,7 +82,19 @@ export default defineComponent({
         isLeftIcon: false,
       },
     ]
+    const isApp = SessionStorage.get('isApp') || false
+    let accountInfo = {}
     const router = useRouter()
+    const getAccountInfo = async () => {
+      const { success, data } = await queryMemberInfo()
+      if (success) {
+        accountInfo = data
+        SessionStorage.set('accountInfo', data)
+      }
+    }
+    if (!SessionStorage.has('accountInfo')) {
+      getAccountInfo()
+    }
     const { memberList } = getUserMemberHooks()
     const clickViewDetail = (column) => {
       SessionStorage.set('currentMember', column)
@@ -94,6 +112,9 @@ export default defineComponent({
       clickViewDetail,
       telEncrypt,
       idEncrypt,
+      accountInfo,
+      isApp,
+      encrypt,
     }
   },
 })

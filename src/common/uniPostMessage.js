@@ -1,11 +1,12 @@
-export function sendToAppMessage (tokenkey, token) {
-    console.log(uni.postMessage, '79999')
+export function sendToAppMessage (tokenkey, token, signOut = false) {
+    let action = {
+        message: token,
+        token: tokenkey,
+    }
+    if (signOut) action = 1
     uni.postMessage({
         data: {
-            action: {
-                message: token,
-                token: tokenkey,
-            },
+            action,
         },
     })
 }

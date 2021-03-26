@@ -38,6 +38,7 @@ import {
   Rate,
   Checkbox,
   Dialog,
+  NoticeBar,
 } from 'vant'
 import VanNavBar from '@/components/NavBar/Index.vue'
 import 'vant/lib/index.css'
@@ -45,9 +46,9 @@ import 'amfe-flexible/index.js'
 import 'babel-polyfill'
 import './common/public.css'
 
-import VConsole from 'vconsole'
-let vconsole = new VConsole()
-export default vconsole
+// import VConsole from 'vconsole'
+// let vconsole = new VConsole()
+// export default vconsole
 
 console.log(import.meta.env.MODE, '环境变量')
 const app = createApp(App)
@@ -86,8 +87,8 @@ app
   .use(SwipeItem)
   .use(Rate)
   .use(Checkbox)
+  .use(NoticeBar)
   .mount('#app')
-
 
 // app.provide('LOCALSTORAGE_SYMBOL', LocalStorage)
 // app.provide('SESSIONSTORAGE_SYMBOL', SessionStorage)

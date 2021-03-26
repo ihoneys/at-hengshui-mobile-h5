@@ -12,17 +12,20 @@ let httpCode = {
   502: '网关错误',
   504: '网关超时',
 }
-const baseURL: string = 'https://jk-hs.com/yygh'
-// const baseURL: string = 'http://10.1.95.136:8400'
+const baseURL: string = 'http://jk-hs.com/yygh'
+const productionURL: string = 'http://jk-hs.com/yygh'
+const getEnv = import.meta.env.MODE
 
 const instance = axios.create({
   timeout: 30000,
-  baseURL,
+  baseURL: getEnv === 'development' ? baseURL : productionURL,
 })
 
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     config.headers['LQT-TOKEN'] = LocalStorage.get('token') || ''
+    config.headers['Access-Control-Allow-Origin'] = `*`
+
     Toast.loading({
       message: '加载中...',
       duration: 30000,
@@ -63,7 +66,7 @@ instance.interceptors.response.use(
       })
     }
     if (response.status === 200) {
-      if (code === 40101) {
+      if (code === 40101 || message === '登陆超时，请从公众号进入登陆') {
         Dialog({
           title: '提示',
           message: '登录过期',

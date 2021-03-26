@@ -15,7 +15,12 @@
     <div class="table-wrapper">
       <div>{{doctorInfo.unitName}}</div>
       <div class="depName">{{doctorInfo.depName}}</div>
-      <table-component v-if="requestCount >= 1" :tableData="schedulingData" @clickItem="clickItem"></table-component>
+      <TableComponent
+        v-if="requestCount >= 1"
+        :tableData="schedulingData"
+        @clickItem="clickItem"
+        :isProcessData="isProcess"
+      />
       <div class="doctor-experts">
         <div class="table-bottom">
           <h3 v-if="doctorInfo.introduction" class="table-bottom-title">简介</h3>
@@ -64,17 +69,30 @@
         </div>
       </div>
     </van-popup>
+    <van-popup v-model="periodShow" position="bottom" :style="{ height: '30%' }">
+      <div class="period-header">请选择时间段</div>
+      <ul class="time-list">
+        <li v-for="(item,index) in allTimeList" :key="index" @click.stop="clickTime(item)">
+          <span>{{item.endTime}}</span>
+        </li>
+      </ul>
+    </van-popup>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs, nextTick } from 'vue'
-import { getSchedulingData, getSelectSchedulingTime } from '../../common/api'
+import {
+  getSchedulingData,
+  getSelectSchedulingTime,
+  getDoctorInfo,
+} from '../../common/api'
 import {
   getCustomDate,
   parsingSchedulingData,
   isObjEmpty,
   createMessage,
+  getUrlParams,
 } from '../../common/function'
 import { SessionStorage } from 'storage-manager-js'
 import { transformWeek } from '../../hooks/date'
@@ -97,7 +115,7 @@ interface OrderInfo {
   scheduleId: string
 }
 export default defineComponent({
-  name: 'docPage',
+  name: 'DoctorPage',
   components: {
     TableComponent,
   },
@@ -106,12 +124,15 @@ export default defineComponent({
     const state = reactive({
       schedulingData: [] as any[],
       timesArray: [] as any[],
+      allTimeList: [],
       doctorInfo: {},
       isFolding: true,
       show: false,
       currentTimesInfo: {} as CurrentTimes,
       requestCount: 0,
       isShowCollapse: true,
+      isProcess: false,
+      periodShow: false,
     })
     const orderInfo: OrderInfo = {
       guaHaoAmt: '',
@@ -124,22 +145,40 @@ export default defineComponent({
       detlId: '',
       scheduleId: '',
     }
-    const { depId, doctorId, unitId } = SessionStorage.get('currentDoctorInfo')
-    const sendData = {
-      doctorId,
-      depId,
-      unitId,
-      beginDate: getCustomDate(),
-      endDate: getCustomDate(6),
-      currentWeek: 0,
-    }
+    let currentDoctorInfo
     onMounted(() => {
-      getSchedulingDatas(sendData)
+      const { doctorId } = getUrlParams()
+      if (doctorId) {
+        // 从智能导诊进入
+        getDoctorBaseInfo(doctorId)
+      } else {
+        // 正常入口进入
+        currentDoctorInfo = SessionStorage.get('currentDoctorInfo')
+        getSchedulingDatas(currentDoctorInfo)
+      }
     })
-    const getSchedulingDatas = async (sendData) => {
+
+    const getSchedulingDatas = async (
+      currentDoctorInfo,
+      beginDate = getCustomDate(),
+      endDate = getCustomDate(6),
+      currentWeek = 0
+    ) => {
+      const sendData = {
+        doctorId: currentDoctorInfo.doctorId,
+        depId: currentDoctorInfo.depId,
+        unitId: currentDoctorInfo.unitId,
+        beginDate,
+        endDate,
+        currentWeek,
+      }
       const res = await getSchedulingData(sendData)
-      const parsingResult = parsingSchedulingData(res.data[0].schedules)
-      if (!res.success && isObjEmpty(parsingResult)) {
+      const { isProcess, newData } = parsingSchedulingData(
+        JSON.parse(res.data[0].schedules)
+      )
+      console.log(isProcess, 'isProcess')
+      state.isProcess = isProcess
+      if (!res.success && isObjEmpty(newData)) {
         createMessage('暂无排班数据！', '提示', () => {
           router.push('/home')
         })
@@ -158,7 +197,7 @@ export default defineComponent({
         objs.data = res.data
         objs.timeTypes = res.timeTypes
         objs.week = res.week
-        objs.date = parsingResult
+        objs.date = newData
         schedulingList.push(objs)
         state.schedulingData = [...state.schedulingData, ...schedulingList]
         state.doctorInfo = res.data[0]
@@ -167,14 +206,31 @@ export default defineComponent({
           sendData.beginDate = getCustomDate(7)
           sendData.endDate = getCustomDate(13)
           sendData.currentWeek = 1
-          getSchedulingDatas(sendData)
+          setTimeout(() => {
+            getSchedulingDatas(
+              currentDoctorInfo,
+              getCustomDate(7),
+              getCustomDate(13),
+              1
+            )
+          }, 100)
         }
       }
     }
+
+    const getDoctorBaseInfo = async (doctorId) => {
+      const params = { doctorId }
+      const res = await getDoctorInfo(params)
+      console.log(res)
+      if (!isObjEmpty(res)) {
+        getDoctorBaseInfo(res.all[0])
+      }
+    }
+
     const refIntroduction = (el: HTMLElement) => {
       if (el) {
         nextTick(() => {
-          const rowsHeight = 57
+          const rowsHeight = 48
           let textHeight = window.getComputedStyle(el).height
           textHeight = textHeight.replace('px', '')
           if (Number(textHeight) < rowsHeight) {

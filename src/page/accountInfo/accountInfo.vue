@@ -123,9 +123,10 @@ import {
 } from '../../common/function'
 import { patternObj as pattern } from '../../common/regularData'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
-import { saveUserMember, queryMemberInfo } from '../../common/api'
+import { saveUserMember } from '../../common/api'
 import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
+import { sendToAppMessage } from '../../common/uniPostMessage'
 const date = new Date()
 const patternObj = pattern
 export default defineComponent({
@@ -152,20 +153,22 @@ export default defineComponent({
       isCheckUserInfo()
     })
     const { userId } = LocalStorage.get('userInfo')
+    const isApp = SessionStorage.get('isApp') || false
     let patientType = SessionStorage.get('id_type')
     state.patientTypeList = tranformPickerType(patientType)
-    const isCheckUserInfo = async () => {
-      const { success, data } = await queryMemberInfo()
-      if (success && data.patientId) {
+    const isCheckUserInfo = () => {
+      const data = SessionStorage.get('accountInfo') || {}
+      console.log(data)
+      if (data.patientId) {
         state.hasValue = true
         state.account.patientName = protectName(sm4Decrypt(data.patientName))
         state.account.sex = data.sex + ''
         state.account.birthDay = data.birthDay
         state.account.patientId = idEncrypt(sm4Decrypt(data.patientId))
-        state.account.idName = patternObj[data.idType]?.name || '居民身份证'
+        state.account.idName = patternObj[data.idType].name || '居民身份证'
       }
     }
-    const saveAccountInfo = async (data) => {
+    const saveAccountInfo = async () => {
       const sendData = {
         idType: state.account.idType,
         patientId: encrypt(state.account.patientId),
@@ -174,17 +177,16 @@ export default defineComponent({
         birthDay: state.account.birthDay,
         userId: userId,
       }
-      const { success, message } = await saveUserMember(sendData)
+      const { success } = await saveUserMember(sendData)
       if (success) {
         Toast({
           type: 'success',
           message: '保存成功',
           onClose: () => {
+            SessionStorage.delete('accountInfo')
             router.go(-1)
           },
         })
-      } else {
-        Toast.fail(message)
       }
     }
     const confirmDate = (value) => {
@@ -196,13 +198,17 @@ export default defineComponent({
       state.showPicker = false
       state.account.idName = current.text
       state.account.idType = current.value
-      state.patternRegEXP = patternObj[current.value].rules
+      if (patternObj[current.value]) {
+        state.patternRegEXP = patternObj[current.value].rules
+      }
     }
     const handleExit = () => {
       LocalStorage.deleteAll()
       router.push('login')
+      if (isApp) {
+        sendToAppMessage('_', '_', true) //登出
+      }
     }
-
     const onBlur = computed(() => {
       if (state.account.idType !== '01') return
       const { birthDay, radio } = byPatientIdGetBrithdayAndSex(

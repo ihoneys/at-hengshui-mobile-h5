@@ -10,6 +10,7 @@ export default defineComponent({
     let title = ref('')
     const route = useRoute()
     const router = useRouter()
+
     ctx.emit('click-left')
     const onClickLeft = () => {
       console.log(route.name)

@@ -6,8 +6,6 @@ export default () => {
   const state = reactive({
     memberList: [],
   })
-  console.log(LocalStorage.get('userInfo'), 'userInfo,UsreInfo')
-
   const getUserMemberList = async () => {
     const { userId } = LocalStorage.get('userInfo')
     const params = { userId }

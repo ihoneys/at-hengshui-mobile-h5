@@ -35,6 +35,10 @@ const API = {
   URL_REGISTER_LOGIN_APP: `${auth}/jwt/registerByPhone`,
   URL_REGISTER_LOGIN: `${auth}/jwt/registerByPhoneAndOpenId`,
   URL_H5_PAYMENT: `${provider}/weChat/wechatH5Pay`,
+  URL_OUTPATIENT_REPORT: `${provider}/yygh-pub/pub/outpatient`,
+  URL_GET_DOCTOR_INFO: `${provider}/yygh-pub/pub/hdbs/schedule/findScheduleGroupByDateAndDoctorId`,
+  URL_DEPARTMENT_NOTICE: `${provider}/yygh-pub/pub/dep/get`,
+  URL_HOSPITAL_NOTICE: `${provider}/dict/unitNotice/findLatestNotice`,
 }
 /**
  *
@@ -196,4 +200,24 @@ export function saveEvaluate(data) {
 // APP H5支付
 export function paymentAppH5(data) {
   return post(API.URL_H5_PAYMENT, data)
+}
+
+// 检验检查报告，门诊缴费
+export function getReportList(data) {
+  return post(API.URL_OUTPATIENT_REPORT, data)
+}
+
+// 获取医生信息
+export function getDoctorInfo(params) {
+  return get(API.URL_GET_DOCTOR_INFO, params)
+}
+
+// 科室公告 文章详情
+export function getDepartmentNotice(params) {
+  return get(API.URL_DEPARTMENT_NOTICE, params)
+}
+
+// 获取医院公告
+export function getHospitalNotice(params) {
+  return get(API.URL_HOSPITAL_NOTICE, params)
 }
