@@ -36,7 +36,7 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
   }
   const outsideCenterPath = {
     // 配置app入口的h5链接
-    '/user': '/user',
+    '/MyCenter': '/MyCenter',
     '/home': '/home',
     '/reportAndOutpatient/report': '/reportAndOutpatient/report',
     '/reportAndOutpatient/outpatient': '/reportAndOutpatient/outpatient',

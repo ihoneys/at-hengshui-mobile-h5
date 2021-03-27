@@ -69,11 +69,25 @@
         </div>
       </div>
     </van-popup>
-    <van-popup v-model="periodShow" position="bottom" :style="{ height: '30%' }">
-      <div class="period-header">请选择时间段</div>
-      <ul class="time-list">
-        <li v-for="(item,index) in allTimeList" :key="index" @click.stop="clickTime(item)">
-          <span>{{item.endTime}}</span>
+    <van-popup
+      round
+      class="popup-container-time"
+      teleport="#app"
+      position="bottom"
+      duration="0.2"
+      v-model:show="periodShow"
+      :style="{ height: 'auto' }"
+    >
+      <div class="period-header">请选择就诊时间段</div>
+      <ul class="popup-container">
+        <li
+          style="padding-top:14px;padding-bottom:14px"
+          class="popup-times click-active"
+          v-for="(item,index) in allTimeList"
+          :key="index"
+          @click.stop="clickTime(item)"
+        >
+          <span>{{item.beginTime}}-{{item.endTime}}</span>
         </li>
       </ul>
     </van-popup>
@@ -240,10 +254,19 @@ export default defineComponent({
       }
     }
     const clickItem = (date, data, isNumber, dictCode, dictName) => {
-      orderInfo.date = date
-      orderInfo.dictCode = dictCode
-      state.currentTimesInfo.date = date
-      state.currentTimesInfo.dictName = dictName
+      if (state.isProcess) {
+        state.periodShow = true
+        state.allTimeList = data.list
+        console.log(333)
+      } else {
+        orderInfo.date = date
+        orderInfo.dictCode = dictCode
+        state.currentTimesInfo.date = date
+        state.currentTimesInfo.dictName = dictName
+        getSourceNo(data)
+      }
+    }
+    const getSourceNo = async (data) => {
       const params = {
         beginDate: data.toDate,
         scheduleId: data.scheduleId,
@@ -252,9 +275,6 @@ export default defineComponent({
         depId: data.depId,
         doctorId: data.doctorId,
       }
-      getSourceNo(params)
-    }
-    const getSourceNo = async (params) => {
       const res = await getSelectSchedulingTime(params)
       state.show = true
       if (res.success) {
@@ -273,12 +293,17 @@ export default defineComponent({
       )
       router.push('/order')
     }
+    const clickTime = (datas) => {
+      state.periodShow = false
+      getSourceNo(datas)
+    }
     return {
       ...toRefs(state),
       clickItem,
       transformWeek,
       selectTimes,
       refIntroduction,
+      clickTime,
     }
   },
 })
@@ -386,6 +411,34 @@ export default defineComponent({
     margin-right: 4px;
     font-weight: bold;
     color: #333333;
+  }
+}
+.time-list {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: -10px;
+  li {
+    font-size: 16px;
+    width: 78px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+}
+.period-header {
+  font-size: 16px;
+}
+.popup-container-time {
+  padding: 14px;
+  box-sizing: border-box;
+  * {
+    vertical-align: middle;
   }
 }
 </style>

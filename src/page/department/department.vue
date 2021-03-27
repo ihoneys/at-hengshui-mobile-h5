@@ -51,6 +51,10 @@ export default defineComponent({
       isSearch: false,
       isView: false,
     })
+    onMounted(() => {
+      getDepartmentData()
+      getNotice()
+    })
     const route = useRoute()
     const router = useRouter()
     const { unitName } = SessionStorage.get('currentHospital')
@@ -80,8 +84,7 @@ export default defineComponent({
       const { content, noticeTitle } = unitNotice
       createMessage(content, noticeTitle)
     }
-    getDepartmentData()
-    getNotice()
+
     const transformList = (data) => {
       data.forEach((item) => {
         const children = [] as any[]

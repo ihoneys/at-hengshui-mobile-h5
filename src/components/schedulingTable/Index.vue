@@ -22,9 +22,10 @@
             </template>
             <template v-else>
               <td
+                class="click-active"
                 :class="{'active':filtersText(table.date[item.date],column.dictCode)==='预约'}"
                 v-for="(item,index) in table.week"
-                class="click-active"
+                @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isPlainNumber(table.date[item.date],column.dictCode),column.dictCode,column.dictName)"
               >{{filtersText(table.date[item.date],column.dictCode)}}</td>
             </template>
           </tr>
@@ -52,6 +53,12 @@ export default defineComponent({
         return (hasDate && hasDate[hasTimeShort] && hasDate[hasTimeShort].isYuyue)
       }
     })
+    const isPlainNumber = computed(() => {
+      return function (date, dictCode) {
+        if (!date || !date[dictCode] || !date[dictCode].isYuyue) return false
+        return date[dictCode].isYuyue ? true : false
+      }
+    })
     const changeTextStatus = computed(() => {
       return function (table, item, column) {
         const hasDate = table.date[item.date]
@@ -76,7 +83,8 @@ export default defineComponent({
       isIfNumber,
       changeTextStatus,
       makeApponintment,
-      filtersText
+      filtersText,
+      isPlainNumber
     }
 
   }

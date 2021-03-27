@@ -2,6 +2,8 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Toast, Dialog } from 'vant'
 import { LocalStorage } from 'storage-manager-js'
 import router from '../router'
+import { debounce } from 'lodash'
+import { nextTick } from 'vue'
 let httpCode = {
   400: '请求参数错误',
   401: '权限不足, 请重新登录',
@@ -12,9 +14,40 @@ let httpCode = {
   502: '网关错误',
   504: '网关超时',
 }
-const baseURL: string = 'http://jk-hs.com/yygh'
+const baseURL: string = 'https://jk-hs.com/yygh'
 const productionURL: string = 'http://jk-hs.com/yygh'
 const getEnv = import.meta.env.MODE
+
+let loadingInstance //loading 实例
+let needLoadingRequestCount = 0 //当前正在请求的数量
+
+const showLoading = () => {
+  if (needLoadingRequestCount === 0 && !loadingInstance) {
+    loadingInstance = Toast.loading({
+      message: '加载中...',
+      duration: 30000,
+      forbidClick: true,
+    })
+  }
+  needLoadingRequestCount++
+}
+
+const closeLoading = () => {
+  nextTick(() => {
+    needLoadingRequestCount--
+    needLoadingRequestCount = Math.max(needLoadingRequestCount, 0) //保证大于等于0
+    if (needLoadingRequestCount === 0) {
+      if (loadingInstance) {
+        hideLoading()
+      }
+    }
+  })
+}
+
+const hideLoading = debounce(() => {
+  Toast.clear()
+  loadingInstance = null
+}, 300)
 
 const instance = axios.create({
   timeout: 30000,
@@ -25,12 +58,7 @@ instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     config.headers['LQT-TOKEN'] = LocalStorage.get('token') || ''
     config.headers['Access-Control-Allow-Origin'] = `*`
-
-    Toast.loading({
-      message: '加载中...',
-      duration: 30000,
-      forbidClick: true,
-    })
+    showLoading()
     if (config.method === 'get') {
       config.params = {
         ...config.params,
@@ -49,13 +77,14 @@ instance.interceptors.request.use(
     return config
   },
   (error) => {
+    closeLoading()
     return Promise.reject(error)
   }
 )
 
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
-    Toast.clear()
+    closeLoading()
     const { code, message, success, infor } = response.data
     if (success !== undefined && !success && code !== 40101) {
       Dialog({
@@ -80,7 +109,7 @@ instance.interceptors.response.use(
     }
   },
   (error) => {
-    Toast.clear()
+    closeLoading()
     if (error.response) {
       let tips =
         error.response.status in httpCode

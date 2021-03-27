@@ -98,6 +98,9 @@ export default defineComponent({
       }
     )
     const onSearch = () => {
+      // console.log
+      if (!state.searchValue) return
+      console.log(state.searchValue,'+789')
       getSearchContent()
     }
     const getSearchContent = async () => {

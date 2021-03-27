@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.26.0",
     "fastclick": "^1.0.6",
     "gm-crypt": "0.0.2",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "storage-manager-js": "^4.0.5",
     "vant": "^3.0.7",

@@ -33,8 +33,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: { isTabBar: true },
   },
   {
-    path: '/user',
-    name: 'user',
+    path: '/MyCenter',
+    name: 'MyCenter',
     component: () =>
       import(
         /* webpackChunkName: "userCenter" */ '@/page/userCenter/userCenter.vue'

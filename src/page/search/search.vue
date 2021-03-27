@@ -98,6 +98,7 @@ export default defineComponent({
       }
     )
     const onSearch = () => {
+      if (!state.searchValue) return
       getSearchContent()
     }
     const getSearchContent = async () => {
@@ -115,9 +116,9 @@ export default defineComponent({
         LocalStorage.set('searchHoistoryList', state.searchHoistoryList)
 
         if (!depts.length && !doctors.length && !hospitals.length) {
-          Toast('未查询到内容！')
+          Toast('未查询到内容,换换关键词吧！')
         }
-        
+
         if (depts.length) {
           depts.forEach((v) => {
             state.depts.push({

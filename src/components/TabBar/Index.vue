@@ -6,7 +6,7 @@
         <img :src="props.active ? home.active : home.inactive" />
       </template>
     </van-tabbar-item>
-    <van-tabbar-item replace to="/user">
+    <van-tabbar-item replace to="/MyCenter">
       <span>我的</span>
       <template #icon="props">
         <img :src="props.active? me.active : me.inactive" />

@@ -54,7 +54,7 @@ export function loginSuccess() {
       //是否在微信中需要静默登录
       redirectLoginUrl(userId, prevRoute, data)
     } else {
-      if (prevRoute === '/user') {
+      if (prevRoute === '/MyCenter') {
         router.push(prevRoute)
       } else {
         router.go(-1)

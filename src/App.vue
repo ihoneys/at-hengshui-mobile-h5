@@ -17,8 +17,8 @@ export default defineComponent({
   },
   setup() {
     const runEnvApp = ref(false)
-    const { from, tokenKey } = getUrlParams()
-    if (from || tokenKey) {
+    const { from, tokenKey, others } = getUrlParams()
+    if (from || tokenKey || others) { // app外部链接进入
       SessionStorage.set('isApp', true)
       runEnvApp.value = true
     }
