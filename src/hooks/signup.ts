@@ -66,8 +66,7 @@ export function loginSuccess() {
     LocalStorage.deleteAll()
     LocalStorage.set('userInfo', userInfo)
     LocalStorage.set('token', userInfo.token)
-    if (SessionStorage.has('isApp')) {
-      console.log('isApp')
+    if (SessionStorage.get('isApp')) {
       sendToAppMessage(userInfo.data, userInfo.token)
     }
   }

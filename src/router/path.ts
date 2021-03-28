@@ -20,6 +20,7 @@ const title = {
   userNotice: '隐私政策',
   reviews: '就诊点评',
   report: '门诊缴费',
+  depIntroduce: '科室介绍'
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -148,7 +149,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/depIntroduce',
     name: 'depIntroduce',
     component: () => import('@/page/departmentDoctor/introduce.vue'),
-    meta: { title: title.report, requiredLogin: true },
+    meta: { title: title.depIntroduce, requiredLogin: true },
   },
 ]
 export default routes

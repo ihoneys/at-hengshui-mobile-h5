@@ -6,27 +6,51 @@
           <tr>
             <td></td>
             <td v-for="row in table.week" class="container-td-time">
-              <p>{{transformWeek(row.date)}}</p>
-              <p>{{transformDate(row.date)}}</p>
+              <p>{{ transformWeek(row.date) }}</p>
+              <p>{{ transformDate(row.date) }}</p>
             </td>
           </tr>
           <tr v-for="column in table.timeTypes">
-            <td class="dict-name">{{column.dictName}}</td>
+            <td class="dict-name">{{ column.dictName }}</td>
             <template v-if="!isProcessData">
               <td
-                v-for="(item,index) in table.week"
+                v-for="(item, index) in table.week"
                 class="click-active"
-                :class="{'active':isIfNumber(table, item, column)}"
-                @click.prevent="changeTextStatus(table, item, column) ? makeApponintment(item.date,table.date[item.date][column.dictCode],isIfNumber(table, item, column),column.dictCode,column.dictName): ''"
-              >{{ !changeTextStatus(table, item, column) ? '': isIfNumber(table, item, column) ? '预约': '已满' }}</td>
+                :class="{ active: isIfNumber(table, item, column) }"
+                @click.prevent="
+                  changeTextStatus(table, item, column)
+                    ? makeApponintment(
+                        item.date,
+                        table.date[item.date][column.dictCode],
+                        isIfNumber(table, item, column),
+                        column.dictCode,
+                        column.dictName
+                      )
+                    : ''
+                "
+              >
+                {{
+                  !changeTextStatus(table, item, column)
+                    ? ''
+                    : isIfNumber(table, item, column)
+                    ? '预约'
+                    : '已满'
+                }}
+              </td>
             </template>
             <template v-else>
               <td
                 class="click-active"
-                :class="{'active':filtersText(table.date[item.date],column.dictCode)==='预约'}"
-                v-for="(item,index) in table.week"
-                @click.prevent="makeApponintment(item.date,table.date[item.date][column.dictCode],isPlainNumber(table.date[item.date],column.dictCode),column.dictCode,column.dictName)"
-              >{{filtersText(table.date[item.date],column.dictCode)}}</td>
+                :class="{
+                  active:
+                    filtersText(table.date[item.date], column.dictCode) ===
+                    '预约',
+                }"
+                v-for="(item, index) in table.week"
+                @click.prevent="isPlainNumber(table.date[item.date],column.dictCode)?makeApponintment(item.date,table.date[item.date][column.dictCode],isPlainNumber(table.date[item.date],column.dictCode),column.dictCode,column.dictName): ''"
+              >
+                {{ filtersText(table.date[item.date], column.dictCode) }}
+              </td>
             </template>
           </tr>
         </table>
@@ -44,7 +68,7 @@ export default defineComponent({
     tableData: Array,
     isProcessData: Boolean
   },
-  setup (props, ctx) {
+  setup(props, ctx) {
     console.log(props.tableData, props.isProcessData, 8888)
     const isIfNumber = computed(() => {
       return function (table, item, column) {

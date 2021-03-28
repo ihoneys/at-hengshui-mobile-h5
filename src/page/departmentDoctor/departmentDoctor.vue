@@ -89,8 +89,6 @@ export default defineComponent({
         doctorId: '',
       }
       const result = await getDepAllDoctor(requestParams)
-      console.log(result, 'result')
-
       if (!isObjEmpty(result)) {
         state.Alldoctor = result.all
         let allScheling = JSON.parse(JSON.stringify(result))

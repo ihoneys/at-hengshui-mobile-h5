@@ -13,7 +13,7 @@
             <div class="tag-span" v-if="item.unitLevelName != null">{{item.unitLevelName}}</div>
             <div class="tag-span" v-if="item.unitClassName != null">{{item.unitClassName}}</div>
           </div>
-          <!-- <span v-if="item.distance != null">距离{{ item.distance }}</span> -->
+          <span v-if="item.distance">距离{{ item.distance }}km</span>
         </div>
       </router-link>
     </li>

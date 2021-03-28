@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+const app = createApp(App)
 // TypeScript error? Run VSCode command
 // TypeScript: Select TypeScript version - > Use Workspace Version
 import App from './App.vue'
@@ -51,7 +52,7 @@ import './common/public.css'
 // export default vconsole
 
 console.log(import.meta.env.MODE, '环境变量')
-const app = createApp(App)
+
 app.component('CustomVanNavBar', VanNavBar)
 app
   // .use(store)

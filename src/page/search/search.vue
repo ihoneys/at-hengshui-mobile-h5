@@ -10,17 +10,24 @@
       @search="onSearch"
       @clear="onClear"
     />
-    <div class="search-history" v-show="hasValue && searchHoistoryList.length > 0">
+    <div
+      class="search-history"
+      v-show="hasValue && searchHoistoryList.length > 0"
+    >
       <div>搜索记录</div>
       <ul class="histor-list">
         <li
-          v-for="(item,index) in searchHoistoryList"
+          v-for="(item, index) in searchHoistoryList"
           :key="index"
           @click="handleItem(item)"
-        >{{item}}</li>
+        >
+          {{ item }}
+        </li>
       </ul>
       <div class="empty" v-if="searchHoistoryList.length > 0">
-        <button class="empty-btn" @click="clearSearchHistory">清空搜索记录</button>
+        <button class="empty-btn" @click="clearSearchHistory">
+          清空搜索记录
+        </button>
       </div>
     </div>
     <div class="hospital" v-if="hospitalData.length > 0">
@@ -33,19 +40,35 @@
     </div>
     <div class="depts" v-if="depts.length > 0">
       <h3>科室</h3>
-      <ColumnList :columnList="depts" />
+      <van-cell-group>
+        <van-cell
+          class="cell-item"
+          v-for="(column, index) in depts"
+          :key="index"
+          @click="clickCell(column)"
+        >
+          <template #title>
+            <div class="custom-totle">{{ column.depName }}</div>
+          </template>
+          <template #right-icon>
+            <van-icon class="arrow-size" name="arrow" />
+          </template>
+        </van-cell>
+      </van-cell-group>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, watch, nextTick } from 'vue'
+import { defineComponent, reactive, toRefs, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { finSearchContent } from '../../common/api'
 import { LocalStorage } from 'storage-manager-js'
 import Hospital from '@/components/Hospital/Index.vue'
 import DoctorList from '@/components/DoctorList/Index.vue'
 import ColumnList from '@/components/ColumnList/Index.vue'
 import { Toast } from 'vant'
+import { SessionStorage } from 'storage-manager-js'
 interface DeptsObj {
   path: string
   label: string
@@ -63,7 +86,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props, ctx) {
+  setup(_, ctx) {
     const state = reactive({
       searchValue: '',
       hospitalData: [],
@@ -72,6 +95,7 @@ export default defineComponent({
       searchHoistoryList: [] as string[],
       hasValue: true,
     })
+    const router = useRouter()
     if (LocalStorage.has('searchHoistoryList')) {
       state.searchHoistoryList = LocalStorage.get(
         'searchHoistoryList'
@@ -91,7 +115,7 @@ export default defineComponent({
     }
     watch(
       () => state.searchValue,
-      (state, preState) => {
+      (state) => {
         if (!state) {
           closeSearchData()
         }
@@ -108,6 +132,7 @@ export default defineComponent({
       const { data, success } = await finSearchContent(params)
       if (success) {
         const { depts, doctors, hospitals } = data
+        state.depts = depts
         state.hospitalData = hospitals
         state.doctorList = doctors
         state.hasValue = false
@@ -117,16 +142,6 @@ export default defineComponent({
 
         if (!depts.length && !doctors.length && !hospitals.length) {
           Toast('未查询到内容,换换关键词吧！')
-        }
-
-        if (depts.length) {
-          depts.forEach((v) => {
-            state.depts.push({
-              path: `DepartmentDoctor/${v.depId}/${v.unitId}`,
-              label: v.depName,
-              isLeftIcon: false,
-            })
-          })
         }
       }
     }
@@ -142,6 +157,13 @@ export default defineComponent({
     const clearSearchHistory = () => {
       LocalStorage.delete('searchHoistoryList')
     }
+    const clickCell = ({ depName, unitId, depId }) => {
+      SessionStorage.set('currentDep', depName)
+      SessionStorage.set('sendParams', { hosId: unitId, deptId: depId })
+      router.push({
+        name: 'DepartmentDoctor',
+      })
+    }
     return {
       ...toRefs(state),
       onCancel,
@@ -150,12 +172,13 @@ export default defineComponent({
       handleItem,
       refSearch,
       clearSearchHistory,
+      clickCell,
     }
   },
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .search {
   position: absolute;
   top: 0;
@@ -203,5 +226,9 @@ export default defineComponent({
     color: #999;
     padding: 4px 18px;
   }
+}
+.cell-item {
+  display: flex;
+  align-items: center;
 }
 </style>

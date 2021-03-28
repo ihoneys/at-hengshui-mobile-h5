@@ -9,19 +9,22 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>健康衡水</title>
+  <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=268866d5ed7740519a3cd135ba2f77d8">
+  </script>
 </head>
 
 <body>
   <div id="app"></div>
 </body>
 <script type="module" src="./src/main.ts"></script>
-<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
 <script>
-  document.addEventListener("UniAppJSBridgeReady", function () {
-    uni.getEnv(function (res) {
-      console.log(res, 'UniAppJSBridgeReady')
-    });
-  });
+  const isApp = window.sessionStorage.getItem('isApp')
+  if (isApp) { // 如何在app环境下运行加载 通信uni sdk
+    const uniWebViewUrl = 'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js'
+    const script = document.createElement('script');
+    script.setAttribute('type', 'text/javascript')
+    script.src = uniWebViewUrl
+  }
 </script>
 
 </html>

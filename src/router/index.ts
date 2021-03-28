@@ -43,7 +43,6 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
   }
   const isApp = from && tokenKey && !LocalStorage.has('userInfo') // 从app进入
   const centerPath = outsideCenterPath[routePath] || '' // app入口登录处理
-  console.log(centerPath,'centerPath')
   if (isApp && centerPath) {
     //处理从app进入
     const { storeLoginInfomation } = loginSuccess()

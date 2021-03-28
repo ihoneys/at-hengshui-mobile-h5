@@ -1,5 +1,10 @@
 <template>
   <div id="app">
+    <!-- <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view> -->
     <router-view />
     <TabBar v-if="this.$route.meta.isTabBar && !runEnvApp" />
   </div>
@@ -18,10 +23,15 @@ export default defineComponent({
   setup() {
     const runEnvApp = ref(false)
     const { from, tokenKey, others } = getUrlParams()
-    if (from || tokenKey || others) { // app外部链接进入
-      SessionStorage.set('isApp', true)
+    let isApp
+    if (from || tokenKey || others) {
+      // app外部链接进入
+      isApp = true
       runEnvApp.value = true
+    } else {
+      isApp = false
     }
+    SessionStorage.set('isApp', isApp)
     initTypeList() // 默认获取医生等级、身份证基础数据
     return {
       runEnvApp,

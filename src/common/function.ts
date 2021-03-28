@@ -108,7 +108,6 @@ export function getCustomDate(n: number = 0): string {
 }
 
 export const parsingSchedulingData = function (arr) {
-  console.log(arr)
   if (Array.isArray(arr) && !arr.length) {
     return { newData: [], isProcess: false }
   }
@@ -158,8 +157,6 @@ export const parsingSchedulingData = function (arr) {
       cur['am'].isYuyue = filterAm ? true : false
       cur['pm'].isYuyue = filterPm ? true : false
     }
-    console.log(obj, '處理玩了')
-
     return {
       newData: obj,
       isProcess: true,

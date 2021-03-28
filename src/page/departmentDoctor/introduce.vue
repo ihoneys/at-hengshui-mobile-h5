@@ -1,7 +1,8 @@
 <template>
   <div class="article">
+     <custom-van-nav-bar />
     <div class="header">
-      <h4 style="font-size: 18px">科室公告</h4>
+      <h4 style="font-size: 18px">科室介绍</h4>
       <div class="time">
         <div class="time-date">{{date}}</div>
         <div class="hospital-name" v-if="hospitalName">{{hospitalName}}</div>

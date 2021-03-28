@@ -2,19 +2,24 @@
   <div class="doctor-page" v-if="schedulingData.length > 0">
     <custom-van-nav-bar />
     <div class="doctor-info">
-      <van-image width="64" height="64" :src="doctorInfo.image" round></van-image>
+      <van-image
+        width="64"
+        height="64"
+        :src="doctorInfo.image"
+        round
+      ></van-image>
       <div class="doctor-name">
-        <div class="name">{{doctorInfo.doctorName}}</div>
-        <div class="doctor-level">{{doctorInfo.zcName}}</div>
+        <div class="name">{{ doctorInfo.doctorName }}</div>
+        <div class="doctor-level">{{ doctorInfo.zcName }}</div>
       </div>
     </div>
     <div class="doctor-expert" v-if="doctorInfo.expert">
       <h3>擅长:</h3>
-      <p class="doctor-expert-color">{{doctorInfo.expert}}</p>
+      <p class="doctor-expert-color">{{ doctorInfo.expert }}</p>
     </div>
     <div class="table-wrapper">
-      <div>{{doctorInfo.unitName}}</div>
-      <div class="depName">{{doctorInfo.depName}}</div>
+      <div>{{ doctorInfo.unitName }}</div>
+      <div class="depName">{{ doctorInfo.depName }}</div>
       <TableComponent
         v-if="requestCount >= 1"
         :tableData="schedulingData"
@@ -23,19 +28,25 @@
       />
       <div class="doctor-experts">
         <div class="table-bottom">
-          <h3 v-if="doctorInfo.introduction" class="table-bottom-title">简介</h3>
+          <h3 v-if="doctorInfo.introduction" class="table-bottom-title">
+            简介
+          </h3>
           <div class="contorl-tips">左右滑动日历查看其他日期排班</div>
         </div>
         <p
           class="doctor-expert-color"
-          :class="{'introContent': isFolding}"
+          :class="{ introContent: isFolding }"
           :ref="refIntroduction"
-        >{{doctorInfo.introduction}}</p>
+        >
+          {{ doctorInfo.introduction }}
+        </p>
         <div
           v-if="isShowCollapse"
           class="folding"
           @click.stop="isFolding = !isFolding"
-        >{{isFolding?'展开':'折叠'}}</div>
+        >
+          {{ isFolding ? '展开' : '折叠' }}
+        </div>
       </div>
     </div>
     <div class="evaluate">
@@ -49,23 +60,23 @@
       class="popup-wrapper"
       duration="0.2"
       v-model:show="show"
-      :style="{height:'auto'}"
+      style="max-height:70%"
     >
       <div class="popup-hos-info">
-        <span>{{currentTimesInfo.date}}</span>
-        <span>{{transformWeek(currentTimesInfo.date)}}</span>
-        <span>{{currentTimesInfo.dictName}}</span>
+        <span>{{ currentTimesInfo.date }}</span>
+        <span>{{ transformWeek(currentTimesInfo.date) }}</span>
+        <span>{{ currentTimesInfo.dictName }}</span>
       </div>
-      <div>{{doctorInfo.unitName}}</div>
-      <div class="popup-depName">{{doctorInfo.depName}}</div>
+      <div>{{ doctorInfo.unitName }}</div>
+      <div class="popup-depName">{{ doctorInfo.depName }}</div>
       <div class="popup-container">
         <div
           class="popup-times click-active"
           v-for="times in timesArray"
           @click.stop="selectTimes(times)"
         >
-          <div>{{times.beginTime}}-{{times.endTime}}</div>
-          <div>({{times.yuyueNum}}/{{times.yuyueMax}})</div>
+          <div>{{ times.beginTime }}-{{ times.endTime }}</div>
+          <div>({{ times.yuyueNum }}/{{ times.yuyueMax }})</div>
         </div>
       </div>
     </van-popup>
@@ -81,13 +92,13 @@
       <div class="period-header">请选择就诊时间段</div>
       <ul class="popup-container">
         <li
-          style="padding-top:14px;padding-bottom:14px"
+          style="padding-top: 14px; padding-bottom: 14px"
           class="popup-times click-active"
-          v-for="(item,index) in allTimeList"
+          v-for="(item, index) in allTimeList"
           :key="index"
           @click.stop="clickTime(item)"
         >
-          <span>{{item.beginTime}}-{{item.endTime}}</span>
+          <span>{{ item.beginTime }}-{{ item.endTime }}</span>
         </li>
       </ul>
     </van-popup>
@@ -190,7 +201,7 @@ export default defineComponent({
       const { isProcess, newData } = parsingSchedulingData(
         JSON.parse(res.data[0].schedules)
       )
-      console.log(isProcess, 'isProcess')
+      // console.log(isProcess, 'isProcess')
       state.isProcess = isProcess
       if (!res.success && isObjEmpty(newData)) {
         createMessage('暂无排班数据！', '提示', () => {
@@ -235,7 +246,6 @@ export default defineComponent({
     const getDoctorBaseInfo = async (doctorId) => {
       const params = { doctorId }
       const res = await getDoctorInfo(params)
-      console.log(res)
       if (!isObjEmpty(res)) {
         getDoctorBaseInfo(res.all[0])
       }
@@ -253,18 +263,30 @@ export default defineComponent({
         })
       }
     }
+    const processIsDate = (date) => {
+      if (
+        SessionStorage.has('currentDoctorInfo') &&
+        SessionStorage.get('currentDoctorInfo').date
+      )
+        return
+      const merageDate = Object.assign(
+        SessionStorage.get('currentDoctorInfo'),
+        { date }
+      )
+      SessionStorage.set('currentDoctorInfo', merageDate)
+    }
     const clickItem = (date, data, isNumber, dictCode, dictName) => {
+      processIsDate(date) // 处理没有日期的情况
       if (state.isProcess) {
         state.periodShow = true
         state.allTimeList = data.list
-        console.log(333)
       } else {
         orderInfo.date = date
-        orderInfo.dictCode = dictCode
-        state.currentTimesInfo.date = date
+        orderInfo.dictCode = dictCode        
         state.currentTimesInfo.dictName = dictName
         getSourceNo(data)
       }
+      state.currentTimesInfo.date = date
     }
     const getSourceNo = async (data) => {
       const params = {
@@ -289,7 +311,7 @@ export default defineComponent({
       orderInfo.scheduleId = times.scheduleId
       SessionStorage.set(
         'currentDoctorInfo',
-        Object.assign(temporary, orderInfo)
+        Object.assign(orderInfo,temporary )
       )
       router.push('/order')
     }
