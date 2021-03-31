@@ -78,14 +78,13 @@
       />
       <van-field
         name="phone"
-        maxlength="50"
+        maxlength="11"
         label="手机号"
         type="tel"
         placeholder="请输入手机号"
         input-align="right"
         :required="true"
         v-model="member.phone"
-        :rules="[{ required: true, message: '请填写正确的手机号',pattern: phoneRexg }]"
       />
       <van-field
         label="验证码"

@@ -17,14 +17,9 @@
   <div id="app"></div>
 </body>
 <script type="module" src="./src/main.ts"></script>
+<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+
 <script>
-  const isApp = window.sessionStorage.getItem('isApp')
-  if (isApp) { // 如何在app环境下运行加载 通信uni sdk
-    const uniWebViewUrl = 'https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js'
-    const script = document.createElement('script');
-    script.setAttribute('type', 'text/javascript')
-    script.src = uniWebViewUrl
-  }
 </script>
 
 </html>

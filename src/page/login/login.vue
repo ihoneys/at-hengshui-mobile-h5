@@ -132,8 +132,8 @@ export default defineComponent({
       }
       const result = await getLogin(sendData)
       if (result.success) {
+        toPreviousRoute(router, true, result.data)
         storeLoginInfomation(result)
-        toPreviousRoute(router, true)
       }
     }
     const passwordLogin = async () => {
@@ -148,17 +148,13 @@ export default defineComponent({
           tokenKey: res.data,
         }
         const { success, data: userInfo } = await getToken(userParams)
-        if (success) {
-          console.log(6666,'储存')
-          storeLoginInfomation(Object.assign(userInfo, res))
-        }
         if (res.modifySecret === 1 && success) {
           Dialog.confirm({
             title: '温馨提示',
             message: '您的密码已经3个月没更新了，是否立即更新？',
           })
             .then(() => {
-              toRegister(1)
+              toRegister('passwordLogin')
             })
             .catch(() => {
               toPreviousRoute(router)
@@ -166,6 +162,8 @@ export default defineComponent({
         } else {
           toPreviousRoute(router)
         }
+        console.log(6666, '储存')
+        storeLoginInfomation(Object.assign(userInfo, res))
       }
     }
     const toRegister = (isNewUser) => {

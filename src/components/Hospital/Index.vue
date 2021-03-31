@@ -1,21 +1,17 @@
 <template>
   <ul class="doctor-list" v-if="hospitals != null">
     <li v-for="(item, index) in hospitals" :key="index">
-      <router-link
-        class="doctor-item"
-        :to="`/department/${item.hisUnitId}`"
-        @click.native="goHospital(item)"
-      >
-        <van-image lazy-load width="20vw" height="65px" radius="4px" :src="item.image" />
+      <div class="doctor-item" @click.native="goHospital(item)">
+        <van-image class="doctor-image" lazy-load fit="cover" radius="4px" :src="item.image" />
         <div class="recommend">
           <div class="doctor-name">{{item.unitName}}</div>
           <div class="describe">
             <div class="tag-span" v-if="item.unitLevelName != null">{{item.unitLevelName}}</div>
             <div class="tag-span" v-if="item.unitClassName != null">{{item.unitClassName}}</div>
           </div>
-          <span v-if="item.distance">距离{{ item.distance }}km</span>
+          <span class="distance-size" v-if="item.distance">距离{{ item.distance }}km</span>
         </div>
-      </router-link>
+      </div>
     </li>
   </ul>
 </template>
@@ -31,9 +27,10 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const goHospital = (obj) => {
       SessionStorage.set('currentHospital', obj)
+      emit('goRouter', obj)
     }
     console.log(props.hospitals)
     return {
@@ -54,6 +51,14 @@ export default defineComponent({
     border-bottom: 1px solid #eee;
     padding: 4%;
     display: flex;
+    .doctor-image {
+      width: 20vw;
+      height: 65px;
+    }
+    .distance-size {
+      font-size: 12px;
+      color: #999999;
+    }
     .recommend {
       display: flex;
       flex-direction: column;
@@ -61,7 +66,7 @@ export default defineComponent({
       background-color: #fff;
       padding-left: 3vw;
       .doctor-name {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         color: #222;
       }
@@ -76,7 +81,7 @@ export default defineComponent({
         .tag-span {
           font-size: 12px;
           margin-right: 8px;
-          padding: 2px 6px;
+          padding: 2px 4px;
           border-radius: 3px;
           border: 1px solid #1989fa;
           color: #1989fa;

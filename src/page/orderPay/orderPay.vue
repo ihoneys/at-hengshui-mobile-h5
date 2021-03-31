@@ -3,10 +3,10 @@
   <div class="order-pay">
     <div class="pay-tpis">
       <div>订单提交成功，请您尽快支付！</div>
-      <div class="count-time mt-10">
+      <!-- <div class="count-time mt-10">
         <van-count-down format="DD 天 HH 时 mm 分 ss 秒" :time="time" @finish="onFinish" />
         <span>内未完成支付订单将自动关闭</span>
-      </div>
+      </div>-->
     </div>
     <div class="order-number">
       <div>订单编号：{{currentOrder.orderId}}</div>

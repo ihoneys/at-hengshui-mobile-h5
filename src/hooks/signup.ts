@@ -1,16 +1,12 @@
 import { ref } from 'vue'
 import { Toast } from 'vant'
 import { getPhoneCode } from '../common/api'
-import {
-  encrypt,
-  redirectLoginUrl,
-  isWeixinBrower,
-} from '../common/function'
+import { encrypt, redirectLoginUrl, isWeixinBrower } from '../common/function'
 import { sendToAppMessage } from '../common/uniPostMessage'
 import { SessionStorage, LocalStorage } from 'storage-manager-js'
 const isGetCode = ref(false),
   codeText = ref('获取验证码'),
-  countDown = ref(30),
+  countDown = ref(59),
   phone = ref('')
 
 export function getVerificationCode() {
@@ -22,7 +18,7 @@ export function getVerificationCode() {
       } else {
         isGetCode.value = false
         codeText.value = '获取验证码'
-        countDown.value = 29
+        countDown.value = 59
         clearInterval(timer)
       }
     }, 1000)
@@ -49,15 +45,20 @@ export function loginSuccess() {
   const { userId, data } = LocalStorage.get('userInfo') || ''
   const isWechat = isWeixinBrower()
   // 登录成功跳转逻辑
-  const toPreviousRoute = (router, isNeedSlientLogin = false) => {
+  const toPreviousRoute = (
+    router,
+    isNeedSlientLogin = false,
+    tokenKey = data
+  ) => {
     if (isNeedSlientLogin && isWechat) {
       //是否在微信中需要静默登录
-      redirectLoginUrl(userId, prevRoute, data)
+      redirectLoginUrl(userId, prevRoute, tokenKey)
     } else {
-      if (prevRoute === '/MyCenter') {
+      if (prevRoute === '/MyCenter' || prevRoute === '/home') {
         router.push(prevRoute)
       } else {
-        router.go(-1)
+        console.log(666666,'走这里啦啊')
+        router.push(prevRoute)
       }
     }
   }

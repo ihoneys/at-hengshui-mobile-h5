@@ -37,7 +37,7 @@ import Search from '../search/search.vue'
 import ViewHospital from './viewCurHospital.vue'
 import moment from 'moment'
 import { SessionStorage } from 'storage-manager-js'
-import { createMessage, isObjEmpty } from '../../common/function'
+import { createMessage, getUrlParams, isObjEmpty } from '../../common/function'
 export default defineComponent({
   name: 'department',
   components: {
@@ -65,10 +65,20 @@ export default defineComponent({
       endTime: moment(new Date()).add(30, 'd').format('YYYY-MM-DD'),
       timeType: '',
     }
+    const { homePageEntrance } = getUrlParams()
     const getDepartmentData = async () => {
       const { success, data } = await getDepartmentList(params)
+
       if (success && Array.isArray(data) && data.length > 0) {
-        state.treeData = transformList(data)
+        if (homePageEntrance) {
+          const filterList = data.filter(
+            (item) => item.depName.indexOf('核酸') > -1
+          )
+          console.log(filterList)
+          state.treeData = transformList(filterList)
+        } else {
+          state.treeData = transformList(data)
+        }
       } else {
         Toast.fail({
           message: '未查询到科室数据',

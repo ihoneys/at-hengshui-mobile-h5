@@ -1,27 +1,12 @@
 <template>
   <div class="home">
-    <div v-if="hospitalData != null">
-      <van-search
-        shape="round"
-        placeholder="搜索医生、科室、医院"
-        disabled
-        @click="isSearch = true"
-      />
-      <van-dropdown-menu active-color="#00d2c3">
-        <van-dropdown-item
-          v-model="defaultVal"
-          :options="defaultOptions"
-          @close="handleSort()"
-        />
-        <van-dropdown-item
-          v-model="sortVal"
-          :options="sortOptions"
-          @close="handleSort()"
-        />
-      </van-dropdown-menu>
-      <div class="recommend-doctor">
-        <hospital :hospitals="hospitalData"></hospital>
-      </div>
+    <van-search shape="round" placeholder="搜索医生、科室、医院" disabled @click="isSearch = true" />
+    <van-dropdown-menu active-color="#00d2c3">
+      <van-dropdown-item v-model="defaultVal" :options="defaultOptions" @close="handleSort()" />
+      <van-dropdown-item v-model="sortVal" :options="sortOptions" @close="handleSort()" />
+    </van-dropdown-menu>
+    <div class="recommend-doctor">
+      <hospital :hospitals="hospitalData" @goRouter="goRouter"></hospital>
     </div>
     <Search :is-search="isSearch" @cancel="isSearch = false" />
   </div>
@@ -29,16 +14,24 @@
 
 <script lang='ts'>
 import { defineComponent, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { getHospitalList } from '../../common/api'
 import { initMap, countDistance } from '../../hooks/userPosition'
 import Hospital from '@/components/Hospital/Index.vue'
 import Search from '../search/search.vue'
+import { getUrlParams } from '../../common/function'
+interface RequestParams {
+  size: number
+  page: number
+  homePageEntrance?: string | number
+}
 export default defineComponent({
   components: {
     Hospital,
     Search,
   },
   setup() {
+    const router = useRouter()
     const hospitalData = ref([])
     const isSearch = ref(false)
     const defaultVal = ref(0)
@@ -51,16 +44,28 @@ export default defineComponent({
       { text: '升序', value: 'a' },
       { text: '降序', value: 'b' },
     ]
-    const position = initMap() // 获取地理位置信息
+    const { homePageEntrance } = getUrlParams()
+    const position: any = initMap() // 获取地理位置信息
+    console.log(position, 9999)
     onMounted(async () => {
-      const params = { page: 1, size: 20 }
+      const params: RequestParams = { page: 1, size: 20 }
+      if (homePageEntrance) {
+        params.homePageEntrance = homePageEntrance
+      }
       const { data: res } = await getHospitalList(params)
-      hospitalData.value = res.list
+      if (position.lat && position.lng) {
+        hospitalData.value = addDistance(
+          res.list,
+          position.lat,
+          position.lng
+        )
+      } else {
+        hospitalData.value = res.list
+      }
     })
     const addDistance = (list, lat, lng) => {
       list.forEach((item) => {
         const [hos_lng, hos_lat] = item.map.split(',')
-        console.log(hos_lat, hos_lng)
         item.distance = countDistance(
           hos_lat,
           hos_lng,
@@ -71,9 +76,7 @@ export default defineComponent({
       return list
     }
     watch(position, (state, preState) => {
-      console.log('走进来了')
       if (state.lat && state.lng && state.isPosition) {
-        console.log('走进来了啊啊啊啊啊')
         hospitalData.value = addDistance(
           hospitalData.value,
           state.lat,
@@ -95,6 +98,17 @@ export default defineComponent({
         return generateRules(a, b)[selectVal]
       })
     }
+    const goRouter = (obj) => {
+      const routing: any = {
+        path: `/department/${obj.hisUnitId}`,
+      }
+      if (homePageEntrance) {
+        routing.query = {
+          homePageEntrance,
+        }
+      }
+      router.push(routing)
+    }
     return {
       hospitalData,
       isSearch,
@@ -103,6 +117,7 @@ export default defineComponent({
       defaultVal,
       sortVal,
       handleSort,
+      goRouter,
     }
   },
 })

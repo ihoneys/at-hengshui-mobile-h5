@@ -204,7 +204,7 @@ export default defineComponent({
     }
     const handleExit = () => {
       LocalStorage.deleteAll()
-      router.push('login')
+      router.push({ path: '/login', replace: true })
       if (isApp) {
         sendToAppMessage('_', '_', true) //登出
       }

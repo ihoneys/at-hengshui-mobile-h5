@@ -108,9 +108,6 @@ export function getCustomDate(n: number = 0): string {
 }
 
 export const parsingSchedulingData = function (arr) {
-  if (Array.isArray(arr) && !arr.length) {
-    return { newData: [], isProcess: false }
-  }
   const isNeedProessData = isProcessData(arr)
   let obj = {}
   let timeTypeObj = {}

@@ -15,7 +15,7 @@ let httpCode = {
   504: '网关超时',
 }
 const baseURL: string = 'https://jk-hs.com/yygh'
-const productionURL: string = 'http://jk-hs.com/yygh'
+const productionURL: string = 'https://jk-hs.com/yygh'
 const getEnv = import.meta.env.MODE
 
 let loadingInstance //loading 实例
@@ -100,7 +100,7 @@ instance.interceptors.response.use(
           title: '提示',
           message: '登录过期',
         }).then(() => {
-          router.push('login')
+          router.push({ path: '/login', replace: true })
         })
       }
       return Promise.resolve(response.data)

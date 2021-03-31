@@ -1,13 +1,8 @@
 <template>
-  <div class="doctor-page" v-if="schedulingData.length > 0">
+  <div class="doctor-page" v-if="requestSuccess">
     <custom-van-nav-bar />
     <div class="doctor-info">
-      <van-image
-        width="64"
-        height="64"
-        :src="doctorInfo.image"
-        round
-      ></van-image>
+      <van-image width="64" height="64" :src="doctorInfo.image" round></van-image>
       <div class="doctor-name">
         <div class="name">{{ doctorInfo.doctorName }}</div>
         <div class="doctor-level">{{ doctorInfo.zcName }}</div>
@@ -28,25 +23,19 @@
       />
       <div class="doctor-experts">
         <div class="table-bottom">
-          <h3 v-if="doctorInfo.introduction" class="table-bottom-title">
-            简介
-          </h3>
+          <h3 v-if="doctorInfo.introduction" class="table-bottom-title">简介</h3>
           <div class="contorl-tips">左右滑动日历查看其他日期排班</div>
         </div>
         <p
           class="doctor-expert-color"
           :class="{ introContent: isFolding }"
           :ref="refIntroduction"
-        >
-          {{ doctorInfo.introduction }}
-        </p>
+        >{{ doctorInfo.introduction }}</p>
         <div
           v-if="isShowCollapse"
           class="folding"
           @click.stop="isFolding = !isFolding"
-        >
-          {{ isFolding ? '展开' : '折叠' }}
-        </div>
+        >{{ isFolding ? '展开' : '折叠' }}</div>
       </div>
     </div>
     <div class="evaluate">
@@ -158,6 +147,7 @@ export default defineComponent({
       isShowCollapse: true,
       isProcess: false,
       periodShow: false,
+      requestSuccess: false,
     })
     const orderInfo: OrderInfo = {
       guaHaoAmt: '',
@@ -173,6 +163,7 @@ export default defineComponent({
     let currentDoctorInfo
     onMounted(() => {
       const { doctorId } = getUrlParams()
+      console.log(doctorId)
       if (doctorId) {
         // 从智能导诊进入
         getDoctorBaseInfo(doctorId)
@@ -198,16 +189,8 @@ export default defineComponent({
         currentWeek,
       }
       const res = await getSchedulingData(sendData)
-      const { isProcess, newData } = parsingSchedulingData(
-        JSON.parse(res.data[0].schedules)
-      )
-      // console.log(isProcess, 'isProcess')
-      state.isProcess = isProcess
-      if (!res.success && isObjEmpty(newData)) {
-        createMessage('暂无排班数据！', '提示', () => {
-          router.push('/home')
-        })
-      }
+      const schedulesList = JSON.parse(res.data[0].schedules)
+
       if (res.success) {
         orderInfo.guaHaoAmt = res.data[0].guaHaoAmt
         orderInfo.zcName = res.data[0].zcName
@@ -219,12 +202,18 @@ export default defineComponent({
           date: '',
         }
         let schedulingList = [] as SchedulingInfo[]
-        objs.data = res.data
-        objs.timeTypes = res.timeTypes
-        objs.week = res.week
-        objs.date = newData
-        schedulingList.push(objs)
-        state.schedulingData = [...state.schedulingData, ...schedulingList]
+
+        if (schedulesList.length > 0) {
+          const { isProcess, newData } = parsingSchedulingData(schedulesList)
+          // console.log(isProcess, 'isProcess')
+          state.isProcess = isProcess
+          objs.data = res.data
+          objs.timeTypes = res.timeTypes
+          objs.week = res.week
+          objs.date = newData
+          schedulingList.push(objs)
+          state.schedulingData = [...state.schedulingData, ...schedulingList]
+        }
         state.doctorInfo = res.data[0]
         if (state.requestCount <= 0) {
           state.requestCount++
@@ -240,14 +229,24 @@ export default defineComponent({
             )
           }, 100)
         }
+        state.requestSuccess = true
+      } else {
+        createMessage('暂无排班数据！', '提示', () => {
+          router.push('/home')
+        })
       }
     }
 
     const getDoctorBaseInfo = async (doctorId) => {
       const params = { doctorId }
       const res = await getDoctorInfo(params)
-      if (!isObjEmpty(res)) {
-        getDoctorBaseInfo(res.all[0])
+      if (Array.isArray(res.all) && res.all.length > 0) {
+        const objId = {
+          doctorId,
+        }
+        const merge = Object.assign(objId, res.all[0])
+        SessionStorage.set('currentDoctorInfo', merge)
+        getSchedulingDatas(merge)
       }
     }
 
@@ -276,13 +275,14 @@ export default defineComponent({
       SessionStorage.set('currentDoctorInfo', merageDate)
     }
     const clickItem = (date, data, isNumber, dictCode, dictName) => {
+      console.log(state.isProcess, date, data, '医院')
       processIsDate(date) // 处理没有日期的情况
       if (state.isProcess) {
         state.periodShow = true
         state.allTimeList = data.list
       } else {
         orderInfo.date = date
-        orderInfo.dictCode = dictCode        
+        orderInfo.dictCode = dictCode
         state.currentTimesInfo.dictName = dictName
         getSourceNo(data)
       }
@@ -311,7 +311,7 @@ export default defineComponent({
       orderInfo.scheduleId = times.scheduleId
       SessionStorage.set(
         'currentDoctorInfo',
-        Object.assign(orderInfo,temporary )
+        Object.assign(orderInfo, temporary)
       )
       router.push('/order')
     }

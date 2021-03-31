@@ -30,11 +30,11 @@
                 "
               >
                 {{
-                  !changeTextStatus(table, item, column)
-                    ? ''
-                    : isIfNumber(table, item, column)
-                    ? '预约'
-                    : '已满'
+                !changeTextStatus(table, item, column)
+                ? ''
+                : isIfNumber(table, item, column)
+                ? '预约'
+                : '已满'
                 }}
               </td>
             </template>
@@ -48,14 +48,13 @@
                 }"
                 v-for="(item, index) in table.week"
                 @click.prevent="isPlainNumber(table.date[item.date],column.dictCode)?makeApponintment(item.date,table.date[item.date][column.dictCode],isPlainNumber(table.date[item.date],column.dictCode),column.dictCode,column.dictName): ''"
-              >
-                {{ filtersText(table.date[item.date], column.dictCode) }}
-              </td>
+              >{{ filtersText(table.date[item.date], column.dictCode) }}</td>
             </template>
           </tr>
         </table>
       </van-swipe-item>
     </van-swipe>
+    <div class="no-table-data" v-if="!tableData.length">暂无排班</div>
   </div>
 </template>
 
@@ -68,7 +67,7 @@ export default defineComponent({
     tableData: Array,
     isProcessData: Boolean
   },
-  setup(props, ctx) {
+  setup (props, ctx) {
     console.log(props.tableData, props.isProcessData, 8888)
     const isIfNumber = computed(() => {
       return function (table, item, column) {
@@ -145,5 +144,10 @@ export default defineComponent({
 }
 .my-swipe {
   height: 200px;
+}
+.no-table-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

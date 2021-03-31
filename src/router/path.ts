@@ -20,7 +20,11 @@ const title = {
   userNotice: '隐私政策',
   reviews: '就诊点评',
   report: '门诊缴费',
-  depIntroduce: '科室介绍'
+  depIntroduce: '科室介绍',
+  healthRecord: '健康档案',
+  queue: '就诊队列',
+  queueSeeDoctor: '就诊队列',
+  queueList: '就诊队列',
 }
 const routes: Array<RouteRecordRaw> = [
   {
@@ -150,6 +154,30 @@ const routes: Array<RouteRecordRaw> = [
     name: 'depIntroduce',
     component: () => import('@/page/departmentDoctor/introduce.vue'),
     meta: { title: title.depIntroduce, requiredLogin: true },
+  },
+  {
+    path: '/healthRecord',
+    name: 'healthRecord',
+    component: () => import('@/page/healthRecord/healthRecord.vue'),
+    meta: { title: title.healthRecord, requiredLogin: true },
+  },
+  {
+    path: '/queue',
+    name: 'queue',
+    component: () => import('@/page/queue/queue.vue'),
+    meta: { title: title.queue, requiredLogin: true },
+  },
+  {
+    path: '/queueSeeDoctor/:unitId',
+    name: 'queueSeeDoctor',
+    component: () => import('@/page/queueSeeDoctor/queueSeeDoctor.vue'),
+    meta: { title: title.queueSeeDoctor },
+  },
+  {
+    path: '/queueList',
+    name: 'queueList',
+    component: () => import('@/page/queueList/queueList.vue'),
+    meta: { title: title.queueList },
   },
 ]
 export default routes

@@ -39,6 +39,7 @@ const API = {
   URL_GET_DOCTOR_INFO: `${provider}/yygh-pub/pub/hdbs/schedule/findScheduleGroupByDateAndDoctorId`,
   URL_DEPARTMENT_NOTICE: `${provider}/yygh-pub/pub/dep/get`,
   URL_HOSPITAL_NOTICE: `${provider}/dict/unitNotice/findLatestNotice`,
+  URL_TREATMENT_QUEUE: `${provider}/pt-platform/order/treatmentQueueList`,
 }
 /**
  *
@@ -208,8 +209,8 @@ export function getReportList(data) {
 }
 
 // 获取医生信息
-export function getDoctorInfo(params) {
-  return get(API.URL_GET_DOCTOR_INFO, params)
+export function getDoctorInfo(doctorId) {
+  return get(API.URL_GET_DOCTOR_INFO, doctorId)
 }
 
 // 科室公告 文章详情
@@ -220,4 +221,10 @@ export function getDepartmentNotice(params) {
 // 获取医院公告
 export function getHospitalNotice(params) {
   return get(API.URL_HOSPITAL_NOTICE, params)
+}
+
+// 就诊队列查询
+
+export function getTreatmentQueueList(data) {
+  return post(API.URL_TREATMENT_QUEUE, data)
 }

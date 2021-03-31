@@ -1,15 +1,18 @@
 <template>
   <div class="clinic">
-    <van-list>
+    <van-cell-group>
       <van-cell
         is-link
-        :title="column.unitName"
         v-for="(column,index) in payingHospitals"
         :key="index"
         @click="handleList(column)"
-      />
-    </van-list>
-    <NoData v-if="!payingHospitals.length" :message="message[type]" />
+      >
+        <template #title>
+          <div class="custom-title-flex">{{column.unitName}}</div>
+        </template>
+      </van-cell>
+    </van-cell-group>
+    <NoData v-if="isData" :message="message[type]" />
   </div>
 </template>
 
@@ -26,6 +29,7 @@ export default defineComponent({
   },
   setup() {
     let payingHospitals = ref([])
+    const isData = ref(false)
     const message = {
       report: '未查询您在医院的检查报告！',
       outpatient: '未查询到需缴费医院！',
@@ -45,14 +49,25 @@ export default defineComponent({
       }
       const { success, data } = await getReportList(params)
       if (success) {
-        payingHospitals = data
+        payingHospitals.value = data
+      } else {
+        isData.value = true
       }
     }
     getList()
+
+    const handleList = (column) => {
+      const { businessAuthUrl } = column
+      if (businessAuthUrl) {
+        window.location.href = businessAuthUrl
+      }
+    }
     return {
       payingHospitals,
       message,
       type,
+      handleList,
+      isData,
     }
   },
 })
