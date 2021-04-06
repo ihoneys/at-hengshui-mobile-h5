@@ -21,18 +21,23 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
   let loginPath =
     fullPath !== '/login' &&
     fullPath !== '/register/registered' &&
-    fullPath !== '/register/changePassword'
-  if (loginPath) { // 不保存登录注册路由
-    if (Object.values(urlParams).length) { //截取路由
+    fullPath !== '/register/changePassword' &&
+    fullPath !== '/register/changePassword?isLogin=true'
+  if (loginPath) {
+    // 不保存登录注册路由
+    if (Object.values(urlParams).length) {
+      //截取路由
       const splitPath = fullPath.split('?')[0]
-      if (urlParams.doctorId) {// app 直接进入医生主页保存 doctorId
+      if (urlParams.doctorId) {
+        // app 直接进入医生主页保存 doctorId
         routePath = `${splitPath}?doctorId=${urlParams.doctorId}`
       } else {
         routePath = splitPath // 否则正常保存路由
       }
       console.log(splitPath)
     }
-    if (routePath === '/accountInfo' && isWeixinBrower()) { // 从账户信息退出
+    if (routePath === '/accountInfo' && isWeixinBrower()) {
+      // 从账户信息退出
       routePath = ''
     }
     SessionStorage.set('preRoute', routePath)

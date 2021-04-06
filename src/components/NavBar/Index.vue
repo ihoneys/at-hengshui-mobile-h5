@@ -1,5 +1,10 @@
 <template>
-  <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="onClickLeft" />
+  <van-nav-bar
+    :title="title"
+    left-text="返回"
+    left-arrow
+    @click-left="onClickLeft"
+  />
 </template>
 
 <script lang="ts">

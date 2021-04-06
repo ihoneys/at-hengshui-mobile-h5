@@ -6,11 +6,7 @@ import moment from 'moment'
 const SM4 = crypt.sm4
 const createSm4 = new SM4(sm4Config)
 
-export function createMessage(
-  message: string,
-  title: string = '提示',
-  callBack: () => void = () => {}
-): void {
+export function createMessage(message: string, title: string = '提示', callBack: () => void = () => { }): void {
   Dialog.alert({
     title,
     message,
@@ -37,9 +33,9 @@ export function encrypt(val: string): string {
 export function sm4Decrypt(val: string): string {
   return createSm4.decrypt(val)
 }
-export function idEncrypt(value: string): string {
-  if (!value) return value
-  const call = '' + value
+export function idEncrypt(val: string): string {
+  if (!val) return val
+  const call = '' + val
   return call.substr(0, 4) + '**********' + call.substr(14)
 }
 export function protectName(name: string): string {
@@ -51,20 +47,19 @@ export function protectName(name: string): string {
 }
 
 // 电话号码+****
-export function telEncrypt(value: string): string {
-  if (!value) return value
-  let call = '' + value
-  call = call.substr(0, 3) + '****' + call.substr(7)
+export function telEncrypt(tel: string): string {
+  if (!tel) return tel
+  let call = '' + tel
+  call = call.substr(0, 3) + '****' + call.substr(tel.length - 4)
   return call
 }
 
 export function computedAge(birthDay: string): number {
-  if (!birthDay) {
-    return 0
-  }
+  if (!birthDay) return 0
   return new Date().getFullYear() - new Date(birthDay).getFullYear()
 }
-// 截取code码
+
+
 // 获取url中的参数--
 export function getUrlParams(): any {
   var hre = window.location.href
@@ -83,11 +78,7 @@ export function getUrlParams(): any {
   return obj
 }
 
-export function redirectLoginUrl(
-  userId: string,
-  routerUrl: string,
-  tokenKey: string
-): void {
+export function redirectLoginUrl(userId: string, routerUrl: string, tokenKey: string): void {
   const local =
     'http://www.jk-hs.com/yygh/lqt-yygh-provider/yygh-pub/pub/getHospitalOpenid' // 正式
   const APPID = 'wxe78b60aa91fcd552' // 正式
@@ -107,11 +98,11 @@ export function getCustomDate(n: number = 0): string {
   return moment(date).format('YYYY-MM-DD')
 }
 
-export const parsingSchedulingData = function (arr) {
+export const parsingSchedulingData = function (arr: any): any {
   const isNeedProessData = isProcessData(arr)
   let obj = {}
   let timeTypeObj = {}
-  let list = []
+  let list: any = []
   if (isNeedProessData) {
     arr.forEach((cur, index) => {
       list.push(cur)
@@ -147,10 +138,8 @@ export const parsingSchedulingData = function (arr) {
       const periodListAm = cur['am'].list
       const periodListPm = cur['pm'].list
 
-      const filterAm =
-        Array.isArray(periodListAm) && periodListAm.some((v) => v.isYuyue)
-      const filterPm =
-        Array.isArray(periodListPm) && periodListPm.some((v) => v.isYuyue)
+      const filterAm = Array.isArray(periodListAm) && periodListAm.some((v) => v.isYuyue)
+      const filterPm = Array.isArray(periodListPm) && periodListPm.some((v) => v.isYuyue)
       cur['am'].isYuyue = filterAm ? true : false
       cur['pm'].isYuyue = filterPm ? true : false
     }
@@ -178,7 +167,7 @@ export const parsingSchedulingData = function (arr) {
     }
   }
 
-  function isProcessData(arr) {
+  function isProcessData(arr: any): any {
     if (!arr) return false
     let result = false
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -212,12 +201,7 @@ export function formateDate(datetime: string, isComplete = true): string {
     return num < 10 ? '0' + num : num
   }
   let d = new Date(datetime)
-  let yearsMonthDay =
-    d.getFullYear() +
-    '-' +
-    addDateZero(d.getMonth() + 1) +
-    '-' +
-    addDateZero(d.getDate())
+  let yearsMonthDay = d.getFullYear() + '-' + addDateZero(d.getMonth() + 1) + '-' + addDateZero(d.getDate())
   if (isComplete) {
     yearsMonthDay +
       ' ' +
@@ -250,10 +234,7 @@ export function byPatientIdGetBrithdayAndSex(value) {
     return value.substring(pre, next)
   }
   let radio = ''
-  const birthDay = `${substring(6, 10)}-${substring(10, 12)}-${substring(
-    12,
-    14
-  )}`
+  const birthDay = `${substring(6, 10)}-${substring(10, 12)}-${substring(12, 14)}`
   if (parseInt(value.substr(16, 1)) % 2 == 1) {
     radio = '0'
   } else if (parseInt(value.substr(16, 1)) % 2 == 0) {

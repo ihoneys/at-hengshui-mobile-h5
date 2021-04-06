@@ -122,7 +122,6 @@ export default defineComponent({
       isGetCode,
     } = getVerificationCode()
     const { toPreviousRoute, storeLoginInfomation } = loginSuccess()
-
     const verificationCodeLogin = async () => {
       const sendData = {
         phone: encrypt(phone.value),
@@ -154,7 +153,7 @@ export default defineComponent({
             message: '您的密码已经3个月没更新了，是否立即更新？',
           })
             .then(() => {
-              toRegister('passwordLogin')
+              toRegister('changePassword')
             })
             .catch(() => {
               toPreviousRoute(router)
@@ -166,13 +165,8 @@ export default defineComponent({
         storeLoginInfomation(Object.assign(userInfo, res))
       }
     }
-    const toRegister = (isNewUser) => {
-      router.push({
-        name: 'register',
-        params: {
-          isNewUser,
-        },
-      })
+    const toRegister = (type) => {
+      router.push(`/register/${type}?isLogin=true`)
     }
     const changeLoginType = () => {
       loginType.value = !loginType.value

@@ -22,7 +22,7 @@ export default defineComponent({
   },
   setup() {
     const runEnvApp = ref(false)
-    const { from, tokenKey, others } = getUrlParams()
+    const { from, others } = getUrlParams()
     let isApp
     if (from || others) {
       // app外部链接进入

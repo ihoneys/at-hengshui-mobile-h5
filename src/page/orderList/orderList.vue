@@ -17,7 +17,7 @@
       >
         <div class="item-flex">
           <div class="order-status">订单状态：</div>
-          <div class="order-status-text" style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
+          <div class="order-status-text" style="color:#00d2c3">{{$filters.transformOrderStatus(item.orderStatus)}}</div>
         </div>
         <div class="pd-16">
           <div class="order-doctor-infos">
@@ -37,7 +37,7 @@
           <ul class="order-list-info">
             <li class="order-list-info-li">
               <div class="item-color">就诊人</div>
-              <div>{{tranformDecrypt(item.trueName)}}</div>
+              <div>{{$filters.decrypt(item.trueName)}}</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">门诊费用</div>
@@ -53,7 +53,7 @@
             </li>
             <li class="order-list-info-li">
               <div class="item-color">支付状态</div>
-              <div>{{tranformPayStatus(item.payStatus)}}</div>
+              <div>{{$filters.transformPayStatus(item.payStatus)}}</div>
             </li>
           </ul>
         </div>
@@ -88,11 +88,6 @@
 import { defineComponent, reactive, toRefs } from 'vue'
 import { getOrderList, checkOrderStatus } from '../../common/api'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
-import {
-  tranformStatus,
-  tranformPayStatus,
-  tranformDecrypt,
-} from '../../hooks/transform'
 import { isObjEmpty, createMessage } from '../../common/function'
 import { useRouter } from 'vue-router'
 import defaultImg from '../../assets/defaultDoc.png'
@@ -175,9 +170,6 @@ export default defineComponent({
     return {
       ...toRefs(state),
       onLoad,
-      tranformStatus,
-      tranformPayStatus,
-      tranformDecrypt,
       handleAgin,
       handleOrder,
       payOrder,

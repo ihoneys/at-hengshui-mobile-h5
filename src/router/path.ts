@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from 'vue-router'
+import { defineAsyncComponent } from 'vue'
 import Home from '@/page/home/home.vue'
 const title = {
   user: '个人中心',
@@ -26,6 +27,10 @@ const title = {
   queueSeeDoctor: '就诊队列',
   queueList: '就诊队列',
 }
+
+const asyncDepartmentDoctor = defineAsyncComponent(
+  () => import('@/page/departmentDoctor/departmentDoctor.vue')
+)
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

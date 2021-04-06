@@ -3,7 +3,7 @@
     <custom-van-nav-bar />
     <div class="item-flex">
       <div class="order-status">订单状态：</div>
-      <div class="order-status-text" style="color:#00d2c3">{{tranformStatus(item.orderStatus)}}</div>
+      <div class="order-status-text" style="color:#00d2c3">{{$filters.transformOrderStatus(item.orderStatus)}}</div>
     </div>
     <div class="order-doctor-info">
       <van-image
@@ -22,7 +22,7 @@
     <ul class="order-list-info">
       <li class="order-list-info-li">
         <div class="item-color">就诊人</div>
-        <div>{{tranformDecrypt(item.trueName)}}</div>
+        <div>{{$filters.decrypt(item.trueName)}}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">门诊费用</div>
@@ -38,7 +38,7 @@
       </li>
       <li class="order-list-info-li">
         <div class="item-color">支付状态</div>
-        <div>{{tranformPayStatus(item.payStatus)}}</div>
+        <div>{{$filters.transformPayStatus(item.payStatus)}}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">取号密码</div>
@@ -67,7 +67,7 @@
           color="#ddd"
           size="small"
           class="status-btn"
-          v-if="isCanelReserve(item.orderStatus)"
+          v-if="$filters.isCanelReserve(item.orderStatus)"
         />
       </router-link>
     </div>
@@ -79,7 +79,6 @@ import { SessionStorage } from 'storage-manager-js'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { queryOrderDetails } from '../../common/api'
-import { tranformDecrypt, tranformStatus, tranformPayStatus, isCanelReserve } from '../../hooks/transform'
 import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   setup () {
@@ -106,10 +105,6 @@ export default defineComponent({
       router.push('DoctorPage')
     }
     return {
-      tranformStatus,
-      tranformDecrypt,
-      tranformPayStatus,
-      isCanelReserve,
       handleAgin,
       item,
       defaultImg

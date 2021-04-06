@@ -69,7 +69,7 @@
         </van-form>
       </div>
       <div class="algin-left">
-        <div class="change-box" @click="router.go(-1)">返回</div>
+        <div class="change-box" @click="backPage">返回</div>
       </div>
     </div>
   </div>
@@ -126,6 +126,14 @@ export default defineComponent({
         })
       }
     }
+    const backPage = () => {
+      const isLoginParams = route.query.isLogin
+      if (isLoginParams) {
+        toPreviousRoute(router)
+      } else {
+        router.go(-1)
+      }
+    }
     return {
       ...toRefs(state),
       codeText,
@@ -133,9 +141,9 @@ export default defineComponent({
       onGetCode,
       countDown,
       phone,
-      router,
       phoneRexg,
       onSubmit,
+      backPage,
     }
   },
 })

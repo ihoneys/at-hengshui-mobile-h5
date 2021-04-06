@@ -49,7 +49,6 @@ import { defineComponent } from 'vue'
 import { idEncrypt, telEncrypt, encrypt } from '../../common/function'
 import getUserMemberHooks from '../../hooks/user'
 import { queryMemberInfo } from '../../common/api'
-import { tranformDecrypt } from '../../hooks/transform'
 import ColumnList from '@/components/ColumnList/Index.vue'
 import { useRouter } from 'vue-router'
 import { SessionStorage } from 'storage-manager-js'
@@ -108,7 +107,6 @@ export default defineComponent({
     return {
       columnList,
       memberList,
-      tranformDecrypt,
       clickViewDetail,
       telEncrypt,
       idEncrypt,

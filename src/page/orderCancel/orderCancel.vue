@@ -23,7 +23,7 @@
       </li>
       <li>
         <div>支付状态：</div>
-        <div>{{tranformPayStatus(orderInfo.payStatus)}}</div>
+        <div>{{$filters.transformPayStatus(orderInfo.payStatus)}}</div>
       </li>
       <li class="special-tips">在线申请取消预约挂号订单，已支付的相关费用将在取消订单后自动退款</li>
     </ul>
@@ -66,7 +66,6 @@
 <script>
 import { defineComponent, reactive, toRefs } from 'vue'
 import { SessionStorage } from 'storage-manager-js'
-import { tranformPayStatus } from '../../hooks/transform'
 import { cancelOrderRefund } from '../../common/api'
 import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
@@ -98,7 +97,6 @@ export default defineComponent({
     const back = () => router.go(-1)
     return {
       ...toRefs(state),
-      tranformPayStatus,
       handleCancel,
       back
     }

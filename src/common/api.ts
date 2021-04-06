@@ -54,9 +54,7 @@ export function getHospitalList(params: any) {
  * @param phone 手机号
  */
 export function getPhoneCode(phone: number | string) {
-  const params = {
-    phone,
-  }
+  const params = { phone }
   return postAndGet(API.URL_PHONE_CODE, params)
 }
 

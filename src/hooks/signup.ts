@@ -12,16 +12,20 @@ const isGetCode = ref(false),
 export function getVerificationCode() {
   const countTime = () => {
     isGetCode.value = true
-    let timer = setInterval(() => {
-      if (countDown.value !== 0) {
-        codeText.value = `重新发送${countDown.value--}`
-      } else {
-        isGetCode.value = false
-        codeText.value = '获取验证码'
-        countDown.value = 59
-        clearInterval(timer)
-      }
-    }, 1000)
+    let timer = setInterval(
+      (function setIntervalFunc() {
+        if (countDown.value !== 0) {
+          codeText.value = `重新发送${countDown.value--}`
+        } else {
+          isGetCode.value = false
+          codeText.value = '获取验证码'
+          countDown.value = 59
+          clearInterval(timer)
+        }
+        return setIntervalFunc
+      })(),
+      1000
+    )
   }
 
   const onGetCode = async () => {
@@ -57,7 +61,6 @@ export function loginSuccess() {
       if (prevRoute === '/MyCenter' || prevRoute === '/home') {
         router.push(prevRoute)
       } else {
-        console.log(666666,'走这里啦啊')
         router.push(prevRoute)
       }
     }

@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getHospitalList } from '../../common/api'
@@ -46,7 +46,7 @@ export default defineComponent({
     ]
     const { homePageEntrance } = getUrlParams()
     const position: any = initMap() // 获取地理位置信息
-    console.log(position, 9999)
+    console.log(position, 'position')
     onMounted(async () => {
       const params: RequestParams = { page: 1, size: 20 }
       if (homePageEntrance) {
@@ -54,24 +54,24 @@ export default defineComponent({
       }
       const { data: res } = await getHospitalList(params)
       if (position.lat && position.lng) {
-        hospitalData.value = addDistance(
-          res.list,
-          position.lat,
-          position.lng
-        )
+        hospitalData.value = addDistance(res.list, position.lat, position.lng)
       } else {
         hospitalData.value = res.list
       }
     })
     const addDistance = (list, lat, lng) => {
       list.forEach((item) => {
-        const [hos_lng, hos_lat] = item.map.split(',')
-        item.distance = countDistance(
-          hos_lat,
-          hos_lng,
-          Number(lat),
-          Number(lng)
-        )
+        if (item.map) {
+          const [hos_lng, hos_lat] = item.map.split(',')
+          item.distance = countDistance(
+            hos_lat,
+            hos_lng,
+            Number(lat),
+            Number(lng)
+          )
+        } else {
+          item.distance = 0
+        }
       })
       return list
     }

@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "strict": false, // 是否严格类型
+    "strict": true, // 是否严格类型
     "jsx": "preserve",
     "sourceMap": true,
     "lib": ["esnext", "dom"],

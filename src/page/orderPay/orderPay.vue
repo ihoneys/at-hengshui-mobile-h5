@@ -29,7 +29,6 @@
 <script>
 import { defineComponent, reactive, toRefs } from 'vue'
 import { SessionStorage } from 'storage-manager-js'
-import { tranformDecrypt } from '../../hooks/transform'
 import { isWeixinBrower } from '../../common/function'
 import { invokingPrepaid, weChatCallback, paymentAppH5 } from '../../common/api'
 import { Toast } from 'vant'
@@ -120,7 +119,6 @@ export default defineComponent({
     return {
       ...toRefs(state),
       onFinish,
-      tranformDecrypt,
       toPay
     }
   }
