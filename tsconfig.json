@@ -3,12 +3,16 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "strict": true,
+    "strict": true, // 是否严格类型
     "jsx": "preserve",
     "sourceMap": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
+    "typeRoots": ["../node_modules/@types"],
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["types","src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/hooks/userPosition.ts"]
 }
