@@ -68,7 +68,6 @@ export default defineComponent({
     const { homePageEntrance } = getUrlParams()
     const getDepartmentData = async () => {
       const { success, data } = await getDepartmentList(params)
-
       if (success && Array.isArray(data) && data.length > 0) {
         if (homePageEntrance) {
           const filterList = data.filter(
@@ -88,8 +87,9 @@ export default defineComponent({
         })
       }
     }
+
     const getNotice = async () => {
-      const { success, unitNotice } = await getHospitalNotice(params)
+      const { unitNotice } = await getHospitalNotice(params)
       if (isObjEmpty(unitNotice)) return
       const { content, noticeTitle } = unitNotice
       createMessage(content, noticeTitle)

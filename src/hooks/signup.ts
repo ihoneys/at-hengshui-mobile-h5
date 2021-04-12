@@ -6,20 +6,21 @@ import { sendToAppMessage } from '../common/uniPostMessage'
 import { SessionStorage, LocalStorage } from 'storage-manager-js'
 const isGetCode = ref(false),
   codeText = ref('获取验证码'),
-  countDown = ref(59),
+  countDown = ref(60),
   phone = ref('')
 
 export function getVerificationCode() {
   const countTime = () => {
     isGetCode.value = true
-    let timer = setInterval(
+    let timer
+    timer = setInterval(
       (function setIntervalFunc() {
         if (countDown.value !== 0) {
           codeText.value = `重新发送${countDown.value--}`
         } else {
           isGetCode.value = false
           codeText.value = '获取验证码'
-          countDown.value = 59
+          countDown.value = 60
           clearInterval(timer)
         }
         return setIntervalFunc

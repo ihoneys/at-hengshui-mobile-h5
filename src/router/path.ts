@@ -28,9 +28,6 @@ const title = {
   queueList: '就诊队列',
 }
 
-const asyncDepartmentDoctor = defineAsyncComponent(
-  () => import('@/page/departmentDoctor/departmentDoctor.vue')
-)
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',

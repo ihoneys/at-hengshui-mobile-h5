@@ -14,7 +14,7 @@ let httpCode = {
   502: '网关错误',
   504: '网关超时',
 }
-const baseURL: string = 'https://jk-hs.com/yygh'
+
 const productionURL: string = 'https://jk-hs.com/yygh'
 const getEnv = import.meta.env.MODE
 
@@ -45,13 +45,13 @@ const closeLoading = () => {
 }
 
 const hideLoading = debounce(() => {
-  Toast.clear()
+  loadingInstance.clear()
   loadingInstance = null
 }, 300)
 
 const instance = axios.create({
   timeout: 30000,
-  baseURL: getEnv === 'development' ? baseURL : productionURL,
+  baseURL: productionURL,
 })
 
 instance.interceptors.request.use(
@@ -129,9 +129,26 @@ instance.interceptors.response.use(
     }
   }
 )
+
+
+
+
 export const post = (url: string, data: any = {}, config = {}) => {
+  return _requestMethodWithData('post', url, data, config)
+}
+
+export const get = (url: string, params: any = {}, config = {}) => {
+  return _requestMethodWithoutData('get', url, params, config)
+}
+
+export const postAndGet = (url: string, params: any, config = {}) => {
+  return _requestMethodWithoutData('post', url, params, config)
+}
+
+
+function _requestMethodWithData(method: string, url: string, data: any, config: any) {
   return instance({
-    method: 'post',
+    method,
     url,
     data,
     ...config,
@@ -144,24 +161,9 @@ export const post = (url: string, data: any = {}, config = {}) => {
     })
 }
 
-export const get = (url: string, params: any = {}, config = {}) => {
+function _requestMethodWithoutData(method: string, url: string, params: any, config: any) {
   return instance({
-    method: 'get',
-    url,
-    params,
-    ...config,
-  })
-    .then((response) => {
-      return Promise.resolve(response)
-    })
-    .catch((error) => {
-      return Promise.reject(error)
-    })
-}
-
-export const postAndGet = (url: string, params: any, config = {}) => {
-  return instance({
-    method: 'post',
+    method,
     url,
     params,
     ...config,
