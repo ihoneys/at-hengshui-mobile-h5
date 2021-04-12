@@ -58,7 +58,6 @@ export function getLngLatLocation() {
           geocoder.getAddress(lnglat, function (status, data) {
             if (status === 'complete' && data.info === 'OK') {
               // result为对应的地理位置详细信息
-            //   console.log(data)
               state.position.isPosition = true
               const [lng, lat] = lnglat
               state.position.isPosition = true
@@ -80,7 +79,7 @@ export function getLngLatLocation() {
 }
 
 export function countDistance(lat1, lng1, lat2, lng2) {
-//   console.log(lat1, lng1, lat2, lng2)
+  //   console.log(lat1, lng1, lat2, lng2)
   var radLat1 = (lat1 * Math.PI) / 180.0
   var radLat2 = (lat2 * Math.PI) / 180.0
   var a = radLat1 - radLat2
@@ -90,7 +89,7 @@ export function countDistance(lat1, lng1, lat2, lng2) {
     Math.asin(
       Math.sqrt(
         Math.pow(Math.sin(a / 2), 2) +
-          Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
+        Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
       )
     )
   s = s * 6378.137

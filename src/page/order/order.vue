@@ -21,7 +21,7 @@
     </div>
     <div class="patient-card patient-outside" v-if="!!current.patientId">
       <div class="patient-card-name">
-        <img v-if="current.sex === '0'" src="../../assets/icon_people.png" />
+        <img v-if="current.sex === 0" src="../../assets/icon_people.png" />
         <img v-else src="../../assets/icon_people-2.png" />
         <span>{{ current.patientName }}</span>
       </div>
