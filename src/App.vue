@@ -24,8 +24,7 @@ export default defineComponent({
     const runEnvApp = ref(false)
     const { from, others } = getUrlParams()
     let isApp
-    if (from || others) {
-      // app外部链接进入
+    if (from || others) { // app外部链接进入   
       isApp = true
       runEnvApp.value = true
     } else {

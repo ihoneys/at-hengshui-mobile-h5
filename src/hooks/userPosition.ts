@@ -13,7 +13,6 @@ const state = reactive({
   },
 })
 export function initMap() {
-  const self = this
   AMap.plugin('AMap.Geolocation', function () {
     var geolocation = new AMap.Geolocation({
       // 是否使用高精度定位，默认：true
