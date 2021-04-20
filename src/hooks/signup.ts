@@ -50,11 +50,7 @@ export function loginSuccess() {
   const { userId, data } = LocalStorage.get('userInfo') || ''
   const isWechat = isWeixinBrower()
   // 登录成功跳转逻辑
-  const toPreviousRoute = (
-    router,
-    isNeedSlientLogin = false,
-    tokenKey = data
-  ) => {
+  const toPreviousRoute = (router, isNeedSlientLogin = false, tokenKey = data) => {
     if (isNeedSlientLogin && isWechat) {
       //是否在微信中需要静默登录
       redirectLoginUrl(userId, prevRoute, tokenKey)

@@ -12,47 +12,48 @@
         height="80"
         radius="6"
         fit="cover"
-        :src="column.image ? column.image: defaultImg"
+        :src="column.image ? column.image : defaultImg"
       />
       <div class="base-info">
         <div class="base-name">
-          <span class="base-doc-name">{{column.doctorName}}</span>
-          <span class="base-doc-color pd-left">{{getGrade(column.zcid)}}</span>
+          <span class="base-doc-name">{{ column.doctorName }}</span>
+          <span class="base-doc-color pd-left">{{ getGrade(column.zcid) }}</span>
         </div>
-        <div class="base-doc-color doctor-explain">{{column.introduction}}</div>
+        <div class="base-doc-color doctor-explain">{{ column.introduction }}</div>
         <div>
           <span class="base-doc-color">接诊量</span>
-          <span class="no-number pd-left">{{column.qty || '暂无'}}</span>
+          <span class="no-number pd-left">{{ column.qty || '暂无' }}</span>
         </div>
       </div>
       <van-button
         round
-        :color="column.isYuyue?'':'#ccc'"
+        :color="column.isYuyue ? '' : '#ccc'"
         class="column-button"
         type="primary"
         size="small"
         v-if="showBtnStatus"
-      >{{changeButtonName(column.isYuyue)}}</van-button>
+        >{{ changeButtonName(column.isYuyue) }}</van-button
+      >
     </router-link>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed } from 'vue'
 import { SessionStorage } from 'storage-manager-js'
 import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   props: {
     doctorList: {
       type: Array,
-      required: true
+      required: true,
     },
     showBtnStatus: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
-  setup (props, ctx) {
+  setup(props, ctx) {
     const changeButtonName = computed(() => {
       return function (value) {
         return value == 1 ? '预约' : '已满'
@@ -74,9 +75,9 @@ export default defineComponent({
       changeButtonName,
       getGrade,
       saveItem,
-      defaultImg
+      defaultImg,
     }
-  }
+  },
 })
 </script>
 

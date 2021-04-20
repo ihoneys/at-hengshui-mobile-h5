@@ -9,10 +9,10 @@
       </div>-->
     </div>
     <div class="order-number">
-      <div>订单编号：{{currentOrder.orderId}}</div>
+      <div>订单编号：{{ currentOrder.orderId }}</div>
       <div>
         支付金额：
-        <span class="order-price">￥{{currentOrder.orderAmt}}元</span>
+        <span class="order-price">￥{{ currentOrder.orderAmt }}元</span>
       </div>
     </div>
     <div class="pay-way">
@@ -34,11 +34,13 @@ import { invokingPrepaid, weChatCallback, paymentAppH5 } from '../../common/api'
 import { Toast } from 'vant'
 import { useRouter } from 'vue-router'
 export default defineComponent({
-  setup () {
+  setup() {
     const currentOrder = SessionStorage.get('currentOrderDetail')
     const initTimeValue = () => {
       // let SET_TIME = 1300 * 60 * 1000
-      const transformStamp = Date.parse((`${currentOrder.toDate} ${currentOrder.beginTime}`).replace(/-/g, '/'))
+      const transformStamp = Date.parse(
+        `${currentOrder.toDate} ${currentOrder.beginTime}`.replace(/-/g, '/')
+      )
       const currentTime = new Date().getTime()
       const surplusTime = transformStamp - currentTime
       return surplusTime > 0 ? surplusTime : 0
@@ -46,14 +48,14 @@ export default defineComponent({
     const initTimeVal = initTimeValue()
     const state = reactive({
       time: initTimeVal,
-      currentOrder
+      currentOrder,
     })
     const router = useRouter()
     const toPay = async () => {
       const isWeChatBrowser = isWeixinBrower()
       const orderParams = {
         orderNo: currentOrder.orderId,
-        tradeType: "JSAPI"
+        tradeType: 'JSAPI',
       }
       if (isWeChatBrowser) {
         const { signParam, success, message } = await invokingPrepaid(orderParams)
@@ -66,24 +68,24 @@ export default defineComponent({
           appName: '健康衡水',
           appPackageName: 'com.hengshui.jkhs',
           appType: 'Android',
-          orderNo: currentOrder.orderId
+          orderNo: currentOrder.orderId,
         }
         pullWechatPay_H5(postAppData)
       }
     }
     const onBridgeReadyPayFor = (signParam) => {
-      WeixinJSBridge.invoke('getBrandWCPayRequest', signParam, res => {
-        if (res.err_msg == "get_brand_wcpay_request:ok") {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', signParam, (res) => {
+        if (res.err_msg == 'get_brand_wcpay_request:ok') {
           const backParams = {
-            orderId: currentOrder.orderId
+            orderId: currentOrder.orderId,
           }
-          weChatCallback(backParams).then(res => { })
+          weChatCallback(backParams).then((res) => {})
           Toast({
             type: 'success',
             message: '支付成功',
             onClose: () => {
               router.push('orderList')
-            }
+            },
           })
         } else {
           Toast.fail('未完成支付')
@@ -91,16 +93,16 @@ export default defineComponent({
       })
     }
     const pullWechatPay = (signParam) => {
-      if (typeof WeixinJSBridge === "undefined") {
+      if (typeof WeixinJSBridge === 'undefined') {
         if (document.addEventListener) {
-          document.addEventListener('WeixinJSBridgeReady', onBridgeReadyPayFor, false);
+          document.addEventListener('WeixinJSBridgeReady', onBridgeReadyPayFor, false)
         } else if (document.attachEvent) {
-          document.attachEvent('WeixinJSBridgeReady', onBridgeReadyPayFor);
-          document.attachEvent('onWeixinJSBridgeReady', onBridgeReadyPayFor);
+          document.attachEvent('WeixinJSBridgeReady', onBridgeReadyPayFor)
+          document.attachEvent('onWeixinJSBridgeReady', onBridgeReadyPayFor)
         }
       } else {
         console.log(666)
-        onBridgeReadyPayFor(signParam);
+        onBridgeReadyPayFor(signParam)
       }
     }
 
@@ -119,9 +121,9 @@ export default defineComponent({
     return {
       ...toRefs(state),
       onFinish,
-      toPay
+      toPay,
     }
-  }
+  },
 })
 </script>
 

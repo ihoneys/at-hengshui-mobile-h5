@@ -41,10 +41,10 @@ export default defineComponent({
     memberList: Array,
     routerPath: {
       type: String,
-      default: () => '/addMember/add'
-    }
+      default: () => '/addMember/add',
+    },
   },
-  setup (_, { emit }) {
+  setup(_, { emit }) {
     const state = reactive({
       radio: '',
     })
@@ -54,9 +54,9 @@ export default defineComponent({
     }
     return {
       ...toRefs(state),
-      seleckedPatient
+      seleckedPatient,
     }
-  }
+  },
 })
 </script>
 

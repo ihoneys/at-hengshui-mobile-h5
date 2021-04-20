@@ -1,6 +1,6 @@
 <template>
   <div class="table">
-    <van-swipe class="my-swipe" indicator-color="#00d2c3">
+    <van-swipe :class="{ 'my-swipe': tableData.length }" indicator-color="#00d2c3">
       <van-swipe-item v-for="table in tableData">
         <table class="container">
           <tr>
@@ -30,11 +30,11 @@
                 "
               >
                 {{
-                !changeTextStatus(table, item, column)
-                ? ''
-                : isIfNumber(table, item, column)
-                ? '预约'
-                : '已满'
+                  !changeTextStatus(table, item, column)
+                    ? ''
+                    : isIfNumber(table, item, column)
+                    ? '预约'
+                    : '已满'
                 }}
               </td>
             </template>
@@ -42,13 +42,23 @@
               <td
                 class="click-active"
                 :class="{
-                  active:
-                    filtersText(table.date[item.date], column.dictCode) ===
-                    '预约',
+                  active: filtersText(table.date[item.date], column.dictCode) === '预约',
                 }"
                 v-for="(item, index) in table.week"
-                @click.prevent="isPlainNumber(table.date[item.date],column.dictCode)?makeApponintment(item.date,table.date[item.date][column.dictCode],isPlainNumber(table.date[item.date],column.dictCode),column.dictCode,column.dictName): ''"
-              >{{ filtersText(table.date[item.date], column.dictCode) }}</td>
+                @click.prevent="
+                  isPlainNumber(table.date[item.date], column.dictCode)
+                    ? makeApponintment(
+                        item.date,
+                        table.date[item.date][column.dictCode],
+                        isPlainNumber(table.date[item.date], column.dictCode),
+                        column.dictCode,
+                        column.dictName
+                      )
+                    : ''
+                "
+              >
+                {{ filtersText(table.date[item.date], column.dictCode) }}
+              </td>
             </template>
           </tr>
         </table>
@@ -65,15 +75,15 @@ import { computed, defineComponent } from 'vue'
 export default defineComponent({
   props: {
     tableData: Array,
-    isProcessData: Boolean
+    isProcessData: Boolean,
   },
-  setup (props, ctx) {
-    console.log(props.tableData, props.isProcessData, 8888)
+  setup(props, ctx) {
+    // console.log(props.tableData, props.isProcessData, 8888)
     const isIfNumber = computed(() => {
       return function (table, item, column) {
         const hasDate = table.date[item.date]
         const hasTimeShort = column.dictCode
-        return (hasDate && hasDate[hasTimeShort] && hasDate[hasTimeShort].isYuyue)
+        return hasDate && hasDate[hasTimeShort] && hasDate[hasTimeShort].isYuyue
       }
     })
     const isPlainNumber = computed(() => {
@@ -107,10 +117,9 @@ export default defineComponent({
       changeTextStatus,
       makeApponintment,
       filtersText,
-      isPlainNumber
+      isPlainNumber,
     }
-
-  }
+  },
 })
 </script>
 

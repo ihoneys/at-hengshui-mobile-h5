@@ -4,11 +4,11 @@
     <div class="reviews-base">
       <van-image width="60px" height="60px" radius="8" fit="cover" :src="rateInfo.img" />
       <div class="reviews-doctor">
-        <h4>{{rateInfo.doctorName}}</h4>
+        <h4>{{ rateInfo.doctorName }}</h4>
         <div class="dep-name">
-          <span>{{rateInfo.hosName}}</span>
-          <i style="margin:0 4px">|</i>
-          <span>{{rateInfo.deptName}}</span>
+          <span>{{ rateInfo.hosName }}</span>
+          <i style="margin: 0 4px">|</i>
+          <span>{{ rateInfo.deptName }}</span>
         </div>
       </div>
     </div>
@@ -35,7 +35,9 @@
         </div>
       </div>
       <div class="checked-box">
-        <van-checkbox v-model="checked" checked-color="#00D3C2" shape="square">匿名评价</van-checkbox>
+        <van-checkbox v-model="checked" checked-color="#00D3C2" shape="square"
+          >匿名评价</van-checkbox
+        >
       </div>
     </div>
     <van-button
@@ -43,7 +45,7 @@
       block
       color="#00d2c3"
       text="提 交"
-      :disabled="(disease && refundReason.length < 10)"
+      :disabled="disease && refundReason.length < 10"
       @click="submitReviews"
     />
   </div>
@@ -55,13 +57,13 @@ import { Toast } from 'vant'
 import { defineComponent, reactive, toRefs } from 'vue'
 import { saveEvaluate } from '../../common/api'
 export default defineComponent({
-  setup () {
+  setup() {
     const state = reactive({
       rateVal: 0,
       disease: '',
       refundReason: '',
       stillNumber: 10,
-      checked: true
+      checked: true,
     })
     const rateInfo = SessionStorage.get('currentOrderDetail')
     const submitReviews = async () => {
@@ -71,7 +73,7 @@ export default defineComponent({
         score: state.rateVal,
         orderId: rateInfo.orderId,
         doctorId: rateInfo.doctorId,
-        evaluateName: state.checked ? '' : rateInfo.patientName
+        evaluateName: state.checked ? '' : rateInfo.patientName,
       }
       const { success, message } = await saveEvaluate(postData)
       if (success) {
@@ -83,9 +85,9 @@ export default defineComponent({
     return {
       ...toRefs(state),
       submitReviews,
-      rateInfo
+      rateInfo,
     }
-  }
+  },
 })
 </script>
 

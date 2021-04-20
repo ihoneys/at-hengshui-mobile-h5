@@ -10,7 +10,7 @@
       @click-right="add"
     >
       <template #right>
-        <span style="color:#07c160;" v-show="!isIncreased">新增</span>
+        <span style="color: #07c160" v-show="!isIncreased">新增</span>
       </template>
     </van-nav-bar>
     <div v-show="!isIncreased">
@@ -24,14 +24,15 @@
       >
         <van-cell
           is-link
-          v-for="(column,index) in dataList"
+          v-for="(column, index) in dataList"
           :key="index"
           @click="handleList(column)"
         >
           <template #title>
-            <span
-              class="custom-title"
-            >{{transformFormateDate(column.createDate)}} {{transformWeek(column.createDate)}}</span>
+            <span class="custom-title"
+              >{{ transformFormateDate(column.createDate) }}
+              {{ transformWeek(column.createDate) }}</span
+            >
           </template>
         </van-cell>
       </van-list>
@@ -137,7 +138,7 @@
           </template>
         </van-field>
         <div class="add-btn">
-          <van-button round block native-type="submit" color="#07c160">{{submit}}</van-button>
+          <van-button round block native-type="submit" color="#07c160">{{ submit }}</van-button>
         </div>
       </van-form>
     </div>
@@ -158,9 +159,9 @@ import { transformWeek, transformFormateDate } from '../../hooks/date'
 import Input from '@/components/Input/Index.vue'
 export default defineComponent({
   components: {
-    Input
+    Input,
   },
-  setup () {
+  setup() {
     const state = reactive({
       dataList: [],
       formData: {
@@ -176,7 +177,7 @@ export default defineComponent({
       loading: false,
       isIncreased: false,
       isDisabled: false,
-      submit: '提交'
+      submit: '提交',
     })
     const router = useRouter()
     onMounted(() => {
@@ -187,7 +188,7 @@ export default defineComponent({
       const params = {
         page: 0,
         size: 10,
-        userId: LocalStorage.get('userInfo').userId
+        userId: LocalStorage.get('userInfo').userId,
       }
       const { success, data, message } = await getCollectionList(params)
       if (success) {
@@ -196,9 +197,7 @@ export default defineComponent({
         Toast.fail(message)
       }
     }
-    const loadMore = () => {
-
-    }
+    const loadMore = () => {}
     const onSubmit = async (validate) => {
       if (state.isDisabled) {
         const { success, message } = await deleteIndexCollection(state.formData.id)
@@ -209,7 +208,7 @@ export default defineComponent({
             onClose: () => {
               setValueStatus(false)
               getDataList()
-            }
+            },
           })
         } else {
           Toast.fail(message)
@@ -224,7 +223,7 @@ export default defineComponent({
           onClose: () => {
             state.isIncreased = false
             getDataList()
-          }
+          },
         })
       } else {
         Toast.fail(message)
@@ -257,9 +256,9 @@ export default defineComponent({
       onSubmit,
       handleList,
       add,
-      onClickLeft
+      onClickLeft,
     }
-  }
+  },
 })
 </script>
 

@@ -4,10 +4,10 @@
       <div class="doctor-item" @click.native="goHospital(item)">
         <van-image class="doctor-image" lazy-load fit="cover" radius="4px" :src="item.image" />
         <div class="recommend">
-          <div class="doctor-name">{{item.unitName}}</div>
+          <div class="doctor-name">{{ item.unitName }}</div>
           <div class="describe">
-            <div class="tag-span" v-if="item.unitLevelName != null">{{item.unitLevelName}}</div>
-            <div class="tag-span" v-if="item.unitClassName != null">{{item.unitClassName}}</div>
+            <div class="tag-span" v-if="item.unitLevelName != null">{{ item.unitLevelName }}</div>
+            <div class="tag-span" v-if="item.unitClassName != null">{{ item.unitClassName }}</div>
           </div>
           <span class="distance-size" v-if="item.distance">距离{{ item.distance }}km</span>
         </div>

@@ -1,6 +1,11 @@
 <template>
   <div class="home">
-    <van-search shape="round" placeholder="搜索医生、科室、医院" disabled @click="isSearch = true" />
+    <van-search
+      shape="round"
+      placeholder="搜索医生、科室、医院"
+      disabled
+      @click="isSearch = true"
+    />
     <van-dropdown-menu active-color="#00d2c3">
       <van-dropdown-item v-model="defaultVal" :options="defaultOptions" @close="handleSort()" />
       <van-dropdown-item v-model="sortVal" :options="sortOptions" @close="handleSort()" />
@@ -20,6 +25,7 @@ import { initMap, countDistance } from '../../hooks/userPosition'
 import Hospital from '@/components/Hospital/Index.vue'
 import Search from '../search/search.vue'
 import { getUrlParams } from '../../common/function'
+import MyInput from '@/components/Input/Index.vue'
 interface RequestParams {
   size: number
   page: number
@@ -29,13 +35,14 @@ export default defineComponent({
   components: {
     Hospital,
     Search,
+    MyInput,
   },
   setup() {
     const router = useRouter()
-    const hospitalData = ref([])
-    const isSearch = ref(false)
-    const defaultVal = ref(0)
-    const sortVal = ref('a')
+    const hospitalData = ref<any>([])
+    const isSearch = ref<boolean>(false)
+    const defaultVal = ref<number>(0)
+    const sortVal = ref<string>('a')
     const defaultOptions = [
       { text: '默认排序', value: 0 },
       { text: '距离排序', value: 1 },
@@ -46,7 +53,7 @@ export default defineComponent({
     ]
     const { homePageEntrance } = getUrlParams()
     const position: any = initMap() // 获取地理位置信息
-    console.log(position, 'position')
+    // console.log(position, 'position')
     onMounted(async () => {
       const params: RequestParams = { page: 1, size: 20 }
       if (homePageEntrance) {
@@ -63,12 +70,7 @@ export default defineComponent({
       list.forEach((item) => {
         if (item.map) {
           const [hos_lng, hos_lat] = item.map.split(',')
-          item.distance = countDistance(
-            hos_lat,
-            hos_lng,
-            Number(lat),
-            Number(lng)
-          )
+          item.distance = countDistance(hos_lat, hos_lng, Number(lat), Number(lng))
         } else {
           item.distance = 0
         }
@@ -77,11 +79,7 @@ export default defineComponent({
     }
     watch(position, (state, preState) => {
       if (state.lat && state.lng && state.isPosition) {
-        hospitalData.value = addDistance(
-          hospitalData.value,
-          state.lat,
-          state.lng
-        )
+        hospitalData.value = addDistance(hospitalData.value, state.lat, state.lng)
       }
     })
     const handleSort = () => {
@@ -123,5 +121,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

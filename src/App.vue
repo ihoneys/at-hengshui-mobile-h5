@@ -1,16 +1,14 @@
 <template>
-  <div id="app">
-    <!-- <router-view v-slot="{ Component }">
+  <!-- <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
       </keep-alive>
     </router-view> -->
-    <router-view />
-    <TabBar v-if="this.$route.meta.isTabBar && !runEnvApp" />
-  </div>
+  <router-view />
+  <TabBar v-if="this.$route.meta.isTabBar && !runEnvApp" />
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { getUrlParams } from './common/function'
 import { SessionStorage } from 'storage-manager-js'
 import initTypeList from './init'
@@ -21,14 +19,13 @@ export default defineComponent({
     TabBar,
   },
   setup() {
-    const runEnvApp = ref(false)
-    const { from, others } = getUrlParams()
-    let isApp
-    if (from || others) { // app外部链接进入   
-      isApp = true
-      runEnvApp.value = true
-    } else {
+    let runEnvApp = false,
       isApp = false
+    const { from, others } = getUrlParams()
+    if (from || others) {
+      /**app外部链接进入  */
+      isApp = true
+      runEnvApp = true
     }
     SessionStorage.set('isApp', isApp)
     initTypeList() // 默认获取医生等级、身份证基础数据

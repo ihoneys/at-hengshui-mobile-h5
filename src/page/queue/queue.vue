@@ -13,7 +13,7 @@ export default defineComponent({
   components: {
     Hospital,
   },
-  setup () {
+  setup() {
     const router = useRouter()
     const hospitalData = ref([])
     onMounted(async () => {
@@ -26,11 +26,10 @@ export default defineComponent({
     }
     return {
       hospitalData,
-      goRouter
+      goRouter,
     }
-  }
+  },
 })
 </script>
 
-<style>
-</style>
+<style></style>

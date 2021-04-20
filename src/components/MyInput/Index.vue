@@ -10,8 +10,8 @@ export default defineComponent({
   props: {
     value: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   setup(props, { emit }) {
     const inputVal = computed({
@@ -23,11 +23,10 @@ export default defineComponent({
       },
     })
     return {
-      inputVal
+      inputVal,
     }
-  }
+  },
 })
 </script>
 
-<style>
-</style>
+<style></style>

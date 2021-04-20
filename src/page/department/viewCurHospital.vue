@@ -3,39 +3,41 @@
     <div class="hospital-base">
       <van-image width="90" height="80" :src="content.image" />
       <div class="hospital-base-text">
-        <h3>{{content.unitName}}</h3>
+        <h3>{{ content.unitName }}</h3>
         <div class="hospital-flex-level">
-          <p>{{content.unitLevelName}}</p>
-          <p>{{content.unitClassName}}</p>
+          <p>{{ content.unitLevelName }}</p>
+          <p>{{ content.unitClassName }}</p>
         </div>
         <div class="hospital-flex">
           <van-icon name="location" />
-          <span>{{content.address}}</span>
+          <span>{{ content.address }}</span>
         </div>
       </div>
     </div>
     <ul class="hospital-cloumn">
       <li>
         <p>别名</p>
-        <p>{{content.unitTags}}</p>
+        <p>{{ content.unitTags }}</p>
       </li>
       <li>
         <p>电话</p>
-        <p>{{content.phone}}</p>
+        <p>{{ content.phone }}</p>
       </li>
       <li v-if="content.webUrl">
         <p>网站</p>
-        <p>{{content.webUrl}}</p>
+        <p>{{ content.webUrl }}</p>
       </li>
     </ul>
     <div class="hospital-introduction">
       <h3>简介</h3>
-      <p class="hospital-introduction-text" :class="{'introContent': isFolding}">{{content.detail}}</p>
-      <div class="contorl" @click="isFolding = !isFolding">{{isFolding ? '展开' : '折叠'}}</div>
+      <p class="hospital-introduction-text" :class="{ introContent: isFolding }">
+        {{ content.detail }}
+      </p>
+      <div class="contorl" @click="isFolding = !isFolding">{{ isFolding ? '展开' : '折叠' }}</div>
     </div>
     <div class="hospital-introduction">
       <h3>公共交通</h3>
-      <p>{{content.busLine}}</p>
+      <p>{{ content.busLine }}</p>
     </div>
   </div>
 </template>

@@ -70,9 +70,7 @@ export default defineComponent({
       const { success, data } = await getDepartmentList(params)
       if (success && Array.isArray(data) && data.length > 0) {
         if (homePageEntrance) {
-          const filterList = data.filter(
-            (item) => item.depName.indexOf('核酸') > -1
-          )
+          const filterList = data.filter((item) => item.depName.indexOf('核酸') > -1)
           console.log(filterList)
           state.treeData = transformList(filterList)
         } else {

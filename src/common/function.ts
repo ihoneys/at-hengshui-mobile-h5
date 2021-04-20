@@ -6,7 +6,11 @@ import moment from 'moment'
 const SM4 = crypt.sm4
 const createSm4 = new SM4(sm4Config)
 
-export function createMessage(message: string, title: string = '提示', callBack: () => void = () => { }): void {
+export function createMessage(
+  message: string,
+  title: string = '提示',
+  callBack: () => void = () => {}
+): void {
   Dialog.alert({
     title,
     message,
@@ -59,7 +63,6 @@ export function computedAge(birthDay: string): number {
   return new Date().getFullYear() - new Date(birthDay).getFullYear()
 }
 
-
 // 获取url中的参数--
 export function getUrlParams(): any {
   var hre = window.location.href
@@ -79,8 +82,7 @@ export function getUrlParams(): any {
 }
 
 export function redirectLoginUrl(userId: string, routerUrl: string, tokenKey: string): void {
-  const local =
-    'http://www.jk-hs.com/yygh/lqt-yygh-provider/yygh-pub/pub/getHospitalOpenid' // 正式
+  const local = 'http://www.jk-hs.com/yygh/lqt-yygh-provider/yygh-pub/pub/getHospitalOpenid' // 正式
   const APPID = 'wxe78b60aa91fcd552' // 正式
   window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(
     local
@@ -201,13 +203,10 @@ export function formateDate(datetime: string, isComplete = true): string {
     return num < 10 ? '0' + num : num
   }
   let d = new Date(datetime)
-  let yearsMonthDay = d.getFullYear() + '-' + addDateZero(d.getMonth() + 1) + '-' + addDateZero(d.getDate())
+  let yearsMonthDay =
+    d.getFullYear() + '-' + addDateZero(d.getMonth() + 1) + '-' + addDateZero(d.getDate())
   if (isComplete) {
-    yearsMonthDay +
-      ' ' +
-      addDateZero(d.getHours()) +
-      ':' +
-      addDateZero(d.getMinutes())
+    yearsMonthDay + ' ' + addDateZero(d.getHours()) + ':' + addDateZero(d.getMinutes())
   }
   return yearsMonthDay
 }

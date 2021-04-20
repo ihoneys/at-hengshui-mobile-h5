@@ -1,10 +1,10 @@
 <template>
   <van-cell-group>
-    <van-cell v-for="(column,index) in columnList" :key="index" :to="column.path">
+    <van-cell v-for="(column, index) in columnList" :key="index" :to="column.path">
       <template #title>
         <div class="custom-title-flex">
           <van-icon class="gh-tb" v-if="column.isLeftIcon" :name="column.iconName" />
-          <span class="custom-totle">{{column.label}}</span>
+          <span class="custom-totle">{{ column.label }}</span>
         </div>
       </template>
       <template #right-icon>
@@ -20,8 +20,8 @@ export default defineComponent({
   props: {
     columnList: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
 })
 </script>

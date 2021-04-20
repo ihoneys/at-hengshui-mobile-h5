@@ -3,7 +3,9 @@
     <custom-van-nav-bar />
     <div class="item-flex">
       <div class="order-status">订单状态：</div>
-      <div class="order-status-text" style="color:#00d2c3">{{$filters.transformOrderStatus(item.orderStatus)}}</div>
+      <div class="order-status-text" style="color: #00d2c3">
+        {{ $filters.transformOrderStatus(item.orderStatus) }}
+      </div>
     </div>
     <div class="order-doctor-info">
       <van-image
@@ -14,35 +16,35 @@
         fit="cover"
       ></van-image>
       <div class="order-doctor-colum">
-        <div>{{item.doctorName}}</div>
-        <div>{{item.hosName}}</div>
-        <div>{{item.deptName}}</div>
+        <div>{{ item.doctorName }}</div>
+        <div>{{ item.hosName }}</div>
+        <div>{{ item.deptName }}</div>
       </div>
     </div>
     <ul class="order-list-info">
       <li class="order-list-info-li">
         <div class="item-color">就诊人</div>
-        <div>{{$filters.decrypt(item.trueName)}}</div>
+        <div>{{ $filters.decrypt(item.trueName) }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">门诊费用</div>
-        <div>{{item.orderAmt}}</div>
+        <div>{{ item.orderAmt }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">创建时间</div>
-        <div>{{item.orderTime}}</div>
+        <div>{{ item.orderTime }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">就诊时间</div>
-        <div>{{ item.toDate }} {{ item.beginTime }}-{{item.endTime}}</div>
+        <div>{{ item.toDate }} {{ item.beginTime }}-{{ item.endTime }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">支付状态</div>
-        <div>{{$filters.transformPayStatus(item.payStatus)}}</div>
+        <div>{{ $filters.transformPayStatus(item.payStatus) }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">取号密码</div>
-        <h4 style="color:red">{{item.platformPassword || '无'}}</h4>
+        <h4 style="color: red">{{ item.platformPassword || '无' }}</h4>
       </li>
     </ul>
     <div class="bottom-btn">
@@ -81,7 +83,7 @@ import { useRouter } from 'vue-router'
 import { queryOrderDetails } from '../../common/api'
 import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
-  setup () {
+  setup() {
     const item = ref({})
     const router = useRouter()
     item.value = SessionStorage.get('currentOrderDetail')
@@ -107,9 +109,9 @@ export default defineComponent({
     return {
       handleAgin,
       item,
-      defaultImg
+      defaultImg,
     }
-  }
+  },
 })
 </script>
 

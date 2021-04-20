@@ -1,19 +1,19 @@
 <template>
-  <div class="doctor-container" id="container" v-if="Object.values(dateDoctorList).length > 0">
+  <div id="container" class="doctor-container" v-if="Object.values(dateDoctorList).length > 0">
     <custom-van-nav-bar :title="depName" />
     <van-tabs color="#00D2C3" title-active-color="#00D2C3" :ellipsis="false" :line-width="30">
-      <van-tab v-for="(value,name,index) in dateDoctorList" :key="name">
-        <template v-if="index===0" #title>
+      <van-tab v-for="(value, name, index) in dateDoctorList" :key="name">
+        <template v-if="index === 0" #title>
           <span>全部</span>
           <br />
           <span>日期</span>
         </template>
         <template v-else #title>
-          {{transformWeek(name)}}
+          {{ transformWeek(name) }}
           <br />
-          {{transformDate(name)}}
+          {{ transformDate(name) }}
         </template>
-        <DoctorList :class="{'doctor-list-mt':depNotice}" :doctorList="value" />
+        <DoctorList :class="{ 'doctor-list-mt': depNotice }" :doctorList="value" />
         <teleport to="#container">
           <NoData v-if="!value.length" message="该科室暂无值班医生！" />
         </teleport>
@@ -23,7 +23,7 @@
       <van-notice-bar
         left-icon="volume-o"
         v-if="depNotice"
-        :class="[ depAbout ? 'notice-bar' : 'notice-bar-100']"
+        :class="[depAbout ? 'notice-bar' : 'notice-bar-100']"
         :text="depNotice"
       />
       <router-link

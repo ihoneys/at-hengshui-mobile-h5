@@ -1,11 +1,11 @@
 <template>
   <div class="article">
-     <custom-van-nav-bar />
+    <custom-van-nav-bar />
     <div class="header">
       <h4 style="font-size: 18px">科室介绍</h4>
       <div class="time">
-        <div class="time-date">{{date}}</div>
-        <div class="hospital-name" v-if="hospitalName">{{hospitalName}}</div>
+        <div class="time-date">{{ date }}</div>
+        <div class="hospital-name" v-if="hospitalName">{{ hospitalName }}</div>
       </div>
     </div>
     <div class="article-content">
@@ -19,18 +19,17 @@ import { SessionStorage } from 'storage-manager-js'
 import { defineComponent } from 'vue'
 import { getCustomDate } from '../../common/function'
 export default defineComponent({
-  setup () {
+  setup() {
     const article = SessionStorage.get('depArticle') || '',
       { unitName: hospitalName } = SessionStorage.get('currentHospital'),
       date = getCustomDate()
     return {
       article,
       hospitalName,
-      date
+      date,
     }
-  }
+  },
 })
-
 </script>
 
 <style lang="scss" scoped>

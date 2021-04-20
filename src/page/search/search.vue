@@ -10,24 +10,15 @@
       @search="onSearch"
       @clear="onClear"
     />
-    <div
-      class="search-history"
-      v-show="hasValue && searchHoistoryList.length > 0"
-    >
+    <div class="search-history" v-show="hasValue && searchHoistoryList.length > 0">
       <div>搜索记录</div>
       <ul class="histor-list">
-        <li
-          v-for="(item, index) in searchHoistoryList"
-          :key="index"
-          @click="handleItem(item)"
-        >
+        <li v-for="(item, index) in searchHoistoryList" :key="index" @click="handleItem(item)">
           {{ item }}
         </li>
       </ul>
       <div class="empty" v-if="searchHoistoryList.length > 0">
-        <button class="empty-btn" @click="clearSearchHistory">
-          清空搜索记录
-        </button>
+        <button class="empty-btn" @click="clearSearchHistory">清空搜索记录</button>
       </div>
     </div>
     <div class="hospital" v-if="hospitalData.length > 0">
@@ -97,9 +88,7 @@ export default defineComponent({
     })
     const router = useRouter()
     if (LocalStorage.has('searchHoistoryList')) {
-      state.searchHoistoryList = LocalStorage.get(
-        'searchHoistoryList'
-      ) as string[]
+      state.searchHoistoryList = LocalStorage.get('searchHoistoryList') as string[]
     }
     const onCancel = () => {
       ctx.emit('cancel')

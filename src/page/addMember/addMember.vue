@@ -48,7 +48,7 @@
         input-align="right"
         @blur="onBlur"
         :required="true"
-        :rules="[{ required: true, message: '请输入正确的证件号码',pattern: patternRegExp}]"
+        :rules="[{ required: true, message: '请输入正确的证件号码', pattern: patternRegExp }]"
       />
       <van-field
         name="sex"
@@ -103,11 +103,18 @@
             type="primary"
             :disabled="isGetCode || !phoneRexg.test(member.phone)"
             @click.stop="onGetCode"
-          >{{codeText}}</van-button>
+            >{{ codeText }}</van-button
+          >
         </template>
       </van-field>
       <div class="member-btn">
-        <van-button color="#ccc" style="width: 45%" round text="取 消" @click.stop="router.go(-1)" />
+        <van-button
+          color="#ccc"
+          style="width: 45%"
+          round
+          text="取 消"
+          @click.stop="router.go(-1)"
+        />
         <van-button
           round
           color="#18c0b5"
@@ -236,9 +243,7 @@ export default defineComponent({
 
     const onBlur = () => {
       if (state.member.idType !== '01') return
-      const { birthDay, radio } = byPatientIdGetBrithdayAndSex(
-        state.member.patientId
-      )
+      const { birthDay, radio } = byPatientIdGetBrithdayAndSex(state.member.patientId)
       if (birthDay || radio) {
         state.member.birthDay = birthDay
         state.member.sex = radio

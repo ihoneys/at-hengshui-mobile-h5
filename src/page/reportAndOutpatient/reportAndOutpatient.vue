@@ -3,12 +3,12 @@
     <van-cell-group>
       <van-cell
         is-link
-        v-for="(column,index) in payingHospitals"
+        v-for="(column, index) in payingHospitals"
         :key="index"
         @click="handleList(column)"
       >
         <template #title>
-          <div class="custom-title-flex">{{column.unitName}}</div>
+          <div class="custom-title-flex">{{ column.unitName }}</div>
         </template>
       </van-cell>
     </van-cell-group>

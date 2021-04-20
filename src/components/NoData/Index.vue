@@ -1,7 +1,7 @@
 <template>
   <div class="no-data">
     <img width="100" height="100" lazy-load src="@/assets/nothing_2.png" />
-    <p>{{message}}</p>
+    <p>{{ message }}</p>
   </div>
 </template>
 
@@ -14,5 +14,4 @@ export default defineComponent({
 })
 </script>
 
-<style>
-</style>
+<style></style>

@@ -55,7 +55,7 @@ import { useRoute } from 'vue-router'
 import { getTreatmentQueueList } from '../../common/api'
 import { isObjEmpty, sm4Decrypt } from '../../common/function'
 export default defineComponent({
-  setup () {
+  setup() {
     const treatmentQueueList = ref([])
     const route = useRoute()
     const hasQueue = ref(false)
@@ -63,7 +63,7 @@ export default defineComponent({
       const { unitId, memberId } = route.query
       const params = {
         unitId,
-        memberId
+        memberId,
       }
       const { data, success } = await getTreatmentQueueList(params)
       if (success && !isObjEmpty(data.data)) {
@@ -72,8 +72,7 @@ export default defineComponent({
         hasQueue.value = true
       }
     })
-    const seleckedPatient = () => {
-    }
+    const seleckedPatient = () => {}
     const takeNoStatus = computed(() => {
       return function (status) {
         return status == 0 ? '未取号' : '已取号'
@@ -91,9 +90,9 @@ export default defineComponent({
       treatmentQueueList,
       takeNoStatus,
       sm4Decrypt,
-      isQueuenum
+      isQueuenum,
     }
-  }
+  },
 })
 </script>
 

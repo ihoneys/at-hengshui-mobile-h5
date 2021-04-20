@@ -30,7 +30,8 @@
                 type="primary"
                 :disabled="isGetCode || !phoneRexg.test(phone)"
                 @click.stop="onGetCode"
-              >{{codeText}}</van-button>
+                >{{ codeText }}</van-button
+              >
             </template>
           </van-field>
         </div>
@@ -42,7 +43,8 @@
             color="#00d3c2"
             @click.stop="verificationCodeLogin"
             :disabled="!resCode || !phone"
-          >登 录</van-button>
+            >登 录</van-button
+          >
         </div>
       </div>
       <div v-show="loginType">
@@ -65,7 +67,7 @@
             right-icon="browsing-history"
             @click-right-icon="inputType = !inputType"
             v-model="password"
-            :type="inputType ? 'text': 'password'"
+            :type="inputType ? 'text' : 'password'"
           />
         </div>
         <div class="mt-10" style="padding: 10px 20px">
@@ -77,19 +79,21 @@
             color="#00d3c2"
             @click.stop="passwordLogin"
             :disabled="!password || !phoneRexg.test(phone)"
-          >登 录</van-button>
+            >登 录</van-button
+          >
         </div>
       </div>
 
       <div class="change-box mt-10">
-        <div @click="changeLoginType" v-text="typeName?'验证码登录': '账号密码登录'"></div>
+        <div @click="changeLoginType" v-text="typeName ? '验证码登录' : '账号密码登录'"></div>
         <div>
           <router-link
             class="signup"
             style="margin-right: 10px"
             to="/register/changePassword"
             v-show="loginType"
-          >忘记密码</router-link>
+            >忘记密码</router-link
+          >
           <router-link class="signup" to="/register/registered">用户注册</router-link>
         </div>
       </div>
@@ -97,7 +101,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { encrypt } from '../../common/function'
@@ -114,13 +118,7 @@ export default defineComponent({
     const resCode = ref('')
     const password = ref('')
     const router = useRouter()
-    const {
-      phone,
-      onGetCode,
-      codeText,
-      countDown,
-      isGetCode,
-    } = getVerificationCode()
+    const { phone, onGetCode, codeText, countDown, isGetCode } = getVerificationCode()
     const { toPreviousRoute, storeLoginInfomation } = loginSuccess()
     const verificationCodeLogin = async () => {
       const sendData = {

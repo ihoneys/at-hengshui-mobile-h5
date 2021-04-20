@@ -3,27 +3,27 @@
     <ul class="order-cancel-info">
       <li>
         <div>预约医院：</div>
-        <div>{{orderInfo.hosName}}</div>
+        <div>{{ orderInfo.hosName }}</div>
       </li>
       <li>
         <div>预约科室：</div>
-        <div>{{orderInfo.deptName}}</div>
+        <div>{{ orderInfo.deptName }}</div>
       </li>
       <li>
         <div>预约医生：</div>
-        <div>{{orderInfo.doctorName}}</div>
+        <div>{{ orderInfo.doctorName }}</div>
       </li>
       <li>
         <div>预约时间：</div>
-        <div>{{orderInfo.toDate}} {{orderInfo.beginTime}} - {{orderInfo.endTime}}</div>
+        <div>{{ orderInfo.toDate }} {{ orderInfo.beginTime }} - {{ orderInfo.endTime }}</div>
       </li>
       <li>
         <div>订单状态：</div>
-        <div>{{orderInfo.hosName}}</div>
+        <div>{{ orderInfo.hosName }}</div>
       </li>
       <li>
         <div>支付状态：</div>
-        <div>{{$filters.transformPayStatus(orderInfo.payStatus)}}</div>
+        <div>{{ $filters.transformPayStatus(orderInfo.payStatus) }}</div>
       </li>
       <li class="special-tips">在线申请取消预约挂号订单，已支付的相关费用将在取消订单后自动退款</li>
     </ul>
@@ -70,17 +70,17 @@ import { cancelOrderRefund } from '../../common/api'
 import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
 export default defineComponent({
-  setup () {
+  setup() {
     const state = reactive({
       orderInfo: {},
-      refundReason: ''
+      refundReason: '',
     })
     const router = useRouter()
     state.orderInfo = SessionStorage.get('currentOrderDetail')
     const handleCancel = async () => {
       const params = {
         orderId: state.orderInfo.orderId,
-        refundReason: state.refundReason
+        refundReason: state.refundReason,
       }
       const { success, needRefund } = await cancelOrderRefund(params)
       if (!needRefund && needRefund !== undefined) {
@@ -98,9 +98,9 @@ export default defineComponent({
     return {
       ...toRefs(state),
       handleCancel,
-      back
+      back,
     }
-  }
+  },
 })
 </script>
 

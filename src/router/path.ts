@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from 'vue-router'
-import { defineAsyncComponent } from 'vue'
 import Home from '@/page/home/home.vue'
 const title = {
   user: '个人中心',
@@ -43,9 +42,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/MyCenter',
     name: 'MyCenter',
     component: () =>
-      import(
-        /* webpackChunkName: "userCenter" */ '@/page/userCenter/userCenter.vue'
-      ),
+      import(/* webpackChunkName: "userCenter" */ '@/page/userCenter/userCenter.vue'),
     meta: { requiredLogin: true, title: title.user, isTabBar: true },
   },
   {
@@ -147,8 +144,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/reportAndOutpatient/:type',
     name: 'reportAndOutpatient',
-    component: () =>
-      import('@/page/reportAndOutpatient/reportAndOutpatient.vue'),
+    component: () => import('@/page/reportAndOutpatient/reportAndOutpatient.vue'),
     meta: { title: title.report, requiredLogin: true },
   },
   {

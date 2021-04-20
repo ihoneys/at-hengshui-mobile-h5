@@ -11,13 +11,15 @@
     <ul class="order-list">
       <li
         class="item-li"
-        v-for="(item,index) in orderList"
+        v-for="(item, index) in orderList"
         :key="index"
         @click.stop="handleOrder(item)"
       >
         <div class="item-flex">
           <div class="order-status">订单状态：</div>
-          <div class="order-status-text" style="color:#00d2c3">{{$filters.transformOrderStatus(item.orderStatus)}}</div>
+          <div class="order-status-text" style="color: #00d2c3">
+            {{ $filters.transformOrderStatus(item.orderStatus) }}
+          </div>
         </div>
         <div class="pd-16">
           <div class="order-doctor-infos">
@@ -29,31 +31,31 @@
               fit="cover"
             ></van-image>
             <div class="order-doctor-colum">
-              <div>{{item.doctorName}}</div>
-              <div>{{item.hosName}}</div>
-              <div>{{item.deptName}}</div>
+              <div>{{ item.doctorName }}</div>
+              <div>{{ item.hosName }}</div>
+              <div>{{ item.deptName }}</div>
             </div>
           </div>
           <ul class="order-list-info">
             <li class="order-list-info-li">
               <div class="item-color">就诊人</div>
-              <div>{{$filters.decrypt(item.trueName)}}</div>
+              <div>{{ $filters.decrypt(item.trueName) }}</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">门诊费用</div>
-              <div>{{item.orderAmt}}元</div>
+              <div>{{ item.orderAmt }}元</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">创建时间</div>
-              <div>{{item.orderTime}}</div>
+              <div>{{ item.orderTime }}</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">就诊时间</div>
-              <div>{{ item.toDate }} {{ item.beginTime }}-{{item.endTime}}</div>
+              <div>{{ item.toDate }} {{ item.beginTime }}-{{ item.endTime }}</div>
             </li>
             <li class="order-list-info-li">
               <div class="item-color">支付状态</div>
-              <div>{{$filters.transformPayStatus(item.payStatus)}}</div>
+              <div>{{ $filters.transformPayStatus(item.payStatus) }}</div>
             </li>
           </ul>
         </div>
@@ -75,7 +77,7 @@
             size="small"
             class="status-btn"
             text="再次预约"
-            v-if="item.orderStatus === 1 || item.orderStatus === 6 "
+            v-if="item.orderStatus === 1 || item.orderStatus === 6"
             @click.stop="handleAgin(item)"
           />
         </div>
@@ -124,11 +126,7 @@ export default defineComponent({
     }
     const calculatePayTime = (list, systemTimeStamp) => {
       const isCanPay = (obj, seeDoctorTime) => {
-        return (
-          systemTimeStamp - seeDoctorTime <= 0 &&
-          obj.orderStatus === 3 &&
-          obj.payStatus === 1
-        )
+        return systemTimeStamp - seeDoctorTime <= 0 && obj.orderStatus === 3 && obj.payStatus === 1
       }
       list.forEach((obj) => {
         const treatmentTime = `${obj.toDate} ${obj.beginTime}`

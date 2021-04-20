@@ -65,7 +65,13 @@
           placeholder="请输入证件号码"
           input-align="right"
           :required="true"
-          :rules="[{ required: true, message: '请输入正确的证件号码',pattern: patternRegEXP}]"
+          :rules="[
+            {
+              required: true,
+              message: '请输入正确的证件号码',
+              pattern: patternRegEXP,
+            },
+          ]"
           :disabled="hasValue"
           @blur="onBlur"
         />
@@ -211,9 +217,7 @@ export default defineComponent({
     }
     const onBlur = computed(() => {
       if (state.account.idType !== '01') return
-      const { birthDay, radio } = byPatientIdGetBrithdayAndSex(
-        state.account.patientId
-      )
+      const { birthDay, radio } = byPatientIdGetBrithdayAndSex(state.account.patientId)
       if (birthDay || radio) {
         state.account.birthDay = birthDay
         state.account.sex = radio

@@ -8,23 +8,24 @@ import { defineComponent, reactive, toRefs } from 'vue'
 import ColumnList from '@/components/ColumnList/Index.vue'
 export default defineComponent({
   components: {
-    ColumnList
+    ColumnList,
   },
-  setup () {
+  setup() {
     const state = reactive({
-      recordList: [{
-        path: 'recordData',
-        label: '指标采集',
-        isLeftIcon: true,
-        iconName: 'notes-o',
-      }]
+      recordList: [
+        {
+          path: 'recordData',
+          label: '指标采集',
+          isLeftIcon: true,
+          iconName: 'notes-o',
+        },
+      ],
     })
     return {
-      ...toRefs(state)
+      ...toRefs(state),
     }
-  }
+  },
 })
 </script>
 
-<style>
-</style>
+<style></style>

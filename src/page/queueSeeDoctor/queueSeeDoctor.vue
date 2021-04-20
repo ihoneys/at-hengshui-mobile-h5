@@ -11,13 +11,13 @@ import getUserMemberHooks from '../../hooks/user'
 import MemberList from '../../components/MemberList/Index.vue'
 export default defineComponent({
   components: {
-    MemberList
+    MemberList,
   },
-  setup () {
+  setup() {
     const route = useRoute()
     const router = useRouter()
     const state = reactive({
-      hasQueue: false
+      hasQueue: false,
     })
     const { unitId } = route.params
     const { memberList } = getUserMemberHooks()
@@ -27,16 +27,16 @@ export default defineComponent({
         path: `/queueList`,
         query: {
           unitId,
-          memberId
-        }
+          memberId,
+        },
       })
     }
     return {
       ...toRefs(state),
       memberList,
-      seleckedPatient
+      seleckedPatient,
     }
-  }
+  },
 })
 </script>
 

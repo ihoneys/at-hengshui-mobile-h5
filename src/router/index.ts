@@ -22,14 +22,15 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
     fullPath !== '/login' &&
     fullPath !== '/register/registered' &&
     fullPath !== '/register/changePassword' &&
-    fullPath !== '/register/changePassword?isLogin=true';
+    fullPath !== '/register/changePassword?isLogin=true'
 
   const getRouterPath = function (doctorId: string, splitPath: string): string {
     const doctorRouter = `${splitPath}?doctorId=${doctorId}`
     return doctorId ? doctorRouter : splitPath
   }
 
-  const getAuthortionLogin = async () => {    /**处理从app进入,登录获取用户信息 */
+  const getAuthortionLogin = async () => {
+    /**处理从app进入,登录获取用户信息 */
     const postData = { tokenKey }
     const { storeLoginInfomation } = loginSuccess()
     const { success, data: userInfo } = await getToken(postData)
@@ -47,11 +48,13 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
 
   /**不保存登录注册路由 */
   if (noLoginPath) {
-    if (Object.values(urlParams).length) { /**处理app路由 */
+    if (Object.values(urlParams).length) {
+      /**处理app路由 */
       const splitPath = fullPath.split('?')[0]
       routePath = getRouterPath(doctorId, splitPath) /** app 是否直接进入医生主页保存 doctorId */
     }
-    if (routePath === '/accountInfo' && isWeixinBrower()) { /**从账户信息退出回到登录页，登录成功返回首页 */
+    if (routePath === '/accountInfo' && isWeixinBrower()) {
+      /**从账户信息退出回到登录页，登录成功返回首页 */
       routePath = '/'
     }
     SessionStorage.set('preRoute', routePath)
@@ -59,9 +62,11 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
 
   console.log(routePath, 'routePath')
 
-  if (isApp && noLoginPath) { /** app进入 */
+  if (isApp && noLoginPath) {
+    /** app进入 */
     getAuthortionLogin()
-  } else if (requiredLogin && !isLogin && !tokenKey) { /** h5 */
+  } else if (requiredLogin && !isLogin && !tokenKey) {
+    /** h5 */
     next({
       path: '/login',
       replace: true,
@@ -70,6 +75,5 @@ router.beforeEach(({ meta, fullPath }, form, next) => {
     next()
   }
 })
-
 
 export default router

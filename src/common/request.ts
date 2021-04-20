@@ -95,7 +95,7 @@ instance.interceptors.response.use(
       })
     }
     if (response.status === 200) {
-      if (code === 40101 || message === '登陆超时，请从公众号进入登陆') {
+      if (code === 40101) {
         Dialog({
           title: '提示',
           message: '登录过期',
@@ -111,13 +111,13 @@ instance.interceptors.response.use(
   (error) => {
     closeLoading()
     if (error.response) {
-      let tips =
+      const message =
         error.response.status in httpCode
           ? httpCode[error.response.status]
           : error.response.data.message
       Dialog({
         title: '提示',
-        message: tips,
+        message,
       })
       return Promise.reject(error)
     } else {
@@ -130,9 +130,6 @@ instance.interceptors.response.use(
   }
 )
 
-
-
-
 export const post = (url: string, data: any = {}, config = {}) => {
   return _requestMethodWithData('post', url, data, config)
 }
@@ -144,7 +141,6 @@ export const get = (url: string, params: any = {}, config = {}) => {
 export const postAndGet = (url: string, params: any, config = {}) => {
   return _requestMethodWithoutData('post', url, params, config)
 }
-
 
 function _requestMethodWithData(method: string, url: string, data: any, config: any) {
   return instance({

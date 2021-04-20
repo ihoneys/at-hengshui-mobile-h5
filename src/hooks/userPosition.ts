@@ -25,7 +25,7 @@ export function initMap() {
     AMap.event.addListener(geolocation, 'error', onError)
     function onComplete(data) {
       // data是具体的定位信息
-      console.log('定位成功信息：', data)
+      // console.log('定位成功信息：', data)
       const { lat, lng } = data.position
       state.position.isPosition = true
       state.position.lat = lat
@@ -34,7 +34,7 @@ export function initMap() {
     }
     function onError(data) {
       // 定位出错
-      console.log('定位失败错误：', data)
+      // console.log('定位失败错误：', data)
       return getLngLatLocation()
     }
   })
@@ -46,7 +46,7 @@ export function getLngLatLocation() {
     citySearch.getLocalCity(function (status, result) {
       if (status === 'complete' && result.info === 'OK') {
         // 查询成功，result即为当前所在城市信息
-        console.log('通过ip获取当前城市：', result)
+        // console.log('通过ip获取当前城市：', result)
         //逆向地理编码
         AMap.plugin('AMap.Geocoder', function () {
           var geocoder = new AMap.Geocoder({
@@ -89,7 +89,7 @@ export function countDistance(lat1, lng1, lat2, lng2) {
     Math.asin(
       Math.sqrt(
         Math.pow(Math.sin(a / 2), 2) +
-        Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
+          Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
       )
     )
   s = s * 6378.137

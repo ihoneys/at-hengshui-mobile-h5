@@ -9,7 +9,7 @@
     <van-tabbar-item replace to="/MyCenter">
       <span>我的</span>
       <template #icon="props">
-        <img :src="props.active? me.active : me.inactive" />
+        <img :src="props.active ? me.active : me.inactive" />
       </template>
     </van-tabbar-item>
   </van-tabbar>
@@ -42,5 +42,4 @@ export default defineComponent({
 })
 </script>
 
-<style>
-</style>
+<style></style>

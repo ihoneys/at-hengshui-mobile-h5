@@ -11,11 +11,7 @@
       <li>就诊时段： {{ orderInfo.endTime }}-{{ orderInfo.beginTime }}</li>
       <li>支付说明： 网上支付功能已开通</li>
     </ul>
-    <div
-      class="selector"
-      :class="{ 'border-bottom': !!current.patientId }"
-      @click="show = true"
-    >
+    <div class="selector" :class="{ 'border-bottom': !!current.patientId }" @click="show = true">
       <div>选择/申请健康卡</div>
       <img class="selector-icon" src="../../assets/tj.png" />
     </div>
@@ -27,16 +23,10 @@
       </div>
       <div class="patient-card-number" v-if="current.patientId">
         <span>证件号</span>
-        <span class="patient-card-number-no">{{
-          idEncrypt(current.patientId)
-        }}</span>
+        <span class="patient-card-number-no">{{ idEncrypt(current.patientId) }}</span>
       </div>
     </div>
-    <van-action-sheet
-      :round="true"
-      v-model:show="show"
-      title="添加 / 选择就诊人"
-    >
+    <van-action-sheet :round="true" v-model:show="show" title="添加 / 选择就诊人">
       <div class="patient-list-content">
         <van-radio-group
           class="patient-list-group"
@@ -47,17 +37,12 @@
           <div class="patient-card">
             <div class="patient-card-name">
               <img v-if="column.sex === 0" src="../../assets/icon_people.png" />
-              <img
-                v-if="column.sex === 1"
-                src="../../assets/icon_people-2.png"
-              />
+              <img v-if="column.sex === 1" src="../../assets/icon_people-2.png" />
               <span>{{ column.patientName }}</span>
             </div>
             <div class="patient-card-number">
               <span>证件号</span>
-              <span class="patient-card-number-no">{{
-                idEncrypt(column.patientId)
-              }}</span>
+              <span class="patient-card-number-no">{{ idEncrypt(column.patientId) }}</span>
             </div>
           </div>
           <van-radio :name="index"></van-radio>
@@ -67,19 +52,12 @@
           <p>暂无就诊人，请添加就诊人</p>
         </div>
         <router-link to="/addMember/orderAdd">
-          <van-button type="primary" round block color="#00D2C3"
-            >添加就诊人</van-button
-          >
+          <van-button type="primary" round block color="#00D2C3">添加就诊人</van-button>
         </router-link>
       </div>
     </van-action-sheet>
     <div class="submit-btn">
-      <van-button
-        round
-        block
-        type="primary"
-        @click="submitOrder"
-        :disabled="!!!current.patientId"
+      <van-button round block type="primary" @click="submitOrder" :disabled="!!!current.patientId"
         >提交</van-button
       >
     </div>
@@ -175,7 +153,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .order-wrapper {
   position: absolute;
   top: 0;

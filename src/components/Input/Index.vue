@@ -1,49 +1,66 @@
 <template>
-  <van-field
-    v-model="value"
-    type="number"
-    v-bind="$attrs"
-    :disabled="isDisabled"
-    :name="data.model"
-    :label="data.label"
-    :placeholder="'请输入' + data.label"
-    :required="true"
-    :rules="[{ required: true, message: `请输入${data.label}` }]"
-  >
-    <template #extra>
-      <div class="extra-div">{{data.unit}}</div>
-    </template>
-  </van-field>
+  <div>
+    <!-- <van-field
+      v-model="value"
+      type="number"
+      v-bind="$attrs"
+      :disabled="isDisabled"
+      :name="data.model"
+      :label="data.label"
+      :placeholder="'请输入' + data.label"
+      :required="true"
+      :rules="[{ required: true, message: `请输入${data.label}` }]"
+    >
+      <template #extra>
+        <div class="extra-div">{{ data.unit }}</div>
+      </template> -->
+    <div class="Input">
+      <input
+        type="text"
+        @input="$emit('update:firstName', $event.target.value)"
+        :value="firstName"
+      />
+      <input type="text" @input="$emit('update:lastName', $event.target.value)" :value="lastName" />
+    </div>
+    <!-- </van-field> -->
+  </div>
 </template>
 
-<script>
-import { defineComponent, ref, watch } from 'vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   inheritAttrs: false,
   props: {
-    data: {
-      type: Object,
-      required: true
-    },
+    // data: {
+    //   type: Object,
+    //   required: true,
+    // },
     isDisabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     modelValue: {
-      type: String
+      type: String,
+    },
+    inputVal: String,
+
+    firstName: String,
+    lastName: String,
+  },
+  inject: {
+    book: {
+      from: 'guide',
+    },
+  },
+  setup(props, { emit }) {
+    const updateValue = (e) => {
+      emit('update:inputVal', e.target.value)
+    }
+    return {
+      updateValue,
     }
   },
-  setup (props, ctx) {
-    const value = ref(props.modelValue)
-    watch(value, (newVal, oldVal) => {
-      ctx.emit('input', newVal)
-    }, { lazy: true })
-    return {
-      value
-    }
-  }
 })
 </script>
 
-<style>
-</style>
+<style></style>

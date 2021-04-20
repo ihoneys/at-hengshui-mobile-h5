@@ -23,7 +23,7 @@
             right-icon="browsing-history"
             v-model="password1"
             :type="inputType"
-            @click-right-icon="inputType = inputType === 'text' ?  'password' : 'text'"
+            @click-right-icon="inputType = inputType === 'text' ? 'password' : 'text'"
           />
           <van-field
             required
@@ -34,7 +34,7 @@
             right-icon="browsing-history"
             v-model="password2"
             :type="inputType"
-            @click-right-icon="inputType = inputType === 'text' ?  'password' : 'text'"
+            @click-right-icon="inputType = inputType === 'text' ? 'password' : 'text'"
           />
           <van-field
             required
@@ -52,7 +52,8 @@
                 type="primary"
                 :disabled="!phoneRexg.test(phone) || isGetCode"
                 @click.stop="onGetCode"
-              >{{codeText}}</van-button>
+                >{{ codeText }}</van-button
+              >
             </template>
           </van-field>
           <div class="register-btn">
@@ -64,7 +65,8 @@
               type="primary"
               native-type="submit"
               :disabled="!password1 || !password2 || !phone || !code"
-            >{{ title }}</van-button>
+              >{{ title }}</van-button
+            >
           </div>
         </van-form>
       </div>
@@ -87,13 +89,7 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const {
-      codeText,
-      isGetCode,
-      onGetCode,
-      countDown,
-      phone,
-    } = getVerificationCode()
+    const { codeText, isGetCode, onGetCode, countDown, phone } = getVerificationCode()
     const { toPreviousRoute, storeLoginInfomation } = loginSuccess()
     const loginOrRegister = route.params.id === 'changePassword'
     const state = reactive({

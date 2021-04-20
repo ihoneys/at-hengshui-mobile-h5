@@ -12,17 +12,17 @@ import MemberList from '../../components/MemberList/Index.vue'
 const outsiedUrl = `http://ehr.jk-hs.com:8081/#/login?card=`
 export default defineComponent({
   components: {
-    MemberList
+    MemberList,
   },
-  setup () {
+  setup() {
     const state = reactive({
       showAddPatient: false,
       radio: '',
-      memberList: []
+      memberList: [],
     })
     const seleckedPatient = (item, i) => {
       Toast.loading({
-        message: "跳转中...",
+        message: '跳转中...',
         forbidClick: true,
         duration: 10000,
       })
@@ -39,10 +39,9 @@ export default defineComponent({
     return {
       ...toRefs(state),
       seleckedPatient,
-      memberList
+      memberList,
     }
-
-  }
+  },
 })
 </script>
 
@@ -54,5 +53,4 @@ export default defineComponent({
   padding: 10px;
   box-sizing: border-box;
 }
-
 </style>

@@ -2,7 +2,7 @@
   <div class="doctor-page" v-if="requestSuccess">
     <custom-van-nav-bar />
     <div class="doctor-info">
-      <van-image width="64" height="64" :src="doctorInfo.image" round></van-image>
+      <van-image round width="64" height="64" :src="doctorInfo.image"></van-image>
       <div class="doctor-name">
         <div class="name">{{ doctorInfo.doctorName }}</div>
         <div class="doctor-level">{{ doctorInfo.zcName }}</div>
@@ -24,18 +24,14 @@
       <div class="doctor-experts">
         <div class="table-bottom">
           <h3 v-if="doctorInfo.introduction" class="table-bottom-title">简介</h3>
-          <div class="contorl-tips">左右滑动日历查看其他日期排班</div>
+          <div class="contorl-tips" v-if="schedulingData.length">左右滑动日历查看其他日期排班</div>
         </div>
-        <p
-          class="doctor-expert-color"
-          :class="{ introContent: isFolding }"
-          :ref="refIntroduction"
-        >{{ doctorInfo.introduction }}</p>
-        <div
-          v-if="isShowCollapse"
-          class="folding"
-          @click.stop="isFolding = !isFolding"
-        >{{ isFolding ? '展开' : '折叠' }}</div>
+        <p class="doctor-expert-color" :class="{ introContent: isFolding }" :ref="refIntroduction">
+          {{ doctorInfo.introduction }}
+        </p>
+        <div v-if="isShowCollapse" class="folding" @click.stop="isFolding = !isFolding">
+          {{ isFolding ? '展开' : '折叠' }}
+        </div>
       </div>
     </div>
     <div class="evaluate">
@@ -48,8 +44,8 @@
       position="bottom"
       class="popup-wrapper"
       duration="0.2"
+      style="max-height: 70%"
       v-model:show="show"
-      style="max-height:70%"
     >
       <div class="popup-hos-info">
         <span>{{ currentTimesInfo.date }}</span>
@@ -96,11 +92,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs, nextTick } from 'vue'
-import {
-  getSchedulingData,
-  getSelectSchedulingTime,
-  getDoctorInfo,
-} from '../../common/api'
+import { getSchedulingData, getSelectSchedulingTime, getDoctorInfo } from '../../common/api'
 import {
   getCustomDate,
   parsingSchedulingData,
@@ -221,12 +213,7 @@ export default defineComponent({
           sendData.endDate = getCustomDate(13)
           sendData.currentWeek = 1
           setTimeout(() => {
-            getSchedulingDatas(
-              currentDoctorInfo,
-              getCustomDate(7),
-              getCustomDate(13),
-              1
-            )
+            getSchedulingDatas(currentDoctorInfo, getCustomDate(7), getCustomDate(13), 1)
           }, 100)
         }
         state.requestSuccess = true
@@ -263,15 +250,9 @@ export default defineComponent({
       }
     }
     const processIsDate = (date) => {
-      if (
-        SessionStorage.has('currentDoctorInfo') &&
-        SessionStorage.get('currentDoctorInfo').date
-      )
+      if (SessionStorage.has('currentDoctorInfo') && SessionStorage.get('currentDoctorInfo').date)
         return
-      const merageDate = Object.assign(
-        SessionStorage.get('currentDoctorInfo'),
-        { date }
-      )
+      const merageDate = Object.assign(SessionStorage.get('currentDoctorInfo'), { date })
       SessionStorage.set('currentDoctorInfo', merageDate)
     }
     const clickItem = (date, data, isNumber, dictCode, dictName) => {
@@ -309,10 +290,7 @@ export default defineComponent({
       orderInfo.endTime = times.endTime
       orderInfo.detlId = times.numResId
       orderInfo.scheduleId = times.scheduleId
-      SessionStorage.set(
-        'currentDoctorInfo',
-        Object.assign(orderInfo, temporary)
-      )
+      SessionStorage.set('currentDoctorInfo', Object.assign(orderInfo, temporary))
       router.push('/order')
     }
     const clickTime = (datas) => {
