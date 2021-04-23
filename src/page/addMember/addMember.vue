@@ -84,7 +84,7 @@
         placeholder="请输入手机号"
         input-align="right"
         :required="true"
-        v-model="member.phone"
+        v-model="phone"
       />
       <van-field
         label="验证码"
@@ -101,7 +101,7 @@
           <van-button
             size="small"
             type="primary"
-            :disabled="isGetCode || !phoneRexg.test(member.phone)"
+            :disabled="isGetCode || !phoneRexg.test(phone)"
             @click.stop="onGetCode"
             >{{ codeText }}</van-button
           >
@@ -239,7 +239,8 @@ export default defineComponent({
         })
       }
     }
-    const { onGetCode, isGetCode, codeText, countDown } = getVerificationCode()
+    
+    const { onGetCode, isGetCode, codeText, countDown, phone } = getVerificationCode()
 
     const onBlur = () => {
       if (state.member.idType !== '01') return
@@ -265,6 +266,7 @@ export default defineComponent({
     }
     return {
       ...toRefs(state),
+      phone,
       onConfirm,
       onGetCode,
       onSubmit,
