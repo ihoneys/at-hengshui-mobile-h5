@@ -128,7 +128,7 @@ import {
   byPatientIdGetBrithdayAndSex,
 } from '../../common/function'
 import { patternObj as pattern } from '../../common/regularData'
-import { LocalStorage, SessionStorage } from 'storage-manager-js'
+import { LocalStorage, SessionStorage, Cookie } from 'storage-manager-js'
 import { saveUserMember } from '../../common/api'
 import { useRouter } from 'vue-router'
 import { Toast } from 'vant'
@@ -159,7 +159,7 @@ export default defineComponent({
       isCheckUserInfo()
     })
     const { userId } = LocalStorage.get('userInfo')
-    const isApp = SessionStorage.get('isApp') || false
+    const isApp = Cookie.get('isApp') || false
     let patientType = SessionStorage.get('id_type')
     state.patientTypeList = tranformPickerType(patientType)
     const isCheckUserInfo = () => {

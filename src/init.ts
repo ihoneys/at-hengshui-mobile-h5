@@ -1,12 +1,6 @@
-import { onMounted } from '@vue/runtime-core'
 import { SessionStorage } from 'storage-manager-js'
 import { dictionaryQuery } from './common/api'
 export default () => {
-  onMounted(() => {
-    if (!SessionStorage.has('dictionarys')) {
-      getDictionarys()
-    }
-  })
   const getDictionarys = async () => {
     const { success, data } = await dictionaryQuery()
     if (success && !SessionStorage.has('dictionarys')) {
@@ -21,5 +15,8 @@ export default () => {
         SessionStorage.set(v.setName, baseData)
       })
     }
+  }
+  return {
+    getDictionarys
   }
 }

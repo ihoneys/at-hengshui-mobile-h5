@@ -159,7 +159,6 @@ export default defineComponent({
         } else {
           toPreviousRoute(router)
         }
-        console.log(6666, '储存')
         storeLoginInfomation(Object.assign(userInfo, res))
       }
     }

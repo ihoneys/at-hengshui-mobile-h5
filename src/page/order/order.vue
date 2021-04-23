@@ -8,7 +8,7 @@
       <li>挂号级别： {{ orderInfo.zcName || '暂无' }}</li>
       <li>就诊费用： ￥{{ orderInfo.guaHaoAmt || 0 }}元</li>
       <li>就诊日期： {{ orderInfo.date }}</li>
-      <li>就诊时段： {{ orderInfo.endTime }}-{{ orderInfo.beginTime }}</li>
+      <li>就诊时段： {{ orderInfo.beginTime }}-{{ orderInfo.endTime }}</li>
       <li>支付说明： 网上支付功能已开通</li>
     </ul>
     <div class="selector" :class="{ 'border-bottom': !!current.patientId }" @click="show = true">

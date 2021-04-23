@@ -1,6 +1,6 @@
 <template>
   <div class="doctor-page" v-if="requestSuccess">
-    <custom-van-nav-bar />
+    <custom-van-nav-bar v-if="!closeNav" />
     <div class="doctor-info">
       <van-image round width="64" height="64" :src="doctorInfo.image"></van-image>
       <div class="doctor-name">
@@ -96,7 +96,6 @@ import { getSchedulingData, getSelectSchedulingTime, getDoctorInfo } from '../..
 import {
   getCustomDate,
   parsingSchedulingData,
-  isObjEmpty,
   createMessage,
   getUrlParams,
 } from '../../common/function'
@@ -152,12 +151,14 @@ export default defineComponent({
       detlId: '',
       scheduleId: '',
     }
+    let closeNav = false
     let currentDoctorInfo
     onMounted(() => {
       const { doctorId } = getUrlParams()
       console.log(doctorId)
       if (doctorId) {
         // 从智能导诊进入
+        closeNav = true // 隐藏返回上一页按钮
         getDoctorBaseInfo(doctorId)
       } else {
         // 正常入口进入
@@ -184,20 +185,22 @@ export default defineComponent({
       const schedulesList = JSON.parse(res.data[0].schedules)
 
       if (res.success) {
-        orderInfo.guaHaoAmt = res.data[0].guaHaoAmt
-        orderInfo.zcName = res.data[0].zcName
-        orderInfo.unitName = res.data[0].unitName
+        if (res.data[0].guaHaoAmt) {
+          orderInfo.guaHaoAmt = res.data[0].guaHaoAmt
+          orderInfo.zcName = res.data[0].zcName
+          orderInfo.unitName = res.data[0].unitName
+        }
+
         const objs: SchedulingInfo = {
           data: '',
           timeTypes: '',
           week: '',
           date: '',
         }
-        let schedulingList = [] as SchedulingInfo[]
+        let schedulingList: SchedulingInfo[] = []
 
         if (schedulesList.length > 0) {
           const { isProcess, newData } = parsingSchedulingData(schedulesList)
-          // console.log(isProcess, 'isProcess')
           state.isProcess = isProcess
           objs.data = res.data
           objs.timeTypes = res.timeTypes
@@ -304,6 +307,7 @@ export default defineComponent({
       selectTimes,
       refIntroduction,
       clickTime,
+      closeNav,
     }
   },
 })

@@ -41,6 +41,7 @@ import {
   Checkbox,
   Dialog,
   NoticeBar,
+  Overlay 
 } from 'vant'
 import VanNavBar from '@/components/NavBar/Index.vue'
 import 'vant/lib/index.css'
@@ -90,6 +91,7 @@ app
   .use(Rate)
   .use(Checkbox)
   .use(NoticeBar)
+  .use(Overlay)
   .mount('#app')
 
 // app.provide('LOCALSTORAGE_SYMBOL', LocalStorage)

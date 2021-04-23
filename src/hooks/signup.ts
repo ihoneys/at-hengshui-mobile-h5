@@ -3,7 +3,7 @@ import { Toast } from 'vant'
 import { getPhoneCode } from '../common/api'
 import { encrypt, redirectLoginUrl, isWeixinBrower } from '../common/function'
 import { sendToAppMessage } from '../common/uniPostMessage'
-import { SessionStorage, LocalStorage } from 'storage-manager-js'
+import { SessionStorage, LocalStorage, Cookie } from 'storage-manager-js'
 const isGetCode = ref(false),
   codeText = ref('获取验证码'),
   countDown = ref(60),
@@ -55,11 +55,7 @@ export function loginSuccess() {
       //是否在微信中需要静默登录
       redirectLoginUrl(userId, prevRoute, tokenKey)
     } else {
-      if (prevRoute === '/MyCenter' || prevRoute === '/home') {
-        router.push(prevRoute)
-      } else {
-        router.push(prevRoute)
-      }
+      router.replace(prevRoute)
     }
   }
   // 登录成功存token
@@ -67,7 +63,7 @@ export function loginSuccess() {
     LocalStorage.deleteAll()
     LocalStorage.set('userInfo', userInfo)
     LocalStorage.set('token', userInfo.token)
-    if (SessionStorage.get('isApp')) {
+    if (Cookie.get('isApp')) {
       sendToAppMessage(userInfo.data, userInfo.token)
     }
   }

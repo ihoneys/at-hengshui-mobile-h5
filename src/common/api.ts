@@ -27,7 +27,6 @@ const API = {
   URL_DELETE_COLLECT: `${provider}/pt-platform/pub/userIndexCollection/delete/`,
   URL_SAVE_USER_INFO: `${provider}/pt-platform/saveUserMember`,
   URL_QUERY_USER_INFO: `${provider}/pt-platform/queryCurrMember`,
-  URL_USER_INFO: `${auth}/jwt/loginByTokenKey`,
   URL_ADD_MEMBER: `${provider}/pt-platform/pub/userMember/add`,
   URL_UPDATE_MEMBER: `${provider}/pt-platform/pub/userMember/update`,
   URL_SEARCH_API: `${provider}/yygh-pub/pub/all/list`,
@@ -173,10 +172,6 @@ export function saveUserMember(data) {
 //查询个人资料
 export function queryMemberInfo() {
   return get(API.URL_QUERY_USER_INFO)
-}
-
-export function getUserInfo(params) {
-  return get(API.URL_USER_INFO, params)
 }
 
 export function addUserMember(data) {

@@ -50,7 +50,7 @@ import getUserMemberHooks from '../../hooks/user'
 import { queryMemberInfo } from '../../common/api'
 import ColumnList from '@/components/ColumnList/Index.vue'
 import { useRouter } from 'vue-router'
-import { SessionStorage } from 'storage-manager-js'
+import { SessionStorage, Cookie } from 'storage-manager-js'
 export default defineComponent({
   components: {
     ColumnList,
@@ -80,7 +80,7 @@ export default defineComponent({
         isLeftIcon: false,
       },
     ]
-    const isApp = SessionStorage.get('isApp') || false
+    const isApp = Cookie.get('isApp') || false
     let accountInfo = {}
     const router = useRouter()
     const getAccountInfo = async () => {

@@ -34,17 +34,23 @@ export default defineComponent({
       report: '未查询您在医院的检查报告！',
       outpatient: '未查询到需缴费医院！',
     }
-    const isApp = SessionStorage.get('isApp') || false
     const { type } = useRoute().params
-    const { mbolieType } = getUrlParams()
+    let { mbolieType = "" } = getUrlParams()
     const { phone } = LocalStorage.get('userInfo') || ''
+
+    if (mbolieType) {
+      SessionStorage.set('mbolieType', mbolieType)
+    } else {
+      mbolieType = SessionStorage.get('mbolieType') || 'android'
+    }
+
     const getList = async () => {
       const params = {
         regionType: 'hengshui',
-        bussType: type === 'report' ? 'report' : 'pay',
+        bussType: type,
         regionId: '3025',
-        clientType: isApp ? 'app' : 'weixin',
-        systemType: mbolieType || '',
+        clientType: 'app',
+        systemType: mbolieType,
         mobile: phone ? sm4Decrypt(phone) : '',
       }
       const { success, data } = await getReportList(params)
