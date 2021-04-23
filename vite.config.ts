@@ -39,10 +39,10 @@ export default defineConfig({
     },
   },
   base: './',
-  server: {
+  // server: {
     // port: 4000, // 设置端口
-    open: true, // 设置启动时，自动打开浏览器
-    cors: true, // 允许跨域
+    // open: true, // 设置启动时，自动打开浏览器
+    // cors: true, // 允许跨域
     // proxy: {   设置代理，根据我们项目实际情况配置
     //   '/api': {
     //     target: 'http://xxx.xxx.xxx.xxx:8000',
@@ -51,5 +51,5 @@ export default defineConfig({
     //     rewrite: (path) => path.replace('/api/', '/')
     //   }
     // }
-  },
+  // },
 })
