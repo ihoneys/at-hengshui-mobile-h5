@@ -2,7 +2,7 @@
   <custom-van-nav-bar />
   <div class="order-pay">
     <div class="pay-tpis">
-      <div>订单提交成功，请您尽快支付！</div>
+      <div>{{ payText }}</div>
       <!-- <div class="count-time mt-10">
         <van-count-down format="DD 天 HH 时 mm 分 ss 秒" :time="time" @finish="onFinish" />
         <span>内未完成支付订单将自动关闭</span>
@@ -21,21 +21,29 @@
         <van-icon color="rgb(13, 184, 28)" size="60" name="wechat" />
         <span>微信支付</span>
       </div>
-      <van-button round block :disabled="!time" color="#00d2c3" text="立即支付" @click="toPay" />
+      <van-button
+        round
+        block
+        :disabled="isPayStatus"
+        color="#00d2c3"
+        :text="!isPayStatus ? '立即支付' : '支付成功'"
+        @click="toPay"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs, ref, computed } from 'vue'
 import { SessionStorage } from 'storage-manager-js'
-import { isWeixinBrower } from '../../common/function'
+import { getUrlParams, isWeixinBrower } from '../../common/function'
 import { invokingPrepaid, weChatCallback, paymentAppH5 } from '../../common/api'
-import { Toast } from 'vant'
+import { Toast, Dialog } from 'vant'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   setup() {
     const currentOrder = SessionStorage.get('currentOrderDetail')
+
     const initTimeValue = () => {
       // let SET_TIME = 1300 * 60 * 1000
       const transformStamp = Date.parse(
@@ -79,7 +87,9 @@ export default defineComponent({
           const backParams = {
             orderId: currentOrder.orderId,
           }
-          weChatCallback(backParams).then((res) => {})
+          weChatCallback(backParams).then((res) => {
+
+          })
           Toast({
             type: 'success',
             message: '支付成功',
@@ -87,6 +97,8 @@ export default defineComponent({
               router.push('orderList')
             },
           })
+          alert('支付成功')
+          console.log('s6a5d46sa4d6sa4d6sa46')
         } else {
           Toast.fail('未完成支付')
         }
@@ -101,7 +113,6 @@ export default defineComponent({
           document.attachEvent('onWeixinJSBridgeReady', onBridgeReadyPayFor)
         }
       } else {
-        console.log(666)
         onBridgeReadyPayFor(signParam)
       }
     }
@@ -118,10 +129,44 @@ export default defineComponent({
     const onFinish = () => {
       state.time = 0
     }
+
+    const { orderNo } = getUrlParams()
+    const isPayStatus = ref(false)
+    if (orderNo) {
+      Toast.loading({
+        message: '结果查询中...',
+        duration: 20000,
+        forbidClick: true,
+      })
+      const checkPaystatus = async () => {
+        let { message, tradeState } = await weChatCallback({ orderId: orderNo })
+        if (tradeState == 1) {
+          isPayStatus.value = true
+        }
+        Toast.clear()
+        Dialog({
+          title: '支付状态',
+          message: tradeState == 1 ? '支付成功' : '未支付成功',
+        }).then(() => {
+          if (tradeState == 1) {
+            router.go(-3)
+          }
+        })
+        console.log(tradeState, 'tradeStatetradeStatetradeState')
+      }
+      setTimeout(() => {
+        checkPaystatus()
+      }, 4000)
+    }
+    const payText = computed(() => {
+      return isPayStatus.value ? '支付成功' : '订单提交成功，请您尽快支付！'
+    })
     return {
       ...toRefs(state),
       onFinish,
       toPay,
+      isPayStatus,
+      payText
     }
   },
 })

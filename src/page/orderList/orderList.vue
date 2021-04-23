@@ -1,5 +1,5 @@
 <template>
-  <custom-van-nav-bar :fixed="true" />
+  <custom-van-nav-bar fixed="true" />
   <van-list
     v-model:loading="loading"
     :finished="finished"
@@ -90,13 +90,13 @@
 import { defineComponent, reactive, toRefs } from 'vue'
 import { getOrderList, checkOrderStatus } from '../../common/api'
 import { LocalStorage, SessionStorage } from 'storage-manager-js'
-import { isObjEmpty, createMessage } from '../../common/function'
+import { isObjEmpty, createMessage, getUrlParams } from '../../common/function'
 import { useRouter } from 'vue-router'
 import defaultImg from '../../assets/defaultDoc.png'
 export default defineComponent({
   setup() {
     const state = reactive({
-      orderList: [],
+      orderList: [] as any,
       finished: false,
       loading: false,
       list: [],
@@ -112,7 +112,6 @@ export default defineComponent({
     const onLoad = async () => {
       requestParams.page++
       const { success, data } = await getOrderList(requestParams)
-      // const { data: times } = await getSystemTime()
       if (success && !isObjEmpty(data)) {
         state.loading = false
         const list = calculatePayTime(data.list, currentStamp)
@@ -125,15 +124,18 @@ export default defineComponent({
       }
     }
     const calculatePayTime = (list, systemTimeStamp) => {
-      const isCanPay = (obj, seeDoctorTime) => {
+      function isCanPay(obj, seeDoctorTime) {
         return systemTimeStamp - seeDoctorTime <= 0 && obj.orderStatus === 3 && obj.payStatus === 1
       }
+
       list.forEach((obj) => {
-        const treatmentTime = `${obj.toDate} ${obj.beginTime}`
+        const treatmentTime = `${obj.toDate} ${obj.endTime}`
         const seeDoctorTime = Date.parse(treatmentTime.replace(/-/g, '/'))
+
         if (obj.orderAmt === 0 || obj.orderAmt * 1 === 0) {
           return (obj.isPayButton = false)
         }
+
         obj.isPayButton = isCanPay(obj, seeDoctorTime) ? true : false
       })
       return list
