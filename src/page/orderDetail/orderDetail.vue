@@ -24,27 +24,32 @@
     <ul class="order-list-info">
       <li class="order-list-info-li">
         <div class="item-color">就诊人</div>
-        <div>{{ $filters.decrypt(item.trueName) }}</div>
+        <div class="flex-1">{{ $filters.decrypt(item.trueName) }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">门诊费用</div>
-        <div>{{ item.orderAmt }}</div>
+        <div class="flex-1">{{ item.orderAmt }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">创建时间</div>
-        <div>{{ item.orderTime }}</div>
+        <div class="flex-1">{{ item.orderTime }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">就诊时间</div>
-        <div>{{ item.toDate }} {{ item.beginTime }}-{{ item.endTime }}</div>
+        <div class="flex-1">{{ item.toDate }} {{ item.beginTime }}-{{ item.endTime }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">支付状态</div>
-        <div>{{ $filters.transformPayStatus(item.payStatus) }}</div>
+        <div class="flex-1">{{ $filters.transformPayStatus(item.payStatus) }}</div>
       </li>
       <li class="order-list-info-li">
         <div class="item-color">取号密码</div>
-        <h4 style="color: red">{{ item.platformPassword || '无' }}</h4>
+        <div class="flex-1" style="color: red; font-weight: bold">
+          {{ item.platformPassword || '无' }}
+        </div>
+      </li>
+      <li>
+        <img id="barcode" src="" alt="" />
       </li>
     </ul>
     <div class="bottom-btn">
@@ -76,25 +81,35 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { SessionStorage } from 'storage-manager-js'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { queryOrderDetails } from '../../common/api'
 import defaultImg from '../../assets/defaultDoc.png'
+import JsBarcode from "jsbarcode"
 export default defineComponent({
   setup() {
-    const item = ref({})
+    const item = ref<any>({})
     const router = useRouter()
     item.value = SessionStorage.get('currentOrderDetail')
     onMounted(async () => {
       const { success, data } = await queryOrderDetails(item.value)
       if (success) {
         item.value.orderStatus = data.orderStatus
+        loadCodeImage(item.value.platformPassword)
       } else {
         router.go(-1)
       }
     })
+    const loadCodeImage = (platformPassword) => {
+      if (!platformPassword) return
+      JsBarcode("#barcode", platformPassword, {
+        format: "CODE128",
+        displayValue: false, //是否在条形码下方显示文字
+        textPosition: "bottom", //设置文本的垂直位置
+      });
+    }
     const handleAgin = (objs) => {
       const obj = Object.create(null)
       obj.depId = objs.depId
@@ -155,7 +170,10 @@ export default defineComponent({
 }
 .order-list-info-li {
   display: flex;
-  align-items: center;
+}
+.flex-1 {
+  flex: 1;
+  word-break: break-all;
 }
 .order-doctor-colum {
   color: #999;
