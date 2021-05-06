@@ -9,7 +9,7 @@ const createSm4 = new SM4(sm4Config)
 export function createMessage(
   message: string,
   title: string = '提示',
-  callBack: () => void = () => {}
+  callBack: () => void = () => { }
 ): void {
   Dialog.alert({
     title,
@@ -67,7 +67,7 @@ export function computedAge(birthDay: string): number {
 export function getUrlParams(): any {
   var hre = window.location.href
   var query = hre.split('?')[1]
-  let obj = {}
+  let obj = Object.create(null)
   if (query) {
     var queryParams = query.split('&')
     if (!queryParams) return false
@@ -102,8 +102,8 @@ export function getCustomDate(n: number = 0): string {
 
 export const parsingSchedulingData = function (arr: any): any {
   const isNeedProessData = isProcessData(arr)
-  let obj = {}
-  let timeTypeObj = {}
+  let obj = Object.create(null)
+  let timeTypeObj = Object.create(null)
   let list: any = []
   if (isNeedProessData) {
     arr.forEach((cur, index) => {
@@ -124,7 +124,7 @@ export const parsingSchedulingData = function (arr: any): any {
         }
         obj[cur.toDate] = timeTypeObj
         list = [] // 清空push ，下一个继续
-        timeTypeObj = {} // 清空储存的
+        timeTypeObj = Object.create(null) // 清空储存的
       }
     })
 
@@ -132,10 +132,10 @@ export const parsingSchedulingData = function (arr: any): any {
       const cur = obj[key]
 
       if (!cur['am']) {
-        cur['am'] = {}
+        cur['am'] = Object.create(null)
       }
       if (!cur['pm']) {
-        cur['pm'] = {}
+        cur['pm'] = Object.create(null)
       }
       const periodListAm = cur['am'].list
       const periodListPm = cur['pm'].list
@@ -150,9 +150,9 @@ export const parsingSchedulingData = function (arr: any): any {
       isProcess: true,
     }
   } else {
-    let objDate = {} //医生排班日期的数组对象
+    let objDate = Object.create(null) //医生排班日期的数组对象
     for (let v in arr) {
-      let objTimeType = {} //医生某一天的排班
+      let objTimeType = Object.create(null) //医生某一天的排班
       let d = arr[v] //获取对象的值
       let date = d.toDate // 获取日期
       let timetype = d.timeType // 获取时间段类型(上午、下午、晚上)

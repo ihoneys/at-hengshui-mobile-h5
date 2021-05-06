@@ -1,5 +1,5 @@
 <template>
-  <custom-van-nav-bar fixed="true" />
+  <custom-van-nav-bar :fixed="true" />
   <van-list
     v-model:loading="loading"
     :finished="finished"
@@ -27,8 +27,8 @@
               width="70"
               height="70"
               radius="6"
-              :src="item.img ? item.img : defaultImg"
               fit="cover"
+              :src="item.img ? item.img : defaultImg"
             ></van-image>
             <div class="order-doctor-colum">
               <div>{{ item.doctorName }}</div>

@@ -73,7 +73,6 @@ instance.interceptors.request.use(
     //   if (config.url.includes('pur/contract/upload')) {
     //     config.headers['Content-Type'] = 'multipart/form-data'
     //   }
-
     return config
   },
   (error) => {
@@ -111,10 +110,7 @@ instance.interceptors.response.use(
   (error) => {
     closeLoading()
     if (error.response) {
-      const message =
-        error.response.status in httpCode
-          ? httpCode[error.response.status]
-          : error.response.data.message
+      const message = error.response.status in httpCode ? httpCode[error.response.status] : error.response.data.message
       Dialog({
         title: '提示',
         message,

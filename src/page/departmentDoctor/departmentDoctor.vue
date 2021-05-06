@@ -49,10 +49,6 @@ import { transformWeek, transformDate } from '../../hooks/date'
 import { SessionStorage } from 'storage-manager-js'
 import DoctorList from '@/components/DoctorList/Index.vue'
 import NoData from '@/components/NoData/Index.vue'
-interface SendParams {
-  depId: string
-  hosId: string
-}
 export default defineComponent({
   name: 'DepartmentDoctor',
   components: {
@@ -64,7 +60,7 @@ export default defineComponent({
       getDepDoctors()
       getDepNotice()
     })
-    let urlParams = {} as any
+    let urlParams: any = Object.create(null)
     if (!isObjEmpty(getUrlParams())) {
       urlParams = getUrlParams()
     } else {

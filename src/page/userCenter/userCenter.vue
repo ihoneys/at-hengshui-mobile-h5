@@ -81,7 +81,7 @@ export default defineComponent({
       },
     ]
     const isApp = Cookie.get('isApp') || false
-    let accountInfo = {}
+    let accountInfo = Object.create(null)
     const router = useRouter()
     const getAccountInfo = async () => {
       const { success, data } = await queryMemberInfo()
