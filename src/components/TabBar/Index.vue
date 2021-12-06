@@ -3,13 +3,13 @@
     <van-tabbar-item replace to="/home">
       <span>首页</span>
       <template #icon="props">
-        <img :src="props.active ? home.active : home.inactive" />
+        <img :src="props.active ? home.active : home.inactive" alt="tabbar" />
       </template>
     </van-tabbar-item>
     <van-tabbar-item replace to="/MyCenter">
       <span>我的</span>
       <template #icon="props">
-        <img :src="props.active ? me.active : me.inactive" />
+        <img :src="props.active ? me.active : me.inactive" alt="tabbar" />
       </template>
     </van-tabbar-item>
   </van-tabbar>

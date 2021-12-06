@@ -18,19 +18,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getHospitalList } from '../../common/api'
-import { initMap, countDistance } from '../../hooks/userPosition'
+import { getUrlParams } from '../../common/function'
+import useOperationSequencing from './useOperationSequencing'
+import useInitHospitalData from './useInitHospitalData'
 import Hospital from '@/components/Hospital/Index.vue'
 import Search from '../search/search.vue'
-import { getUrlParams } from '../../common/function'
 import MyInput from '@/components/Input/Index.vue'
-interface RequestParams {
-  size: number
-  page: number
-  homePageEntrance?: string | number
-}
 export default defineComponent({
   components: {
     Hospital,
@@ -39,63 +34,19 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
-    const hospitalData = ref<any>([])
     const isSearch = ref<boolean>(false)
-    const defaultVal = ref<number>(0)
-    const sortVal = ref<string>('a')
-    const defaultOptions = [
-      { text: '默认排序', value: 0 },
-      { text: '距离排序', value: 1 },
-    ]
-    const sortOptions = [
-      { text: '升序', value: 'a' },
-      { text: '降序', value: 'b' },
-    ]
+    // 是否app核酸入口进入
     const { homePageEntrance } = getUrlParams()
-    const position: any = initMap() // 获取地理位置信息
-    // console.log(position, 'position')
-    onMounted(async () => {
-      const params: RequestParams = { page: 1, size: 20 }
-      if (homePageEntrance) {
-        params.homePageEntrance = homePageEntrance
-      }
-      const { data: res } = await getHospitalList(params)
-      if (position.lat && position.lng) {
-        hospitalData.value = addDistance(res.list, position.lat, position.lng)
-      } else {
-        hospitalData.value = res.list
-      }
-    })
-    const addDistance = (list, lat, lng) => {
-      list.forEach((item) => {
-        if (item.map) {
-          const [hos_lng, hos_lat] = item.map.split(',')
-          item.distance = countDistance(hos_lat, hos_lng, Number(lat), Number(lng))
-        } else {
-          item.distance = 0
-        }
-      })
-      return list
-    }
-    watch(position, (state, preState) => {
-      if (state.lat && state.lng && state.isPosition) {
-        hospitalData.value = addDistance(hospitalData.value, state.lat, state.lng)
-      }
-    })
-    const handleSort = () => {
-      const generateRules = (a, b) => {
-        return {
-          '0_a': a.qty - b.qty,
-          '0_b': a.distance - b.distance,
-          '1_a': b.qty - a.qty,
-          '1_b': b.distance - a.distance,
-        }
-      }
-      hospitalData.value = hospitalData.value.sort((a, b) => {
-        const selectVal = `${defaultVal.value}_${sortVal.value}`
-        return generateRules(a, b)[selectVal]
-      })
-    }
+
+    // 医院数据
+    const { hospitalData } = useInitHospitalData(homePageEntrance)
+
+    // 操作医院排序
+    const { defaultVal, sortVal, defaultOptions, sortOptions, handleSort } = useOperationSequencing(
+      hospitalData
+    )
+
+    // 路由跳转
     const goRouter = (obj) => {
       const routing: any = {
         path: `/department/${obj.hisUnitId}`,

@@ -9,7 +9,7 @@ import { Toast } from 'vant'
 import { defineComponent, reactive, toRefs } from 'vue'
 import getUserMemberHooks from '../../hooks/user'
 import MemberList from '../../components/MemberList/Index.vue'
-const outsiedUrl = `http://ehr.jk-hs.com:8081/#/login?card=`
+const outsiedUrl = `https://ehr.jk-hs.com/#/login?card=`
 export default defineComponent({
   components: {
     MemberList,
@@ -24,7 +24,7 @@ export default defineComponent({
       Toast.loading({
         message: '跳转中...',
         forbidClick: true,
-        duration: 10000,
+        duration: 20000,
       })
       state.radio = i
       const { patientId } = item

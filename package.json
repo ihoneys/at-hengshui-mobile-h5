@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "qrcode": "^1.4.4",
+    "qs": "^6.10.1",
     "vant": "^3.0.7",
     "vue": "^3.0.6",
     "vue-router": "^4.0.4"

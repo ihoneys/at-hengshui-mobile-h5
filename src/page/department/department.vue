@@ -10,7 +10,7 @@
       <button class="yiyuan" @click.stop="isView = true">医 院 主 页</button>
       <div class="search-box">
         <div class="search-nav-icon" @click.prevent="isSearch = true">
-          <img width="20" src="../../assets/search.png" />
+          <img width="20" src="../../assets/search.png" alt="搜索"/>
           <span>查询医院、科室、医生</span>
         </div>
       </div>

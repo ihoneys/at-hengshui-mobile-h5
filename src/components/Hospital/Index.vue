@@ -2,7 +2,13 @@
   <ul class="doctor-list" v-if="hospitals != null">
     <li v-for="(item, index) in hospitals" :key="index">
       <div class="doctor-item" @click.native="goHospital(item)">
-        <van-image class="doctor-image" lazy-load fit="cover" radius="4px" :src="item.image" />
+        <van-image
+          class="doctor-image"
+          fit="cover"
+          radius="4px"
+          :src="item.image"
+          alt="hospitalImg"
+        />
         <div class="recommend">
           <div class="doctor-name">{{ item.unitName }}</div>
           <div class="describe">
@@ -27,12 +33,11 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const goHospital = (obj) => {
       SessionStorage.set('currentHospital', obj)
       emit('goRouter', obj)
     }
-    console.log(props.hospitals)
     return {
       goHospital,
     }

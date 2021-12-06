@@ -45,12 +45,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { idEncrypt, telEncrypt, encrypt } from '../../common/function'
-import getUserMemberHooks from '../../hooks/user'
-import { queryMemberInfo } from '../../common/api'
-import ColumnList from '@/components/ColumnList/Index.vue'
 import { useRouter } from 'vue-router'
+import { idEncrypt, telEncrypt, encrypt } from '../../common/function'
 import { SessionStorage, Cookie } from 'storage-manager-js'
+import { queryMemberInfo } from '../../common/api'
+import getUserMemberHooks from '../../hooks/user'
+import ColumnList from '@/components/ColumnList/Index.vue'
+
 export default defineComponent({
   components: {
     ColumnList,
@@ -80,9 +81,9 @@ export default defineComponent({
         isLeftIcon: false,
       },
     ]
+    const router = useRouter()
     const isApp = Cookie.get('isApp') || false
     let accountInfo = Object.create(null)
-    const router = useRouter()
     const getAccountInfo = async () => {
       const { success, data } = await queryMemberInfo()
       if (success) {

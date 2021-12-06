@@ -19,7 +19,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { getReportList } from '../../common/api'
+import { getReportList, postCountReportNumber } from '../../common/api'
 import { SessionStorage, LocalStorage } from 'storage-manager-js'
 import NoData from '../../components/NoData/Index.vue'
 import { getUrlParams, sm4Decrypt } from '../../common/function'
@@ -35,7 +35,7 @@ export default defineComponent({
       outpatient: '未查询到需缴费医院！',
     }
     const { type } = useRoute().params
-    let { mbolieType = "" } = getUrlParams()
+    let { mbolieType = '' } = getUrlParams()
     const { phone } = LocalStorage.get('userInfo') || ''
 
     if (mbolieType) {
@@ -63,10 +63,18 @@ export default defineComponent({
     getList()
 
     const handleList = (column) => {
-      const { businessAuthUrl } = column
+      const { businessAuthUrl, unitId } = column
+
+      if (type === 'report') {
+        accessReportNumber(unitId)
+      }
+
       if (businessAuthUrl) {
         window.location.href = businessAuthUrl
       }
+    }
+    const accessReportNumber = (unitId) => {
+      postCountReportNumber({ unitId }).then((res) => {})
     }
     return {
       payingHospitals,

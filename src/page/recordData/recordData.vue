@@ -197,7 +197,7 @@ export default defineComponent({
         Toast.fail(message)
       }
     }
-    const loadMore = () => {}
+    const loadMore = () => { }
     const onSubmit = async (validate) => {
       if (state.isDisabled) {
         const { success, message } = await deleteIndexCollection(state.formData.id)

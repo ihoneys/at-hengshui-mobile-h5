@@ -49,7 +49,7 @@
         </div>
       </li>
       <li>
-        <img id="barcode" src="" alt="" />
+        <van-image width="150" height="150" fit="cover" :src="codeImageUrl"/>
       </li>
     </ul>
     <div class="bottom-btn">
@@ -87,9 +87,11 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { queryOrderDetails } from '../../common/api'
 import defaultImg from '../../assets/defaultDoc.png'
-import JsBarcode from "jsbarcode"
+// import JsBarcode from "jsbarcode"
+import QRCode from "qrcode"
 export default defineComponent({
   setup() {
+    const codeImageUrl = ref<string>("")
     const item = ref<any>({})
     const router = useRouter()
     item.value = SessionStorage.get('currentOrderDetail')
@@ -102,13 +104,22 @@ export default defineComponent({
         router.go(-1)
       }
     })
+    // 二维码
     const loadCodeImage = (platformPassword) => {
+      const canvas = document.getElementById('barcode')
+      const opts = {
+        margin: 1,
+      }
       if (!platformPassword) return
-      JsBarcode("#barcode", platformPassword, {
-        format: "CODE128",
-        displayValue: false, //是否在条形码下方显示文字
-        textPosition: "bottom", //设置文本的垂直位置
-      });
+      QRCode.toDataURL(platformPassword, opts, function (error,url) {
+        if (error) console.error(error)
+        codeImageUrl.value = url
+      })
+      // JsBarcode("#barcode", platformPassword, {
+      //   format: "CODE128",
+      //   displayValue: false, //是否在条形码下方显示文字
+      //   textPosition: "bottom", //设置文本的垂直位置
+      // });
     }
     const handleAgin = (objs) => {
       const obj = Object.create(null)
@@ -125,6 +136,7 @@ export default defineComponent({
       handleAgin,
       item,
       defaultImg,
+      codeImageUrl
     }
   },
 })

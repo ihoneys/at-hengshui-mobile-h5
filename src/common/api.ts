@@ -39,6 +39,7 @@ const API = {
   URL_DEPARTMENT_NOTICE: `${provider}/yygh-pub/pub/dep/get`,
   URL_HOSPITAL_NOTICE: `${provider}/dict/unitNotice/findLatestNotice`,
   URL_TREATMENT_QUEUE: `${provider}/pt-platform/order/treatmentQueueList`,
+  URL_REPORT_COUNT:`${provider}/yygh-pub/pub/analysis/record/report`
 }
 /**
  *
@@ -220,4 +221,8 @@ export function getHospitalNotice(params) {
 
 export function getTreatmentQueueList(data) {
   return post(API.URL_TREATMENT_QUEUE, data)
+}
+
+export function postCountReportNumber(params) {
+  return postAndGet(API.URL_REPORT_COUNT, params)
 }

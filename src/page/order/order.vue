@@ -95,8 +95,8 @@ export default defineComponent({
     }
     const router = useRouter()
     const { memberList } = getUserMemberHooks()
-    const orderInfo = ref<any>({})
-    orderInfo.value = SessionStorage.get('currentDoctorInfo')!
+    let orderInfo: any = {}
+    orderInfo = SessionStorage.get('currentDoctorInfo')!
     const seleclted = (column, index) => {
       console.log(column, column.patientId)
       Object.assign(store, column)
@@ -114,19 +114,19 @@ export default defineComponent({
         memberId: store.memberId,
         phone: store.phone,
         age: computedAge(store.birthDay),
-        toDate: orderInfo.value.date,
-        orderAmt: orderInfo.value.guaHaoAmt,
-        timeType: orderInfo.value.dictCode,
-        beginDate: orderInfo.value.beginTime,
-        beginTime: orderInfo.value.beginTime,
-        endDate: orderInfo.value.endTime,
-        endTime: orderInfo.value.endTime,
-        unitId: orderInfo.value.unitId,
-        numResId: orderInfo.value.detlId,
-        doctorId: orderInfo.value.doctorId,
-        detlId: orderInfo.value.detlId,
-        depId: orderInfo.value.depId,
-        scheduleId: orderInfo.value.scheduleId,
+        toDate: orderInfo.date,
+        orderAmt: orderInfo.guaHaoAmt,
+        timeType: orderInfo.dictCode,
+        beginDate: orderInfo.beginTime,
+        beginTime: orderInfo.beginTime,
+        endDate: orderInfo.endTime,
+        endTime: orderInfo.endTime,
+        unitId: orderInfo.unitId,
+        numResId: orderInfo.detlId,
+        doctorId: orderInfo.doctorId,
+        detlId: orderInfo.detlId,
+        depId: orderInfo.depId,
+        scheduleId: orderInfo.scheduleId,
         yuyueUserType: '1',
         yuyueFrom: '7',
       }
