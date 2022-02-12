@@ -15,7 +15,7 @@ let httpCode = {
   504: '网关超时',
 };
 
-const productionURL: string = 'https://jk-hs.com/yygh';
+const productionURL: string = 'https://xxx';
 const getEnv = import.meta.env.MODE;
 
 let loadingInstance; //loading 实例
