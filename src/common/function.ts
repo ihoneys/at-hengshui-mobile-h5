@@ -82,8 +82,8 @@ export function getUrlParams(): any {
 }
 
 export function redirectLoginUrl(userId: string, routerUrl: string, tokenKey: string): void {
-  const local = 'http://www.jk-hs.com/yygh/lqt-yygh-provider/yygh-pub/pub/getHospitalOpenid' // 正式
-  const APPID = 'wxe78b60aa91fcd552' // 正式
+  const local = 'http://xxxx/yygh-pub/pub/getHospitalOpenid' // 正式
+  const APPID = 'wxe78b6xxxxxxcd552' // 正式
   window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(
     local
   )}&response_type=code&scope=snsapi_base&state=${userId}_${routerUrl}_${tokenKey}#wechat_redirect`
